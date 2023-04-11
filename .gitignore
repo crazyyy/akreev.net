@@ -71,3 +71,6 @@ wp-content/db.php
 wp-content/wflogs
 wp-content/updraft
 .user.ini
+
+# Python
+*myenv*
