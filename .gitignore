@@ -75,3 +75,5 @@ wp-content/updraft
 # Python
 *myenv*
 *.log
+/data/images/*.jpg
+/data/json/*.json

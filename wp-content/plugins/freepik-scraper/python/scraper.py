@@ -3,6 +3,7 @@ import requests
 import os
 import re
 import json
+import time
 from datetime import datetime
 from selenium import webdriver
 from selenium.webdriver.common.by import By
@@ -76,6 +77,7 @@ def get_collection_data(collection_url):
     # Setting up Selenium driver
     driver = webdriver.Firefox()
     driver.get(collection_url)
+    time.sleep(3)
 
     # Extracting collection metadata
     collection_id = collection_url.split('/')[-1]
@@ -84,33 +86,33 @@ def get_collection_data(collection_url):
     total_images_text = driver.find_element(By.CSS_SELECTOR, '.collection__totalr').text
     total_images = int(''.join(filter(str.isdigit, total_images_text)))
 
+    print('Collection from ' + str(total_images) + ' images')
     # Extracting data for each image in the collection
     images_data = []
+    current_image = 0
     while len(images_data) < total_images:
         images = driver.find_elements(By.CSS_SELECTOR, '.showcase__item')
         for image in images:
+            current_image = current_image + 1
+            print('Start scraping image ' + str(current_image) + ' from ' + str(total_images))
             image_data = {}
             # Extracting image title and link to preview image
             image_title = image.get_attribute('data-title')
             image_preview_url = image.get_attribute('data-image')
             # Attempting to get hd image url and download the hd image
             image_hd_url = get_hd_image_url(image_preview_url)
-            print('IMG URL: ' + image_hd_url)
-
+            # print('IMG URL: ' + image_hd_url)
             # Extract image name from URL
             image_name = image_hd_url.split('/')[-1]
-
             # Remove query parameters from image name
             image_name = re.sub(r'\?.*', '', image_name)
-
             # Extract only the relevant part of the image name
             match = re.search(r'([-\d]+)\.(jpg|png)', image_name)
             if match:
                 image_name = match.group(1) + '.' + match.group(2)
             else:
                 print('Unable to extract image name from URL')
-
-            print('IMG name: ' + image_name)
+            # print('IMG name: ' + image_name)
             image_local_path = download_image(image_hd_url, image_name)
             if not image_local_path:
                 # Fallback to original image url if hd url not available or download fails
@@ -120,7 +122,7 @@ def get_collection_data(collection_url):
             # Extracting link to image page and image id
             image_link_to_page = image.find_element(By.TAG_NAME, 'a').get_attribute('href')
             image_link_to_page = image_link_to_page[:image_link_to_page.find('.htm')+4]
-            print(image_link_to_page)
+            # print(image_link_to_page)
             image_id = image.find_element(By.TAG_NAME, 'a').get_attribute('data-id')
             # Storing all image data in a dictionary
             image_data['image_title'] = image_title
@@ -131,20 +133,28 @@ def get_collection_data(collection_url):
             image_data['image_id'] = image_id
             # Storing the image data in a list
             images_data.append(image_data)
+            print('Finish scraping image ' + str(current_image))
+
         # Checking if there are more pages and navigating to them if they exist
         print('Search Next Page Button')
-        pagination_button = driver.find_element(By.CSS_SELECTOR, '.pagination__button')
-        pagination_button_title = pagination_button.find_element(By.TAG_NAME, 'span').text
-        next_page_button = None
-        if pagination_button_title == 'Next Page':
-          print('Next Page Button found')
-          next_page_button = pagination_button
+        try:
+          next_page_button = driver.find_element(By.CSS_SELECTOR, '.pagination__next')
+        except:
+          next_page_button = None
+
         if not next_page_button or not next_page_button.is_enabled():
           print('Next Page not found. Breaking')
           break
         else:
           print('Got to Next Page')
+          try:
+            button_accept_cookies = driver.find_element(By.ID, 'onetrust-accept-btn-handler')
+            button_accept_cookies.click()
+            time.sleep(2)
+          except:
+            print('Cookies button not found')
           next_page_button.click()
+          time.sleep(5)
     # Closing Selenium driver
     driver.quit()
 
