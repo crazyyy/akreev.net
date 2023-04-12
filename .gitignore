@@ -74,3 +74,4 @@ wp-content/updraft
 
 # Python
 *myenv*
+*.log
