@@ -11,11 +11,11 @@ new Responsive_Lightbox_Multilang();
  */
 class Responsive_Lightbox_Multilang {
 
-	public $multilang = false;
-	public $languages = [];
-	public $default_lang = '';
-	public $current_lang = '';
-	public $active_plugin = '';
+	private $multilang = false;
+	private $languages = [];
+	private $default_lang = '';
+	private $current_lang = '';
+	private $active_plugin = '';
 
 	/**
 	 * Class constructor.

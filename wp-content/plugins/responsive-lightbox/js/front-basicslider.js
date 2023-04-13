@@ -5,8 +5,8 @@
 	 */
 	$( document ).on( 'doResponsiveLightbox', function() {
 		$( '.rl-basicslider-gallery' ).each( function( index ) {
-			var gallery = $( this ),
-				options = window['rlArgsBasicSliderGallery' + ( gallery.data( 'gallery_no' ) + 1 )].data;
+			var gallery = $( this );
+			var options = window['rlArgsBasicSliderGallery' + ( gallery.data( 'gallery_no' ) + 1 )];
 
 			if ( typeof options !== 'undefined' && typeof options !== false ) {
 				gallery.slippry( {

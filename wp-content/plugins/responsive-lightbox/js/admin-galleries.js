@@ -39,7 +39,7 @@
 			// post ajax request
 			$.post( ajaxurl, {
 				action: 'rl-get-menu-content',
-				post_id: rlArgsGalleries.post_id,
+				post_id: rlArgsGalleries.postId,
 				tab: tab,
 				menu_item: menuItem,
 				nonce: rlArgsGalleries.nonce
@@ -891,7 +891,7 @@
 			// post ajax request
 			$.post( ajaxurl, {
 				action: 'rl-get-preview-content',
-				post_id: rlArgsGalleries.post_id,
+				post_id: rlArgsGalleries.postId,
 				menu_item: menuItem,
 				query: queryArgs,
 				preview_type: type,

@@ -16,7 +16,7 @@
 				var elements = event.infinite.items;
 
 				if ( typeof window['rlArgsBasicMasonryGallery' + galleryNumber] !== 'undefined' ) {
-					var options = window['rlArgsBasicMasonryGallery' + galleryNumber].data;
+					var options = window['rlArgsBasicMasonryGallery' + galleryNumber];
 
 					// init masonry
 					grid = gallery.masonry( {
@@ -35,7 +35,7 @@
 						grid.masonry( 'layout' );
 
 						// trigger event only for standard lightboxes
-						if ( rlArgs.scriptExtension !== '1' ) {
+						if ( rlArgs.scriptExtension === false ) {
 							// reinitialize lightbox
 							$.event.trigger( {
 								type: 'doResponsiveLightbox',
@@ -53,7 +53,7 @@
 				var galleryNumber = parseInt( grid.data( 'gallery_no' ) ) + 1;
 
 				if ( typeof window['rlArgsBasicMasonryGallery' + galleryNumber] !== 'undefined' ) {
-					var options = window['rlArgsBasicMasonryGallery' + galleryNumber].data;
+					var options = window['rlArgsBasicMasonryGallery' + galleryNumber];
 
 					// init masonry
 					grid.masonry( {
@@ -76,7 +76,7 @@
 				var galleryNumber = parseInt( grid.data( 'gallery_no' ) ) + 1;
 
 				if ( typeof window['rlArgsBasicMasonryGallery' + galleryNumber] !== 'undefined' ) {
-					var options = window['rlArgsBasicMasonryGallery' + galleryNumber].data;
+					var options = window['rlArgsBasicMasonryGallery' + galleryNumber];
 
 					// init masonry
 					grid.masonry( {

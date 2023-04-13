@@ -66,7 +66,7 @@ class Responsive_Lightbox_Welcome_Page {
 		<div class="changelog">
 			<a href="<?php echo esc_url( admin_url( 'admin.php?page=responsive-lightbox-tour' ) ); ?>" class="button button-primary button-hero"><?php esc_html_e( 'Start Tour', 'responsive-lightbox' ); ?></a>
 			<a href="<?php echo esc_url( admin_url( 'admin.php?page=responsive-lightbox-settings' ) ); ?>" class="button button-hero"><?php esc_html_e( 'Settings', 'responsive-lightbox' ); ?></a>
-			<a href="https://dfactory.eu/products/responsive-lightbox-gallery-extensions/?utm_source=responsive-lightbox-welcome&utm_medium=button&utm_campaign=dfactory-plugins" class="button button-hero" target="_blank"><?php esc_html_e( 'Addons', 'responsive-lightbox' ); ?></a>
+			<a href="http://www.dfactory.co/products/responsive-lightbox-gallery-extensions/?utm_source=responsive-lightbox-welcome&utm_medium=button&utm_campaign=dfactory-plugins" class="button button-hero" target="_blank"><?php esc_html_e( 'Addons', 'responsive-lightbox' ); ?></a>
 		</div>
 
 		<hr />
@@ -102,7 +102,7 @@ class Responsive_Lightbox_Welcome_Page {
 
 			<div class="feature-section">
 				<h2><?php esc_html_e( 'Powerful Addons', 'responsive-lightbox' ); ?></h2>
-				<p><?php printf( __( 'Responsive Lightbox & Gallery enhances your site by making its images and galleries look visually appealing to your site users. And when you want to kick things up a notch you can pair the free, core plugin with <del>one of 10</del> one of 13 <a href="%s" target="_blank">premium extensions.</a>', 'responsive-lightbox' ), 'https://dfactory.eu/products/responsive-lightbox-gallery-extensions/?utm_source=responsive-lightbox-welcome&utm_medium=link&utm_campaign=dfactory-plugins' ); ?></p>
+				<p><?php printf( __( 'Responsive Lightbox & Gallery enhances your site by making its images and galleries look visually appealing to your site users. And when you want to kick things up a notch you can pair the free, core plugin with %sone of 10%s one of 13 %spremium extensions.%s', 'responsive-lightbox' ), '<del>', '</del>', '<a href="http://www.dfactory.co/products/responsive-lightbox-gallery-extensions/?utm_source=responsive-lightbox-welcome&utm_medium=link&utm_campaign=dfactory-plugins" target="_blank">', '</a>' ); ?></p>
 			</div>
 
 			<hr />
@@ -132,7 +132,13 @@ class Responsive_Lightbox_Welcome_Page {
 		if ( is_network_admin() || isset( $_GET['activate-multi'] ) || defined( 'IFRAME_REQUEST' ) )
 			return;
 
-		if ( ( isset( $_GET['action'] ) && 'upgrade-plugin' === $_GET['action'] ) && ( isset( $_GET['plugin'] ) && strstr( $_GET['plugin'], 'responsive-lightbox.php' ) ) )
+		// get action
+		$action = isset( $_GET['action'] ) ? sanitize_key( $_GET['action'] ) : '';
+
+		// get plugin
+		$plugin = isset( $_GET['plugin'] ) ? sanitize_file_name( $_GET['plugin'] ) : '';
+
+		if ( $action === 'upgrade-plugin' && strstr( $plugin, 'responsive-lightbox.php' ) )
 			return;
 
 		wp_safe_redirect( admin_url( 'index.php?page=responsive-lightbox-about' ) );

@@ -52,10 +52,10 @@ class Responsive_Lightbox_Remote_Library_Wikimedia extends Responsive_Lightbox_R
 	/**
 	 * Render field.
 	 *
-	 * @return void
+	 * @return string
 	 */
 	public function render_field() {
-		echo '
+		return '
 		<p><label><input id="rl_wikimedia_active" type="checkbox" name="responsive_lightbox_remote_library[wikimedia][active]" value="1" ' . checked( $this->rl->options['remote_library']['wikimedia']['active'], true, false ) . ' />' . esc_html__( 'Enable Wikimedia.', 'responsive-lightbox' ) . '</label></p>';
 	}
 

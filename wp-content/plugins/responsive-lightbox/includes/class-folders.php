@@ -11,23 +11,24 @@ if ( ! defined( 'ABSPATH' ) )
 class Responsive_Lightbox_Folders {
 
 	private $mode = '';
+	private $rl_media_tag_terms = [];
 	private $term_counters = [
 		'keys'		=> [],
 		'values'	=> []
 	];
 	private $allowed_select_html = [
 		'select'	=> [
-			'name'				=> [],
-			'id'				=> [],
-			'class'				=> [],
-			'required'			=> [],
-			'tabindex'			=> [],
-			'aria-describedby'	=> []
+			'name'				=> true,
+			'id'				=> true,
+			'class'				=> true,
+			'required'			=> true,
+			'tabindex'			=> true,
+			'aria-describedby'	=> true
 		],
 		'option'	=> [
-			'value'		=> [],
-			'class'		=> [],
-			'selected'	=> []
+			'value'		=> true,
+			'class'		=> true,
+			'selected'	=> true
 		]
 	];
 
@@ -241,7 +242,7 @@ class Responsive_Lightbox_Folders {
 	}
 
 	/**
-	 * Add media folder id param to the uploader
+	 * Add media folder id param to the uploader.
 	 *
 	 * @param array $params Plupload parameters
 	 * @return array
@@ -456,8 +457,11 @@ class Responsive_Lightbox_Folders {
 	 */
 	public function attachment_fields_to_edit( $fields, $post ) {
 		if ( wp_doing_ajax() ) {
+			// get main instance
+			$rl = Responsive_Lightbox();
+
 			// get taxonomy option
-			$taxonomy = Responsive_Lightbox()->options['folders']['media_taxonomy'];
+			$taxonomy = $rl->options['folders']['media_taxonomy'];
 
 			// get taxonomy object
 			$tax = (array) get_taxonomy( $taxonomy );
@@ -495,7 +499,7 @@ class Responsive_Lightbox_Folders {
 				$fields[$taxonomy] = $tax;
 			}
 
-			if ( Responsive_Lightbox()->options['folders']['media_tags'] && taxonomy_exists( 'rl_media_tag' ) ) {
+			if ( $rl->options['folders']['media_tags'] && taxonomy_exists( 'rl_media_tag' ) ) {
 				// get taxonomy object
 				$tax = (array) get_taxonomy( 'rl_media_tag' );
 
@@ -931,7 +935,7 @@ class Responsive_Lightbox_Folders {
 		}
 
 		// escape url early
-		return 'href="' . esc_url( apply_filters( 'rl_folders_media_folder_url', add_query_arg( [ 'mode' => $this->mode, $taxonomy => $url_term_id ] ), $matches, $this->mode, $url_term_id ) ) . '" data-term_id="' . $term_id . '"';
+		return 'href="' . esc_url( apply_filters( 'rl_folders_media_folder_url', add_query_arg( [ 'mode' => $this->mode, $taxonomy => $url_term_id ] ), $matches, $this->mode, $url_term_id ) ) . '" data-term_id="' . (int) $term_id . '"';
 	}
 
 	/**
@@ -1060,11 +1064,11 @@ class Responsive_Lightbox_Folders {
 				}
 				#rl-folders-tree-container .jstree-container-ul .jstree-wholerow-clicked,
 				#rl-folders-tree-container .jstree-container-ul:not(.jstree-wholerow-ul) .jstree-clicked {
-					background: rgba(' . $color . ', 0.15);
+					background: rgba(' . esc_attr( $color ) . ', 0.15);
 				}
 				#rl-folders-tree-container .jstree-container-ul .jstree-wholerow-hovered,
 				#rl-folders-tree-container .jstree-container-ul:not(.jstree-wholerow-ul) .jstree-hovered {
-					background: rgba(' . $color . ', 0.05);
+					background: rgba(' . esc_attr( $color ) . ', 0.05);
 				}'
 			);
 
@@ -1192,7 +1196,6 @@ class Responsive_Lightbox_Folders {
 			// set number of root attachments (not categorized)
 			$counters[0] = (int) $root_query->post_count;
 
-			// $html is escaped at the end
 			$html = '
 			<ul>
 				<li class="cat-item cat-item-all"' . ( $term_id === 0 ? ' data-jstree=\'{ "selected": true }\'' : '' ) . '>
@@ -1217,83 +1220,79 @@ class Responsive_Lightbox_Folders {
 		wp_enqueue_script( 'responsive-lightbox-folders-admin', RESPONSIVE_LIGHTBOX_URL . '/js/admin-folders.js', $dependencies, $rl->defaults['version'], false );
 
 		if ( $page === 'media' ) {
-			wp_localize_script(
-				'responsive-lightbox-folders-admin',
-				'rlFoldersArgs',
-				[
-					'taxonomy'	=> $taxonomy->name,
-					'page'		=> $page,
-					'root'		=> esc_html__( 'Root Folder', 'responsive-lightbox' ),
-					'terms'		=> wp_dropdown_categories(
-						[
-							'orderby'			=> 'name',
-							'order'				=> 'asc',
-							'show_option_all'	=> esc_html__( 'All Files', 'responsive-lightbox' ),
-							'show_count'		=> false,
-							'hide_empty'		=> false,
-							'hierarchical'		=> true,
-							'selected'			=> ( isset( $_GET[$taxonomy->name] ) ? (int) $_GET[$taxonomy->name] : 0 ),
-							'name'				=> $taxonomy->name,
-							'taxonomy'			=> $taxonomy->name,
-							'hide_if_empty'		=> true,
-							'echo'				=> false
-						]
-					)
-				]
-			);
+			// prepare script data
+			$script_data = [
+				'taxonomy'	=> $taxonomy->name,
+				'page'		=> $page,
+				'root'		=> esc_html__( 'Root Folder', 'responsive-lightbox' ),
+				'terms'		=> wp_dropdown_categories(
+					[
+						'orderby'			=> 'name',
+						'order'				=> 'asc',
+						'show_option_all'	=> esc_html__( 'All Files', 'responsive-lightbox' ),
+						'show_count'		=> false,
+						'hide_empty'		=> false,
+						'hierarchical'		=> true,
+						'selected'			=> ( isset( $_GET[$taxonomy->name] ) ? (int) $_GET[$taxonomy->name] : 0 ),
+						'name'				=> $taxonomy->name,
+						'taxonomy'			=> $taxonomy->name,
+						'hide_if_empty'		=> true,
+						'echo'				=> false
+					]
+				)
+			];
 		} else {
-			wp_localize_script(
-				'responsive-lightbox-folders-admin',
-				'rlFoldersArgs',
-				[
-					'remove_children'	=> (int) $rl->options['folders']['folders_removal'],
-					'wholerow'			=> (int) $rl->options['folders']['jstree_wholerow'],
-					'theme'				=> 'default',
-					'counters'			=> $counters,
-					'no_media_items'	=> $no_items,
-					'taxonomy'			=> $taxonomy->name,
-					'page'				=> $page,
-					'root'				=> esc_html__( 'Root Folder', 'responsive-lightbox' ),
-					'all_terms'			=> esc_html__( 'All Files', 'responsive-lightbox' ),
-					'new_folder'		=> esc_html__( 'New Folder', 'responsive-lightbox' ),
-					'delete_term'		=> esc_html__( 'Are you sure you want to delete this folder?', 'responsive-lightbox' ),
-					'delete_terms'		=> esc_html__( 'Are you sure you want to delete this folder with all subfolders?', 'responsive-lightbox' ),
-					'nonce'				=> wp_create_nonce( 'rl-folders-ajax-library-nonce' ),
-					'terms'				=> wp_dropdown_categories(
-						[
-							'orderby'			=> 'name',
-							'order'				=> 'asc',
-							'show_option_all'	=> esc_html__( 'All Files', 'responsive-lightbox' ),
-							'show_count'		=> false,
-							'hide_empty'		=> false,
-							'hierarchical'		=> true,
-							'selected'			=> ( isset( $_GET[$taxonomy->name] ) ? (int) $_GET[$taxonomy->name] : 0 ),
-							'name'				=> $taxonomy->name,
-							'taxonomy'			=> $taxonomy->name,
-							'hide_if_empty'		=> true,
-							'echo'				=> false
-						]
-					),
-					'template'			=> '
-						<div id="rl-folders-tree-container">
-							<div class="media-toolbar wp-filter">
-								<div class="view-switch rl-folders-action-links">
-									<a href="#" title="' . esc_attr( $taxonomy->labels->add_new_item ) . '" class="dashicons dashicons-plus rl-folders-add-new-folder' . ( $this->mode === 'list' && ( $term_id === -1 || $term_id > 0 ) ? '' : ' disabled-link' ) . '"></a>
-									<a href="#" title="' . esc_attr( sprintf( __( 'Save new %s', 'responsive-lightbox' ), $taxonomy->labels->singular_name ) ) . '" class="dashicons dashicons-yes rl-folders-save-new-folder" style="display: none;"></a>
-									<a href="#" title="' . esc_attr( sprintf( __( 'Cancel adding new %s', 'responsive-lightbox' ), $taxonomy->labels->singular_name ) ) . '" class="dashicons dashicons-no rl-folders-cancel-new-folder" style="display: none;"></a>
-									<a href="#" title="' . esc_attr( $taxonomy->labels->edit_item ) . '" class="dashicons dashicons-edit rl-folders-rename-folder' . ( $this->mode === 'list' && $term_id > 0 ? '' : ' disabled-link' ) . '"></a>
-									<a href="#" title="' . esc_attr( sprintf( __( 'Save %s', 'responsive-lightbox' ), $taxonomy->labels->singular_name ) ) . '" class="dashicons dashicons-yes rl-folders-save-folder" style="display: none;"></a>
-									<a href="#" title="' . esc_attr( sprintf( __( 'Cancel renaming %s', 'responsive-lightbox' ), $taxonomy->labels->singular_name ) ) . '" class="dashicons dashicons-no rl-folders-cancel-folder" style="display: none;"></a>
-									<a href="#" title="' . esc_attr( sprintf( __( 'Delete %s', 'responsive-lightbox' ), $taxonomy->labels->singular_name ) ) . '" class="dashicons dashicons-trash rl-folders-delete-folder' . ( $this->mode === 'list' && $term_id > 0 ? '' : ' disabled-link' ) . '"></a>
-									<a href="#" title="' . esc_attr( sprintf( __( 'Expand %s', 'responsive-lightbox' ), $taxonomy->labels->singular_name ) ) . '" class="dashicons dashicons-arrow-down-alt2 rl-folders-expand-folder' . ( $this->mode === 'list' && ! $childless && ( $term_id === -1 || $term_id > 0 ) ? '' : ' disabled-link' ) . '"></a>
-									<a href="#" title="' . esc_attr( sprintf( __( 'Collapse %s', 'responsive-lightbox' ), $taxonomy->labels->singular_name ) ) . '" class="dashicons dashicons-arrow-up-alt2 rl-folders-collapse-folder' . ( $this->mode === 'list' && ! $childless && ( $term_id === -1 || $term_id > 0 ) ? '' : ' disabled-link' ) . '"></a>
-								</div>
+			// prepare script data
+			$script_data = [
+				'remove_children'	=> $rl->options['folders']['folders_removal'],
+				'wholerow'			=> $rl->options['folders']['jstree_wholerow'],
+				'theme'				=> 'default',
+				'counters'			=> $counters,
+				'no_media_items'	=> $no_items,
+				'taxonomy'			=> $taxonomy->name,
+				'page'				=> $page,
+				'root'				=> esc_html__( 'Root Folder', 'responsive-lightbox' ),
+				'all_terms'			=> esc_html__( 'All Files', 'responsive-lightbox' ),
+				'new_folder'		=> esc_html__( 'New Folder', 'responsive-lightbox' ),
+				'delete_term'		=> esc_html__( 'Are you sure you want to delete this folder?', 'responsive-lightbox' ),
+				'delete_terms'		=> esc_html__( 'Are you sure you want to delete this folder with all subfolders?', 'responsive-lightbox' ),
+				'nonce'				=> wp_create_nonce( 'rl-folders-ajax-library-nonce' ),
+				'terms'				=> wp_dropdown_categories(
+					[
+						'orderby'			=> 'name',
+						'order'				=> 'asc',
+						'show_option_all'	=> esc_html__( 'All Files', 'responsive-lightbox' ),
+						'show_count'		=> false,
+						'hide_empty'		=> false,
+						'hierarchical'		=> true,
+						'selected'			=> ( isset( $_GET[$taxonomy->name] ) ? (int) $_GET[$taxonomy->name] : 0 ),
+						'name'				=> $taxonomy->name,
+						'taxonomy'			=> $taxonomy->name,
+						'hide_if_empty'		=> true,
+						'echo'				=> false
+					]
+				),
+				'template'			=> '
+					<div id="rl-folders-tree-container">
+						<div class="media-toolbar wp-filter">
+							<div class="view-switch rl-folders-action-links">
+								<a href="#" title="' . esc_attr( $taxonomy->labels->add_new_item ) . '" class="dashicons dashicons-plus rl-folders-add-new-folder' . ( $this->mode === 'list' && ( $term_id === -1 || $term_id > 0 ) ? '' : ' disabled-link' ) . '"></a>
+								<a href="#" title="' . esc_attr( sprintf( __( 'Save new %s', 'responsive-lightbox' ), $taxonomy->labels->singular_name ) ) . '" class="dashicons dashicons-yes rl-folders-save-new-folder" style="display: none;"></a>
+								<a href="#" title="' . esc_attr( sprintf( __( 'Cancel adding new %s', 'responsive-lightbox' ), $taxonomy->labels->singular_name ) ) . '" class="dashicons dashicons-no rl-folders-cancel-new-folder" style="display: none;"></a>
+								<a href="#" title="' . esc_attr( $taxonomy->labels->edit_item ) . '" class="dashicons dashicons-edit rl-folders-rename-folder' . ( $this->mode === 'list' && $term_id > 0 ? '' : ' disabled-link' ) . '"></a>
+								<a href="#" title="' . esc_attr( sprintf( __( 'Save %s', 'responsive-lightbox' ), $taxonomy->labels->singular_name ) ) . '" class="dashicons dashicons-yes rl-folders-save-folder" style="display: none;"></a>
+								<a href="#" title="' . esc_attr( sprintf( __( 'Cancel renaming %s', 'responsive-lightbox' ), $taxonomy->labels->singular_name ) ) . '" class="dashicons dashicons-no rl-folders-cancel-folder" style="display: none;"></a>
+								<a href="#" title="' . esc_attr( sprintf( __( 'Delete %s', 'responsive-lightbox' ), $taxonomy->labels->singular_name ) ) . '" class="dashicons dashicons-trash rl-folders-delete-folder' . ( $this->mode === 'list' && $term_id > 0 ? '' : ' disabled-link' ) . '"></a>
+								<a href="#" title="' . esc_attr( sprintf( __( 'Expand %s', 'responsive-lightbox' ), $taxonomy->labels->singular_name ) ) . '" class="dashicons dashicons-arrow-down-alt2 rl-folders-expand-folder' . ( $this->mode === 'list' && ! $childless && ( $term_id === -1 || $term_id > 0 ) ? '' : ' disabled-link' ) . '"></a>
+								<a href="#" title="' . esc_attr( sprintf( __( 'Collapse %s', 'responsive-lightbox' ), $taxonomy->labels->singular_name ) ) . '" class="dashicons dashicons-arrow-up-alt2 rl-folders-collapse-folder' . ( $this->mode === 'list' && ! $childless && ( $term_id === -1 || $term_id > 0 ) ? '' : ' disabled-link' ) . '"></a>
 							</div>
-							<div id="rl-folders-tree">' . esc_html( $html ) . '</div>
-						</div>'
-				]
-			);
+						</div>
+						<div id="rl-folders-tree">' . wp_kses_post( $html ) . '</div>
+					</div>'
+			];
 		}
+
+		wp_add_inline_script( 'responsive-lightbox-folders-admin', 'var rlFoldersArgs = ' . wp_json_encode( $script_data ) . ";\n", 'before' );
 
 		add_action( 'admin_print_styles', [ $this, 'admin_print_media_styles' ] );
 	}

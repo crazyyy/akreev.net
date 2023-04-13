@@ -17,12 +17,11 @@
 	height: calc(100% - 112px) !important;
 	padding: 0;
 }
+.rl-deactivation-modal #TB_closeAjaxWindow button {
+	right: 8px;
+}
 .rl-deactivation-options p:first-child {
 	margin-top: 0;
-}
-.rl-deactivation-buttons .spinner {
-	float: none;
-	/* text-align: right; */
 }
 #rl-deactivation-container {
 	width: 100%;
@@ -42,4 +41,7 @@
 	left: 0;
 	border-top: 1px solid #ddd;
 	background: #f3f3f3;
+}
+#rl-deactivation-footer .spinner {
+	float: none;
 }
