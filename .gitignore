@@ -74,3 +74,15 @@ wp-content/updraft
 
 # Python
 *myenv*
+__pycache__
+*.log
+/data/images/*.jpg
+/data/images/*.png
+/data/images/**/*.jpg
+/data/images/**/*.png
+/data/json/*.json
+/wp-content/plugins/freepik-scraper/python/data/images/*.jpg
+/wp-content/plugins/freepik-scraper/python/data/images/*.png
+/wp-content/plugins/freepik-scraper/python/data/images/**/*.jpg
+/wp-content/plugins/freepik-scraper/python/data/images/**/*.png
+/wp-content/plugins/freepik-scraper/python/data/data/json/*.json
