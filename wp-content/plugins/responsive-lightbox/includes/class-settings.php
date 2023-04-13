@@ -13,8 +13,9 @@ new Responsive_Lightbox_Settings();
 class Responsive_Lightbox_Settings {
 
 	public $settings = [];
-	public $tabs = [];
+	private $tabs = [];
 	public $scripts = [];
+	public $image_titles = [];
 
 	/**
 	 * Class constructor.
@@ -33,13 +34,26 @@ class Responsive_Lightbox_Settings {
 	}
 
 	/**
+	 * Get class data.
+	 *
+	 * @param string $attr
+	 * @return mixed
+	 */
+	public function get_data( $attr ) {
+		return property_exists( $this, $attr ) ? $this->{$attr} : null;
+	}
+
+	/**
 	 * Initialize additional stuff for builder.
 	 *
 	 * @return void
 	 */
 	public function init_builder() {
+		// get main instance
+		$rl = Responsive_Lightbox();
+
 		// add categories
-		if ( Responsive_Lightbox()->options['builder']['gallery_builder'] && Responsive_Lightbox()->options['builder']['categories'] && Responsive_Lightbox()->options['builder']['archives'] ) {
+		if ( $rl->options['builder']['gallery_builder'] && $rl->options['builder']['categories'] && $rl->options['builder']['archives'] ) {
 			$terms = get_terms( [ 'taxonomy' => 'rl_category', 'hide_empty' => false ] );
 
 			if ( ! empty( $terms ) ) {
@@ -62,7 +76,7 @@ class Responsive_Lightbox_Settings {
 	 * @return void
 	 */
 	public function load_defaults() {
-		// assign main instance
+		// get main instance
 		$rl = Responsive_Lightbox();
 
 		$this->scripts = apply_filters(
@@ -179,8 +193,11 @@ class Responsive_Lightbox_Settings {
 			]
 		);
 
+		// get default gallery types
+		$gallery_types = $rl->get_data( 'gallery_types' );
+
 		// prepare galeries
-		$galleries = $builder_galleries = wp_parse_args( apply_filters( 'rl_gallery_types', [] ), $rl->gallery_types );
+		$galleries = $builder_galleries = wp_parse_args( apply_filters( 'rl_gallery_types', [] ), $gallery_types );
 
 		unset( $builder_galleries['default'] );
 
@@ -900,7 +917,7 @@ class Responsive_Lightbox_Settings {
 						'section' => 'responsive_lightbox_basicmasonry_gallery',
 						'type' => 'boolean',
 						'label' => __( 'Enable top-to-bottom layouts.', 'responsive-lightbox' ),
-						'description' => __( 'Controls the vetical flow of the layout. By default, item elements start positioning at the top. Uncheck it for bottom-up layouts.', 'responsive-lightbox' )
+						'description' => __( 'Controls the vertical flow of the layout. By default, item elements start positioning at the top. Uncheck it for bottom-up layouts.', 'responsive-lightbox' )
 					]
 				]
 			]
@@ -965,9 +982,6 @@ class Responsive_Lightbox_Settings {
 					$section_key = ! empty( $this->tabs[$tab_key]['default_section'] ) ? $this->tabs[$tab_key]['default_section'] : '';
 			}
 		}
-
-		// get default gallery types
-		$gallery_types = $rl->gallery_types;
 
 		// remove default gallery
 		if ( isset( $gallery_types['default'] ) )
@@ -1830,7 +1844,7 @@ class Responsive_Lightbox_Settings {
 	 * @return void
 	 */
 	public function remote_library_providers_description() {
-		echo '<p class="description">' . sprintf( esc_html__( 'Below you\'ll find a list of available remote media libraries. If you\'re looking for Pixabay, Pexels, Instagram and other integrations please check the %s addon.', 'responsive-lightbox' ), '<a href="https://dfactory.eu/products/remote-library-pro/?utm_source=responsive-lightbox-settings&utm_medium=link&utm_campaign=addon" target="_blank">Remote Library Pro</a>' ) . '</p>';
+		echo '<p class="description">' . sprintf( esc_html__( 'Below you\'ll find a list of available remote media libraries. If you\'re looking for Pixabay, Pexels, Instagram and other integrations please check the %s addon.', 'responsive-lightbox' ), '<a href="http://www.dfactory.co/products/remote-library-pro/?utm_source=responsive-lightbox-settings&utm_medium=link&utm_campaign=addon" target="_blank">Remote Library Pro</a>' ) . '</p>';
 	}
 
 	/**
@@ -1870,7 +1884,7 @@ class Responsive_Lightbox_Settings {
 		if ( ! $section_key )
 			$section_key = ! empty( $this->tabs[$tab_key]['default_section'] ) ? $this->tabs[$tab_key]['default_section'] : '';
 
-		// assign main instance
+		// get main instance
 		$rl = Responsive_Lightbox();
 
 		// no valid lightbox script?
@@ -1878,7 +1892,7 @@ class Responsive_Lightbox_Settings {
 			return;
 
 		// no valid gallery?
-		if ( $tab_key === 'gallery' && ! array_key_exists( $section_key, $rl->settings->tabs['gallery']['sections'] ) )
+		if ( $tab_key === 'gallery' && ! array_key_exists( $section_key, $this->tabs['gallery']['sections'] ) )
 			return;
 
 		echo '
@@ -1903,15 +1917,15 @@ class Responsive_Lightbox_Settings {
 					<h3 class="hndle">' . esc_html__( 'Responsive Lightbox & Gallery', 'responsive-lightbox' ) . ' ' . esc_html( $rl->defaults['version'] ) . '</h3>
 					<div class="inside">
 						<h4 class="inner">' . esc_html__( 'Need support?', 'responsive-lightbox' ) . '</h4>
-						<p class="inner">' . sprintf( esc_html__( 'If you are having problems with this plugin, please browse it\'s %s or talk about them in the %s.', 'responsive-lightbox' ), '<a href="https://www.dfactory.eu/docs/responsive-lightbox/?utm_source=responsive-lightbox-settings&utm_medium=link&utm_campaign=docs" target="_blank">' . esc_html__( 'Documentation', 'responsive-lightbox' ) . '</a>', '<a href="https://www.dfactory.eu/support/?utm_source=responsive-lightbox-settings&utm_medium=link&utm_campaign=support" target="_blank">' . esc_html__( 'Support forum', 'responsive-lightbox' ) . '</a>' ) . '</p>
+						<p class="inner">' . sprintf( esc_html__( 'If you are having problems with this plugin, please browse it\'s %s or talk about them in the %s.', 'responsive-lightbox' ), '<a href="http://www.dfactory.co/docs/responsive-lightbox/?utm_source=responsive-lightbox-settings&utm_medium=link&utm_campaign=docs" target="_blank">' . esc_html__( 'Documentation', 'responsive-lightbox' ) . '</a>', '<a href="http://www.dfactory.co/support/?utm_source=responsive-lightbox-settings&utm_medium=link&utm_campaign=support" target="_blank">' . esc_html__( 'Support forum', 'responsive-lightbox' ) . '</a>' ) . '</p>
 						<hr />
 						<h4 class="inner">' . esc_html__( 'Do you like this plugin?', 'responsive-lightbox' ) . '</h4>
 						<p class="inner">' . sprintf( esc_html__( '%s on WordPress.org', 'responsive-lightbox' ), '<a href="https://wordpress.org/support/plugin/responsive-lightbox/reviews/?filter=5" target="_blank">' . esc_html__( 'Rate it 5', 'responsive-lightbox' ) . '</a>' ) . '<br />' .
-						sprintf( esc_html__( 'Blog about it & link to the %s.', 'responsive-lightbox' ), '<a href="https://dfactory.eu/plugins/responsive-lightbox/?utm_source=responsive-lightbox-settings&utm_medium=link&utm_campaign=blog-about" target="_blank">' . esc_html__( 'plugin page', 'responsive-lightbox' ) . '</a>' ) . '<br />' .
-						sprintf( esc_html__( 'Check out our other %s.', 'responsive-lightbox' ), '<a href="https://dfactory.eu/plugins/?utm_source=responsive-lightbox-settings&utm_medium=link&utm_campaign=other-plugins" target="_blank">' . esc_html__( 'WordPress plugins', 'responsive-lightbox' ) . '</a>' ) . '
+						sprintf( esc_html__( 'Blog about it & link to the %s.', 'responsive-lightbox' ), '<a href="http://www.dfactory.co/products/responsive-lightbox/?utm_source=responsive-lightbox-settings&utm_medium=link&utm_campaign=blog-about" target="_blank">' . esc_html__( 'plugin page', 'responsive-lightbox' ) . '</a>' ) . '<br />' .
+						sprintf( esc_html__( 'Check out our other %s.', 'responsive-lightbox' ), '<a href="http://www.dfactory.co/products/?utm_source=responsive-lightbox-settings&utm_medium=link&utm_campaign=other-plugins" target="_blank">' . esc_html__( 'WordPress plugins', 'responsive-lightbox' ) . '</a>' ) . '
 						</p>
 						<hr />
-						<p class="df-link inner"><a href="https://www.dfactory.eu/?utm_source=responsive-lightbox-settings&utm_medium=link&utm_campaign=created-by" target="_blank" title="Digital Factory"><img src="//rlg-53eb.kxcdn.com/df-black-sm.png' . '" alt="Digital Factory" /></a></p>
+						<p class="df-link inner"><a href="http://www.dfactory.co/?utm_source=responsive-lightbox-settings&utm_medium=link&utm_campaign=created-by" target="_blank" title="Digital Factory"><img src="//rlg-53eb.kxcdn.com/df-black-sm.png' . '" alt="Digital Factory" /></a></p>
 					</div>
 				</div>
 				<form action="options.php" method="post">';
@@ -1989,7 +2003,7 @@ class Responsive_Lightbox_Settings {
 	 * @return void
 	 */
 	public function register_settings() {
-		// assign main instance
+		// get main instance
 		$rl = Responsive_Lightbox();
 
 		foreach ( $this->settings as $_setting_id => $setting ) {
@@ -2193,6 +2207,15 @@ class Responsive_Lightbox_Settings {
 					'value'		=> [],
 					'selected'	=> []
 				];
+				$allowed_html['input'] = [
+					'id'			=> [],
+					'class'			=> [],
+					'name'			=> [],
+					'placeholder'	=> [],
+					'checked'		=> [],
+					'type'			=> [],
+					'value'			=> []
+				];
 
 				add_filter( 'safe_style_css', [ $this, 'allow_display_attr' ] );
 
@@ -2292,7 +2315,7 @@ class Responsive_Lightbox_Settings {
 					// validate custom events
 					if ( $args['setting_id'] === 'settings' ) {
 						if ( $args['field_id'] === 'enable_custom_events' && $args['subfield_id'] === 'custom_events' )
-							$value = preg_replace( '/[^a-z0-9 ]/i', '', $value );
+							$value = preg_replace( '/[^a-z0-9\s.-]/i', '', $value );
 					} elseif ( $args['setting_id'] === 'builder' ) {
 						if ( $args['field_id'] === 'permalink' || $args['field_id'] === 'permalink_categories' || $args['field_id'] === 'permalink_tags' )
 							$value = sanitize_title( $value );
@@ -2314,7 +2337,7 @@ class Responsive_Lightbox_Settings {
 	 * @return array
 	 */
 	public function validate_settings( $input ) {
-		// assign main instance
+		// get main instance
 		$rl = Responsive_Lightbox();
 
 		// check capability
@@ -2426,17 +2449,17 @@ class Responsive_Lightbox_Settings {
 	 * @return array
 	 */
 	public function validate_capabilities( $input ) {
-		// assign main instance
+		// get main instance
 		$rl = Responsive_Lightbox();
 
 		// check capability
 		if ( ! current_user_can( apply_filters( 'rl_lightbox_settings_capability', $rl->options['capabilities']['active'] ? 'edit_lightbox_settings' : 'manage_options' ) ) )
 			return $input;
 
+		global $wp_roles;
+
 		// validate normal fields
 		$input = $this->validate_settings( $input );
-
-		global $wp_roles;
 
 		// save capabilities?
 		if ( isset( $_POST['save_rl_capabilities'] ) ) {
@@ -2446,7 +2469,7 @@ class Responsive_Lightbox_Settings {
 
 				// manage new capabilities only for non-admins
 				if ( $role_name !== 'administrator' ) {
-					foreach ( $rl->capabilities as $capability => $label ) {
+					foreach ( $rl->get_data( 'capabilities' ) as $capability => $label ) {
 						if ( isset( $input['roles'][$role_name][$capability] ) && $input['roles'][$role_name][$capability] === 'true' )
 							$role->add_cap( $capability );
 						else
@@ -2460,7 +2483,7 @@ class Responsive_Lightbox_Settings {
 				// get user role
 				$role = $wp_roles->get_role( $role_name );
 
-				foreach ( $rl->capabilities as $capability => $label ) {
+				foreach ( $rl->get_data( 'capabilities' ) as $capability => $label ) {
 					if ( array_key_exists( $role_name, $rl->defaults['capabilities']['roles'] ) && in_array( $capability, $rl->defaults['capabilities']['roles'][$role_name], true ) )
 						$role->add_cap( $capability );
 					else
@@ -2505,7 +2528,7 @@ class Responsive_Lightbox_Settings {
 
 		$i = 0;
 
-		foreach ( Responsive_Lightbox()->capabilities as $cap_role => $cap_label ) {
+		foreach ( Responsive_Lightbox()->get_data( 'capabilities' ) as $cap_role => $cap_label ) {
 			echo '
 				<tr' . ( ( $i++ % 2 === 0 ) ? ' class="alternate"' : '' ) . '>
 					<td>' . esc_html__( $cap_label, 'responsive-lightbox' ) . '</td>';
@@ -2543,7 +2566,7 @@ class Responsive_Lightbox_Settings {
 		$addons_html = get_transient( 'responsive_lightbox_addons_feed' );
 
 		if ( $addons_html === false ) {
-			$feed = wp_remote_get( 'https://dfactory.eu/?feed=addons&product=responsive-lightbox', [ 'sslverify' => false ] );
+			$feed = wp_remote_get( 'http://www.dfactory.co/?feed=addons&product=responsive-lightbox', [ 'sslverify' => false ] );
 
 			if ( ! is_wp_error( $feed ) ) {
 				if ( isset( $feed['body'] ) && strlen( $feed['body'] ) > 0 )
@@ -2610,7 +2633,18 @@ class Responsive_Lightbox_Settings {
 		if ( ! $option_page )
 			return $input;
 
-		$rl_licenses = isset( $_POST['responsive_lightbox_licenses'] ) && is_array( $_POST['responsive_lightbox_licenses'] ) ? map_deep( $_POST['responsive_lightbox_licenses'], 'sanitize_key' ) : [];
+		$rl_licenses = [];
+
+		if ( isset( $_POST['responsive_lightbox_licenses'] ) && is_array( $_POST['responsive_lightbox_licenses'] ) && ! empty( $_POST['responsive_lightbox_licenses'] ) ) {
+			foreach ( $_POST['responsive_lightbox_licenses'] as $extension => $data ) {
+				$ext = sanitize_key( $extension );
+
+				if ( is_array( $data ) && ! empty( $data['license'] ) )
+					$rl_licenses[$ext]['license'] = preg_replace( '/[^a-z0-9]/i', '', $data['license'] );
+				else
+					$rl_licenses[$ext]['license'] = '';
+			}
+		}
 
 		// check data
 		if ( ! $rl_licenses )
@@ -2631,8 +2665,11 @@ class Responsive_Lightbox_Settings {
 				if ( ! isset( $rl_licenses[$extension['id']] ) )
 					continue;
 
-				$license = preg_replace( '/[^a-zA-Z0-9]/', '', $rl_licenses[$extension['id']]['license'] );
+				$license = $rl_licenses[$extension['id']]['license'];
 				$status = ! empty( $licenses ) && ! empty( $licenses[$extension['id']]['status'] );
+
+				// update license
+				$input[$extension['id']]['license'] = $license;
 
 				// request data
 				$request_args = [
@@ -2646,14 +2683,14 @@ class Responsive_Lightbox_Settings {
 
 				// validate request
 				if ( is_wp_error( $response ) ) {
-					$input[$extension['id']['status']] = false;
+					$input[$extension['id']]['status'] = false;
 					$statuses['error']++;
 				} else {
 					// decode the license data
 					$license_data = json_decode( wp_remote_retrieve_body( $response ) );
 
 					// assign the data
-					if ( $license_data->license == 'valid' ) {
+					if ( $license_data->license === 'valid' ) {
 						$input[$extension['id']]['status'] = true;
 
 						if ( $status === false )
@@ -2744,7 +2781,7 @@ class Responsive_Lightbox_Settings {
 		];
 
 		// call the custom API
-		$response = wp_remote_get( add_query_arg( $api_params, 'http://dfactory.eu' ) );
+		$response = wp_remote_get( add_query_arg( $api_params, 'https://www.dfactory.co' ) );
 
 		return $response;
 	}

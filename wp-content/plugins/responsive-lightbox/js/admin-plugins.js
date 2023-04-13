@@ -12,13 +12,13 @@
 		// simple deactivation
 		$( document ).on( 'click', '.rl-deactivate-plugin-simple', function( e ) {
 			// display spinner
-			$( '.rl-deactivation-buttons .spinner' ).addClass( 'is-active' );
+			$( '#rl-deactivation-footer .spinner' ).addClass( 'is-active' );
 		} );
 
 		// deactivation with sending data
 		$( document ).on( 'click', '.rl-deactivate-plugin-data', function( e ) {
-			var spinner = $( '.rl-deactivation-buttons .spinner' ),
-				url = $( this ).attr( 'href' );
+			var spinner = $( '#rl-deactivation-footer .spinner' );
+			var url = $( this ).attr( 'href' );
 
 			// display spinner
 			spinner.addClass( 'is-active' );
@@ -42,14 +42,16 @@
 
 		// click on deactivation link
 		$( document ).on( 'click', '.rl-deactivate-plugin-modal', function( e ) {
-			var modalBox = $( '#rl-deactivation-container' ).closest( '#TB_window' );
-
 			tb_show( rlArgsPlugins.deactivate, '#TB_inline?inlineId=rl-deactivation-modal&modal=false' );
 
-			if ( modalBox.length > 0 ) {
-				$( modalBox ).addClass( 'rl-deactivation-modal' );
-				$( modalBox ).find( '#TB_closeWindowButton' ).on( 'blur' );
-			}
+			setTimeout( function() {
+				var modalBox = $( '#rl-deactivation-container' ).closest( '#TB_window' );
+
+				if ( modalBox.length > 0 ) {
+					$( modalBox ).addClass( 'rl-deactivation-modal' );
+					$( modalBox ).find( '#TB_closeWindowButton' ).on( 'blur' );
+				}
+			}, 0 );
 
 			return false;
 		} );

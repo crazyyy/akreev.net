@@ -47,69 +47,69 @@ class Responsive_Lightbox_Gallery_Widget extends WP_Widget {
 	private $rlg_gallery_types = [];
 	private $rli_allowed_html = [
 		'div'	=> [
-			'class'	=> [],
-			'id'	=> []
+			'class'	=> true,
+			'id'	=> true
 		],
-		'p'	=> [],
-		'br'	=> [],
+		'p'	=> true,
+		'br'	=> true,
 		'textarea'	=> [
-			'id'	=> [],
-			'class'	=> [],
-			'name'	=> []
+			'id'	=> true,
+			'class'	=> true,
+			'name'	=> true
 		],
 		'label'	=> [
-			'for'	=> []
+			'for'	=> true
 		],
 		'input'	=> [
-			'type'	=> [],
-			'class'	=> [],
-			'id'	=> [],
-			'name'	=> [],
-			'value'	=> [],
-			'min'	=> []
+			'type'	=> true,
+			'class'	=> true,
+			'id'	=> true,
+			'name'	=> true,
+			'value'	=> true,
+			'min'	=> true
 		],
 		'a'	=> [
-			'href'	=> [],
-			'class'	=> [],
-			'title'	=> []
+			'href'	=> true,
+			'class'	=> true,
+			'title'	=> true
 		],
 		'ul'	=> [
-			'id'	=> [],
-			'class'	=> []
+			'id'	=> true,
+			'class'	=> true
 		],
 		'li'	=> [
-			'class'					=> [],
-			'data-attachment_id'	=> []
+			'class'					=> true,
+			'data-attachment_id'	=> true
 		],
 		'select'	=> [
-			'name'	=> [],
-			'id'	=> [],
-			'class'	=> []
+			'name'	=> true,
+			'id'	=> true,
+			'class'	=> true
 		],
 		'option'	=> [
-			'value'		=> [],
-			'selected'	=> []
+			'value'		=> true,
+			'selected'	=> true
 		],
 		'img'	=> [
-			'id'				=> [],
-			'width'				=> [],
-			'height'			=> [],
-			'src'				=> [],
-			'class'				=> [],
-			'alt'				=> [],
-			'decoding'			=> [],
-			'loading'			=> [],
-			'srcset'			=> [],
-			'sizes'				=> [],
-			'style'				=> [],
-			'title'				=> [],
-			'data-*'			=> [],
-			'aria-describedby'	=> [],
-			'aria-details'		=> [],
-			'aria-label'		=> [],
-			'aria-labelledby'	=> [],
-			'aria-hidden'		=> [],
-			'align'				=> []
+			'id'				=> true,
+			'width'				=> true,
+			'height'			=> true,
+			'src'				=> true,
+			'class'				=> true,
+			'alt'				=> true,
+			'decoding'			=> true,
+			'loading'			=> true,
+			'srcset'			=> true,
+			'sizes'				=> true,
+			'style'				=> true,
+			'title'				=> true,
+			'data-*'			=> true,
+			'aria-describedby'	=> true,
+			'aria-details'		=> true,
+			'aria-label'		=> true,
+			'aria-labelledby'	=> true,
+			'aria-hidden'		=> true,
+			'align'				=> true
 		]
 	];
 
@@ -152,7 +152,7 @@ class Responsive_Lightbox_Gallery_Widget extends WP_Widget {
 			'desc'	 => __( 'Descending', 'responsive-lightbox' )
 		];
 
-		$gallery_types = apply_filters( 'rl_gallery_types', Responsive_Lightbox()->gallery_types );
+		$gallery_types = apply_filters( 'rl_gallery_types', Responsive_Lightbox()->get_data( 'gallery_types' ) );
 
 		if ( ! empty( $gallery_types ) ) {
 			$this->rlg_gallery_types = array_merge(
@@ -177,6 +177,9 @@ class Responsive_Lightbox_Gallery_Widget extends WP_Widget {
 	 * @return void
 	 */
 	public function widget( $args, $instance ) {
+		if ( empty( $instance ) )
+			$instance = $this->rlg_defaults;
+
 		$instance['title'] = apply_filters( 'widget_title', $instance['title'], $instance, $this->id_base );
 
 		$html = $args['before_widget'] . $args['before_title'] . ( $instance['title'] !== '' ? esc_html( $instance['title'] ) : '' ) . $args['after_title'];
@@ -208,7 +211,7 @@ class Responsive_Lightbox_Gallery_Widget extends WP_Widget {
 		else
 			$instance['atts'] = '';
 
-		$html .= do_shortcode( '[gallery link="file" columns="' . (int) $instance['columns'] . '" size="' . esc_attr( $instance['size'] ) . '" ' . ( $instance['type'] !== 'none' ? 'type="' . esc_attr( $instance['type'] ) . '"' : '' ) . ' ids="' . ( ! empty( $instance['ids'] ) ? esc_attr( $instance['ids'] ) : '' ) . '" orderby="' . esc_attr( $instance['orderby'] ) . '" order="' . esc_attr( $instance['order'] ) . '"' . ( $instance['atts'] !== '' ? ' ' . $instance['atts'] : '' ) . ']' );
+		$html .= do_shortcode( '[gallery link="file" columns="' . (int) $instance['columns'] . '" size="' . esc_attr( $instance['size'] ) . '" ' . ( $instance['type'] !== 'none' ? 'type="' . esc_attr( $instance['type'] ) . '"' : '' ) . ' ids="' . ( ! empty( $instance['ids'] ) ? esc_attr( $instance['ids'] ) : 'none' ) . '" orderby="' . esc_attr( $instance['orderby'] ) . '" order="' . esc_attr( $instance['order'] ) . '"' . ( $instance['atts'] !== '' ? ' ' . $instance['atts'] : '' ) . ']' );
 		$html .= $args['after_widget'];
 
 		echo wp_kses_post( apply_filters( 'rl_gallery_widget_html', $html, $instance ) );
@@ -243,8 +246,10 @@ class Responsive_Lightbox_Gallery_Widget extends WP_Widget {
 
 					$html .= '
 						<li class="rl-gallery-image" data-attachment_id="' . (int) $attachment_id . '">
-							<div class="rl-gallery-inner">' . wp_get_attachment_image( $attachment_id, 'thumbnail' ) . '</div>
-							<div class="rl-gallery-actions"><a href="#" class="rl-gallery-image-remove dashicons dashicons-no" title="' . esc_attr__( 'Delete image', 'responsive-lightbox' ) . '"></a></div>
+							<div class="rl-gallery-inner">
+								<div class="centered">' . wp_get_attachment_image( $attachment_id, 'thumbnail' ) . '</div>
+							</div>
+							<div class="rl-gallery-actions"><a href="#" class="rl-gallery-image-remove dashicons-before dashicons-no" title="' . esc_attr__( 'Delete image', 'responsive-lightbox' ) . '"></a></div>
 						</li>';
 				}
 			}
@@ -401,65 +406,65 @@ class Responsive_Lightbox_Image_Widget extends WP_Widget {
 	private $rli_image_sizes = [];
 	private $rli_allowed_html = [
 		'div'	=> [
-			'class'	=> [],
-			'id'	=> []
+			'class'	=> true,
+			'id'	=> true
 		],
 		'p'	=> [
-			'style'	=> [],
-			'class'	=> []
+			'style'	=> true,
+			'class'	=> true
 		],
 		'textarea'	=> [
-			'id'	=> [],
-			'class'	=> [],
-			'name'	=> [],
-			'rows'	=> []
+			'id'	=> true,
+			'class'	=> true,
+			'name'	=> true,
+			'rows'	=> true
 		],
 		'label'	=> [
-			'for'	=> []
+			'for'	=> true
 		],
 		'input'	=> [
-			'type'		=> [],
-			'class'		=> [],
-			'id'		=> [],
-			'name'		=> [],
-			'value'		=> [],
-			'min'		=> [],
-			'checked'	=> []
+			'type'		=> true,
+			'class'		=> true,
+			'id'		=> true,
+			'name'		=> true,
+			'value'		=> true,
+			'min'		=> true,
+			'checked'	=> true
 		],
 		'a'	=> [
-			'href'	=> [],
-			'class'	=> [],
-			'title'	=> []
+			'href'	=> true,
+			'class'	=> true,
+			'title'	=> true
 		],
 		'select'	=> [
-			'name'	=> [],
-			'id'	=> [],
-			'class'	=> []
+			'name'	=> true,
+			'id'	=> true,
+			'class'	=> true
 		],
 		'option'	=> [
-			'value'		=> [],
-			'selected'	=> []
+			'value'		=> true,
+			'selected'	=> true
 		],
 		'img'	=> [
-			'id'				=> [],
-			'width'				=> [],
-			'height'			=> [],
-			'src'				=> [],
-			'class'				=> [],
-			'alt'				=> [],
-			'decoding'			=> [],
-			'loading'			=> [],
-			'srcset'			=> [],
-			'sizes'				=> [],
-			'style'				=> [],
-			'title'				=> [],
-			'data-*'			=> [],
-			'aria-describedby'	=> [],
-			'aria-details'		=> [],
-			'aria-label'		=> [],
-			'aria-labelledby'	=> [],
-			'aria-hidden'		=> [],
-			'align'				=> []
+			'id'				=> true,
+			'width'				=> true,
+			'height'			=> true,
+			'src'				=> true,
+			'class'				=> true,
+			'alt'				=> true,
+			'decoding'			=> true,
+			'loading'			=> true,
+			'srcset'			=> true,
+			'sizes'				=> true,
+			'style'				=> true,
+			'title'				=> true,
+			'data-*'			=> true,
+			'aria-describedby'	=> true,
+			'aria-details'		=> true,
+			'aria-label'		=> true,
+			'aria-labelledby'	=> true,
+			'aria-hidden'		=> true,
+			'align'				=> true
 		]
 	];
 
@@ -525,23 +530,28 @@ class Responsive_Lightbox_Image_Widget extends WP_Widget {
 	 * @return void
 	 */
 	public function widget( $args, $instance ) {
+		if ( empty( $instance ) )
+			$instance = $this->rli_defaults;
+
+		$href = '';
+
 		switch ( $instance['link_to'] ) {
 			case 'file':
 				$file = wp_get_attachment_image_src( $instance['image_id'], 'full', false );
-				$href = $file[0];
+
+				if ( $file !== false )
+					$href = $file[0];
 				break;
 
 			case 'post':
 				$href = get_permalink( $instance['image_id'] );
+
+				if ( $href === false )
+					$href = '';
 				break;
 
 			case 'custom':
 				$href = $instance['link_custom_url'];
-				break;
-
-			case 'none':
-			default:
-				$href = '';
 		}
 
 		// image align
@@ -569,11 +579,21 @@ class Responsive_Lightbox_Image_Widget extends WP_Widget {
 		// get image data
 		$image = wp_get_attachment_image_src( $instance['image_id'], $instance['size'], false );
 
-		$width = $instance['responsive'] === false ? $image[1] : '100%';
-		$height = $instance['responsive'] === false ? $image[2] : 'auto';
-		$post = get_post( $instance['image_id'] );
-		$image_title = isset( $post->post_title ) ? $post->post_title : '';
-		$alt = (string) get_post_meta( $instance['image_id'], '_wp_attachment_image_alt', true );
+		if ( $image !== false ) {
+			$image_url = $image[0];
+			$width = $instance['responsive'] === false ? $image[1] : '100%';
+			$height = $instance['responsive'] === false ? $image[2] : 'auto';
+			$post = get_post( $instance['image_id'] );
+			$image_title = isset( $post->post_title ) ? $post->post_title : '';
+			$alt = (string) get_post_meta( $instance['image_id'], '_wp_attachment_image_alt', true );
+		} else {
+			$image_url = '';
+			$width = '';
+			$height = '';
+			$image_title = '';
+			$alt = '';
+		}
+
 		$instance['title'] = apply_filters( 'widget_title', $instance['title'], $instance, $this->id_base );
 
 		// start output
@@ -585,7 +605,7 @@ class Responsive_Lightbox_Image_Widget extends WP_Widget {
 			$escaped_text = esc_html( $instance['text'] );
 
 		$container_html = '<div class="rl-image-widget-text" style="' . esc_attr( $text_align ) . '">' . $escaped_text . '</div>';
-		$image_html = ( $href !== '' ? '<a href="' . esc_url( $href ) . '" class="rl-image-widget-link">' : '' ) . '<img class="rl-image-widget-image" src="' . esc_url( $image[0] ) . '" width="' . esc_attr( $width ) . '" height="' . esc_attr( $height ) . '" title="' . esc_attr( $image_title ) . '" alt="' . esc_attr( $alt ) . '" style="' . esc_attr( $image_align ) . '" />' . ( $href !== '' ? '</a>' : '' );
+		$image_html = ( $href !== '' ? '<a href="' . esc_url( $href ) . '" class="rl-image-widget-link">' : '' ) . '<img class="rl-image-widget-image" src="' . esc_url( $image_url ) . '" width="' . esc_attr( $width ) . '" height="' . esc_attr( $height ) . '" title="' . esc_attr( $image_title ) . '" alt="' . esc_attr( $alt ) . '" style="' . esc_attr( $image_align ) . '" />' . ( $href !== '' ? '</a>' : '' );
 
 		if ( $instance['text_position'] === 'below_image' )
 			$html .= $image_html . $container_html;

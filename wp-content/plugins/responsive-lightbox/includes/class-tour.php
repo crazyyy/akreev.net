@@ -202,7 +202,7 @@ class Responsive_Lightbox_Tour {
 			// remote library
 			} elseif ( $page === 'responsive-lightbox-remote_library' ) {
 				// get tabs
-				$tabs = array_keys( $rl->settings->tabs );
+				$tabs = array_keys( $rl->settings->get_data( 'tabs' ) );
 
 				// get current tab index
 				$tab_index = (int) array_search( 'remote_library', $tabs, true );
@@ -277,7 +277,7 @@ class Responsive_Lightbox_Tour {
 			( function( $ ) {
 				// ready event
 				$( function() {
-					var rlPointerOptions = <?php echo json_encode( $options ); ?>;
+					var rlPointerOptions = <?php echo wp_json_encode( $options ); ?>;
 					var setup;
 
 					function rlSetIgnore( option, hide, nonce ) {

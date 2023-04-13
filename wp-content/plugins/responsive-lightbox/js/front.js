@@ -158,7 +158,7 @@
 				post_id: rlArgs.postId,
 				page: parseQueryString( 'rl_page', link.prop( 'href' ) ),
 				nonce: rlArgs.nonce,
-				preview: rlArgs.preview,
+				preview: rlArgs.preview ? 'true' : 'false',
 				lightbox: rlArgs.script
 			} ).done( function( response ) {
 				// replace container with new content
@@ -219,7 +219,7 @@
 		setTimeout( function() {
 			var flex = $( '.flex-viewport' );
 
-			if ( args.woocommerce_gallery === '1' ) {
+			if ( args.woocommerce_gallery ) {
 				var gallery = $( '.woocommerce-product-gallery' );
 
 				if ( gallery.find( '.woocommerce-product-gallery__trigger' ).length === 0 ) {
@@ -291,13 +291,13 @@
 				var closeExecuted = false;
 
 				$( 'a[rel*="' + selector + '"], a[data-rel*="' + selector + '"]' ).swipebox( {
-					useCSS: ( args.animation === '1' ? true : false ),
-					useSVG: ( args.useSVG === '1' ? true : false ),
-					hideCloseButtonOnMobile: ( args.hideCloseButtonOnMobile === '1' ? true : false ),
-					removeBarsOnMobile: ( args.removeBarsOnMobile === '1' ? true : false ),
-					hideBarsDelay: ( args.hideBars === '1' ? parseInt( args.hideBarsDelay ) : 0 ),
+					useCSS: args.animation,
+					useSVG: args.useSVG,
+					hideCloseButtonOnMobile: args.hideCloseButtonOnMobile,
+					removeBarsOnMobile: args.removeBarsOnMobile,
+					hideBarsDelay: args.hideBars ? parseInt( args.hideBarsDelay ) : 0,
 					videoMaxWidth: parseInt( args.videoMaxWidth ),
-					loopAtEnd: ( args.loopAtEnd === '1' ? true : false ),
+					loopAtEnd: args.loopAtEnd,
 					afterOpen: function() {
 						closeExecuted = false;
 
@@ -412,25 +412,25 @@
 				$( 'a[rel*="' + selector + '"], a[data-rel*="' + selector + '"]' ).prettyPhoto( {
 					hook: 'data-rel',
 					animation_speed: args.animationSpeed,
-					slideshow: ( args.slideshow === '1' ? parseInt( args.slideshowDelay ) : false ),
-					autoplay_slideshow: ( args.slideshowAutoplay === '1' ? true : false ),
+					slideshow: args.slideshow ? parseInt( args.slideshowDelay ) : false,
+					autoplay_slideshow: args.slideshowAutoplay,
 					opacity: args.opacity,
-					show_title: ( args.showTitle === '1' ? true : false ),
-					allow_resize: ( args.allowResize === '1' ? true : false ),
-					allow_expand: ( args.allowExpand === '1' ? true : false ),
+					show_title: args.showTitle,
+					allow_resize: args.allowResize,
+					allow_expand: args.allowExpand,
 					default_width: parseInt( args.width ),
 					default_height: parseInt( args.height ),
 					counter_separator_label: args.separator,
 					theme: args.theme,
 					horizontal_padding: parseInt( args.horizontalPadding ),
-					hideflash: ( args.hideFlash === '1' ? true : false ),
+					hideflash: args.hideFlash,
 					wmode: args.wmode,
-					autoplay: ( args.videoAutoplay === '1' ? true : false ),
-					modal: ( args.modal === '1' ? true : false ),
-					deeplinking: ( args.deeplinking === '1' ? true : false ),
-					overlay_gallery: ( args.overlayGallery === '1' ? true : false ),
-					keyboard_shortcuts: ( args.keyboardShortcuts === '1' ? true : false ),
-					social_tools: ( args.social === '1' ? '<div class="pp_social"><div class="twitter"><a href="//twitter.com/share" class="twitter-share-button" data-count="none">Tweet</a><script type="text/javascript" src="//platform.twitter.com/widgets.js"></script></div><div class="facebook"><iframe src="//www.facebook.com/plugins/like.php?locale=en_US&href=' + location.href + '&amp;layout=button_count&amp;show_faces=true&amp;width=500&amp;action=like&amp;font&amp;colorscheme=light&amp;height=23" scrolling="no" frameborder="0" style="border:none; overflow:hidden; width:500px; height:23px;" allowTransparency="true"></iframe></div></div>' : '' ),
+					autoplay: args.videoAutoplay,
+					modal: args.modal,
+					deeplinking: args.deeplinking,
+					overlay_gallery: args.overlayGallery,
+					keyboard_shortcuts: args.keyboardShortcuts,
+					social_tools: args.social ? '<div class="pp_social"><div class="twitter"><a href="//twitter.com/share" class="twitter-share-button" data-count="none">Tweet</a><script type="text/javascript" src="//platform.twitter.com/widgets.js"></script></div><div class="facebook"><iframe src="//www.facebook.com/plugins/like.php?locale=en_US&href=' + location.href + '&amp;layout=button_count&amp;show_faces=true&amp;width=500&amp;action=like&amp;font&amp;colorscheme=light&amp;height=23" scrolling="no" frameborder="0" style="border:none; overflow:hidden; width:500px; height:23px;" allowTransparency="true"></iframe></div></div>' : '',
 					ie6_fallback: true,
 					changepicturecallback: function() {
 						// is view disabled?
@@ -447,7 +447,7 @@
 						rl_view_image( script, lastImage );
 
 						// is expanding allowed?
-						if ( args.allowExpand === '1' ) {
+						if ( args.allowExpand ) {
 							// disable changepicturecallback event after expanding
 							$( 'a.pp_expand' ).on( 'click', function() {
 								viewDisabled = true;
@@ -465,21 +465,21 @@
 				var lastImage = '';
 
 				$( 'a[rel*="' + selector + '"], a[data-rel*="' + selector + '"]' ).fancybox( {
-					modal: ( args.modal === '1' ? true : false ),
-					overlayShow: ( args.showOverlay === '1' ? true : false ),
-					showCloseButton: ( args.showCloseButton === '1' ? true : false ),
-					enableEscapeButton: ( args.enableEscapeButton === '1' ? true : false ),
-					hideOnOverlayClick: ( args.hideOnOverlayClick === '1' ? true : false ),
-					hideOnContentClick: ( args.hideOnContentClick === '1' ? true : false ),
-					cyclic: ( args.cyclic === '1' ? true : false ),
-					showNavArrows: ( args.showNavArrows === '1' ? true : false ),
-					autoScale: ( args.autoScale === '1' ? true : false ),
+					modal: args.modal,
+					overlayShow: args.showOverlay,
+					showCloseButton: args.showCloseButton,
+					enableEscapeButton: args.enableEscapeButton,
+					hideOnOverlayClick: args.hideOnOverlayClick,
+					hideOnContentClick: args.hideOnContentClick,
+					cyclic: args.cyclic,
+					showNavArrows: args.showNavArrows,
+					autoScale: args.autoScale,
 					scrolling: args.scrolling,
-					centerOnScroll: ( args.centerOnScroll === '1' ? true : false ),
-					opacity: ( args.opacity === '1' ? true : false ),
+					centerOnScroll: args.centerOnScroll,
+					opacity: args.opacity,
 					overlayOpacity: parseFloat( args.overlayOpacity / 100 ),
 					overlayColor: args.overlayColor,
-					titleShow: ( args.titleShow === '1' ? true : false ),
+					titleShow: args.titleShow,
 					titlePosition: args.titlePosition,
 					transitionIn: args.transitions,
 					transitionOut: args.transitions,
@@ -531,8 +531,8 @@
 
 				$( 'a[rel*="' + selector + '"], a[data-rel*="' + selector + '"]' ).nivoLightbox( {
 					effect: args.effect,
-					clickOverlayToClose: ( args.clickOverlayToClose === '1' ? true : false ),
-					keyboardNav: ( args.keyboardNav === '1' ? true : false ),
+					clickOverlayToClose: args.clickOverlayToClose,
+					keyboardNav: args.keyboardNav,
 					errorMessage: args.errorMessage,
 					afterShowLightbox: function( lightbox ) {
 						var content = $( lightbox )[0].find( '.nivo-lightbox-content' );
@@ -616,11 +616,11 @@
 
 						$( 'a[data-rel="' + item + '"], a[rel="' + item + '"]' ).imageLightbox( {
 							animationSpeed: parseInt( args.animationSpeed ),
-							preloadNext: ( args.preloadNext === '1' ? true : false ),
-							enableKeyboard: ( args.enableKeyboard === '1' ? true : false ),
-							quitOnEnd: ( args.quitOnEnd === '1' ? true : false ),
-							quitOnImgClick: ( args.quitOnImageClick === '1' ? true : false ),
-							quitOnDocClick: ( args.quitOnDocumentClick === '1' ? true : false ),
+							preloadNext: args.preloadNext,
+							enableKeyboard: args.enableKeyboard,
+							quitOnEnd: args.quitOnEnd,
+							quitOnImgClick: args.quitOnImageClick,
+							quitOnDocClick: args.quitOnDocumentClick,
 							onLoadEnd: function() {
 								lastImage = $( '#imagelightbox' ).attr( 'src' );
 
@@ -669,20 +669,20 @@
 						}
 
 						var tos = $( 'a[data-rel="' + item + '"], a[rel="' + item + '"]' ).tosrus( {
-							infinite: ( args.infinite === '1' ? true : false ),
+							infinite: args.infinite,
 							autoplay: {
-								play: ( args.autoplay === '1' ? true : false ),
-								pauseOnHover: ( args.pauseOnHover === '1' ? true : false ),
+								play: args.autoplay,
+								pauseOnHover: args.pauseOnHover,
 								timeout: args.timeout
 							},
 							effect: args.effect,
 							keys: {
-								prev: ( args.keys === '1' ? true : false ),
-								next: ( args.keys === '1' ? true : false ),
-								close: ( args.keys === '1' ? true : false )
+								prev: args.keys,
+								next: args.keys,
+								close: args.keys
 							},
 							pagination: {
-								add: ( args.pagination === '1' ? true : false ),
+								add: args.pagination,
 								type: args.paginationType
 							},
 							// forced
@@ -694,7 +694,7 @@
 							},
 							wrapper: {
 								classes: 'tosrus-' + item,
-								onClick: args.closeOnClick === '1' ? 'close' : 'toggleUI'
+								onClick: args.closeOnClick ? 'close' : 'toggleUI'
 							}
 						} );
 
@@ -741,7 +741,7 @@
 						openSpeed: parseInt( args.openSpeed ),
 						closeSpeed: parseInt( args.closeSpeed ),
 						closeOnClick: args.closeOnClick,
-						closeOnEsc: ( args.closeOnEsc === '1' ? true : false ),
+						closeOnEsc: args.closeOnEsc,
 						afterOpen: function( event ) {
 							lastImage = event.currentTarget.href;
 
@@ -817,20 +817,33 @@
 						if ( typeof media_type === 'undefined' )
 							media_type = 'image';
 
+						var fixedContentPos = 'auto';
+						var fixedBgPos = 'auto';
+
+						if ( args.fixedContentPos === 'true' )
+							fixedContentPos = true;
+						else if ( args.fixedContentPos === 'false' )
+							fixedContentPos = false;
+
+						if ( args.fixedBgPos === 'true' )
+							fixedBgPos = true;
+						else if ( args.fixedBgPos === 'false' )
+							fixedBgPos = false;
+
 						subselector.magnificPopup( {
 							type: media_type === 'gallery' ? 'image' : ( media_type === 'video' ? 'iframe' : media_type ),
 							disableOn: args.disableOn,
-							midClick: args.midClick === '1',
-							preloader: args.preloader === '1',
-							closeOnContentClick: args.closeOnContentClick === '1',
-							closeOnBgClick: args.closeOnBgClick === '1',
-							closeBtnInside: args.closeBtnInside === '1',
-							showCloseBtn: args.showCloseBtn === '1',
-							enableEscapeKey: args.enableEscapeKey === '1',
-							alignTop: args.alignTop === '1',
-							autoFocusLast: args.autoFocusLast === '1',
-							fixedContentPos: args.fixedContentPos === 'auto' ? 'auto' : ( args.fixedContentPos === '1' ),
-							fixedBgPos: args.fixedBgPos === 'auto' ? 'auto' : ( args.fixedBgPos === '1' ),
+							midClick: args.midClick,
+							preloader: args.preloader,
+							closeOnContentClick: args.closeOnContentClick,
+							closeOnBgClick: args.closeOnBgClick,
+							closeBtnInside: args.closeBtnInside,
+							showCloseBtn: args.showCloseBtn,
+							enableEscapeKey: args.enableEscapeKey,
+							alignTop: args.alignTop,
+							autoFocusLast: args.autoFocusLast,
+							fixedContentPos: fixedContentPos,
+							fixedBgPos: fixedBgPos,
 							image: {
 								titleSrc: function( item ) {
 									var title = item.el.data( 'rl_title' );

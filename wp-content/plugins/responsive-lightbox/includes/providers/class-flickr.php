@@ -45,10 +45,10 @@ class Responsive_Lightbox_Remote_Library_Flickr extends Responsive_Lightbox_Remo
 	/**
 	 * Render field.
 	 *
-	 * @return void
+	 * @return string
 	 */
 	public function render_field() {
-		echo '
+		return '
 		<p><label><input id="rl_flickr_active" class="rl-media-provider-expandable" type="checkbox" name="responsive_lightbox_remote_library[flickr][active]" value="1" ' . checked( $this->rl->options['remote_library']['flickr']['active'], true, false ) . ' />' . esc_html__( 'Enable Flickr.', 'responsive-lightbox' ) . '</label></p>
 		<div class="rl-media-provider-options"' . ( $this->rl->options['remote_library']['flickr']['active'] ? '' : ' style="display: none;"' ) . '>
 			<p><input id="rl_flickr_api_key" class="large-text" placeholder="' . esc_attr__( 'API key', 'responsive-lightbox' ) . '" type="text" value="' . esc_attr( $this->rl->options['remote_library']['flickr']['api_key'] ) . '" name="responsive_lightbox_remote_library[flickr][api_key]"></p>
@@ -70,12 +70,10 @@ class Responsive_Lightbox_Remote_Library_Flickr extends Responsive_Lightbox_Remo
 			$input['flickr']['active'] = isset( $_POST['responsive_lightbox_remote_library']['flickr']['active'] );
 
 			// api key
-			if ( isset( $_POST['responsive_lightbox_remote_library']['flickr']['api_key'] ) )
-				$api_key = preg_replace( '/[^0-9a-zA-Z\-.]/', '', $_POST['responsive_lightbox_remote_library']['flickr']['api_key'] );
+			if ( ! empty( $_POST['responsive_lightbox_remote_library']['flickr']['api_key'] ) && is_string( $_POST['responsive_lightbox_remote_library']['flickr']['api_key'] ) )
+				$input['flickr']['api_key'] = preg_replace( '/[^0-9a-zA-Z\-.]/', '', $_POST['responsive_lightbox_remote_library']['flickr']['api_key'] );
 			else
-				$api_key = '';
-
-			$input['flickr']['api_key'] = $api_key;
+				$input['flickr']['api_key'] = '';
 		}
 
 		return $input;

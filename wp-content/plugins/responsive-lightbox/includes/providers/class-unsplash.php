@@ -45,10 +45,10 @@ class Responsive_Lightbox_Remote_Library_Unsplash extends Responsive_Lightbox_Re
 	/**
 	 * Render field.
 	 *
-	 * @return void
+	 * @return string
 	 */
 	public function render_field() {
-		echo '
+		return '
 		<p><label><input id="rl_unsplash_active" class="rl-media-provider-expandable" type="checkbox" name="responsive_lightbox_remote_library[unsplash][active]" value="1" ' . checked( $this->rl->options['remote_library']['unsplash']['active'], true, false ) . ' />' . esc_html__( 'Enable Unsplash.', 'responsive-lightbox' ) . '</label></p>
 		<div class="rl-media-provider-options"' . ( $this->rl->options['remote_library']['unsplash']['active'] ? '' : ' style="display: none;"' ) . '>
 			<p><input id="rl_unsplash_api_key" class="large-text" placeholder="' . esc_attr__( 'Access key', 'responsive-lightbox' ) . '" type="text" value="' . esc_attr( $this->rl->options['remote_library']['unsplash']['api_key'] ) . '" name="responsive_lightbox_remote_library[unsplash][api_key]"></p>
@@ -70,12 +70,10 @@ class Responsive_Lightbox_Remote_Library_Unsplash extends Responsive_Lightbox_Re
 			$input['unsplash']['active'] = isset( $_POST['responsive_lightbox_remote_library']['unsplash']['active'] );
 
 			// api key
-			if ( isset( $_POST['responsive_lightbox_remote_library']['unsplash']['api_key'] ) )
-				$api_key = preg_replace( '/[^0-9a-zA-Z\-.]/', '', $_POST['responsive_lightbox_remote_library']['unsplash']['api_key'] );
+			if ( ! empty( $_POST['responsive_lightbox_remote_library']['unsplash']['api_key'] ) && is_string( $_POST['responsive_lightbox_remote_library']['unsplash']['api_key'] ) )
+				$input['unsplash']['api_key'] = preg_replace( '/[^0-9a-zA-Z\-.]/', '', $_POST['responsive_lightbox_remote_library']['unsplash']['api_key'] );
 			else
-				$api_key = '';
-
-			$input['unsplash']['api_key'] = $api_key;
+				$input['unsplash']['api_key'] = '';
 		}
 
 		return $input;

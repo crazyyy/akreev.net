@@ -115,12 +115,13 @@ function rl_get_image_size_by_url( $url ) {
  * @return string
  */
 function rl_get_lightbox_script() {
-	return Responsive_Lightbox()->get_lightbox_script();
+	return Responsive_Lightbox()->get_data( 'current_script' );
 }
 
 /**
  * Set current lightbox script.
  *
+ * @param string $script
  * @return bool
  */
 function rl_set_lightbox_script( $script ) {
@@ -128,7 +129,7 @@ function rl_set_lightbox_script( $script ) {
 }
 
 /**
- * Check whether lightbox supports specified type.
+ * Check whether lightbox supports specified type(s).
  *
  * @param string|array $type Lightbox support type(s), leave empty to get all supported features
  * @param string $compare_mode
@@ -139,10 +140,10 @@ function rl_current_lightbox_supports( $type = '', $compare_mode = 'AND' ) {
 	$rl = Responsive_Lightbox();
 
 	// get current script
-	$script = $rl->get_lightbox_script();
+	$script = $rl->get_data( 'current_script' );
 
 	// get scripts
-	$scripts = $rl->settings->scripts;
+	$scripts = $rl->settings->get_data( 'scripts' );
 
 	// valid script?
 	if ( array_key_exists( $script, $scripts ) && array_key_exists( 'supports', $scripts[$script] ) ) {

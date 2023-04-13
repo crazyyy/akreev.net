@@ -28,7 +28,7 @@ abstract class Responsive_Lightbox_Remote_Library_API {
 	 * @return void
 	 */
 	public function __construct() {
-		// assign main instance
+		// get main instance
 		$this->rl = Responsive_Lightbox();
 	}
 

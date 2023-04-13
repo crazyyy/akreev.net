@@ -1,15 +1,15 @@
 ( function( window, $ ) {
 
 	/* Gallery widget */
-	var rl_galleries = [ ],
-		rl_gallery_frames = [ ],
-		rl_gallery_ids = [ ],
-		rl_gallery_images = [ ];
+	var rl_galleries = [];
+	var rl_gallery_frames = [];
+	var rl_gallery_ids = [];
+	var rl_gallery_images = [];
 
 	/* Single image widget */
-	var rl_image_frame,
-		rl_image_container,
-		rl_image_input;
+	var rl_image_frame;
+	var rl_image_container;
+	var rl_image_input;
 
 	// ready event
 	$( function() {
@@ -28,8 +28,8 @@
 
 		if ( rl_galleries.length > 0 ) {
 			$.each( rl_galleries, function( index, gallery ) {
-				var gallery_id_attr = $( gallery ).attr( 'id' ),
-					gallery_id_arr = gallery_id_attr.match( /\-\d*\-/ );
+				var gallery_id_attr = $( gallery ).attr( 'id' );
+				var gallery_id_arr = gallery_id_attr.match( /\-\d*\-/ );
 
 				if ( gallery_id_arr != null ) {
 					var gallery_id = gallery_id_arr.shift().replace( /-/g, '' );
@@ -59,18 +59,20 @@
 
 							$( rl_gallery_images[gallery_id] ).find( 'li.rl-gallery-image' ).each( function() {
 								var attachment_id = jQuery( this ).attr( 'data-attachment_id' );
+
 								attachment_ids.push( attachment_id );
 							} );
 
 							rl_gallery_ids[gallery_id].val( attachment_ids.join( ',' ) );
+							rl_gallery_ids[gallery_id].trigger( 'change' );
 						}
 					} );
 
 					// removing images
 					$( rl_gallery_images[gallery_id] ).on( 'click', '.rl-gallery-image-remove', function() {
-						var li = $( this ).closest( 'li.rl-gallery-image' ),
-							attachment_ids = rl_gallery_ids[gallery_id].val().split( ',' ).map( function( el ) {
-							return parseInt( el )
+						var li = $( this ).closest( 'li.rl-gallery-image' );
+						var attachment_ids = rl_gallery_ids[gallery_id].val().split( ',' ).map( function( el ) {
+							return parseInt( el );
 						} );
 
 						// remove id
@@ -81,6 +83,7 @@
 
 						// update attachment ids
 						rl_gallery_ids[gallery_id].val( attachment_ids.join( ',' ) );
+						rl_gallery_ids[gallery_id].trigger( 'change' );
 
 						return false;
 					} );
@@ -92,10 +95,10 @@
 		$( '.rl-gallery-widget-select' ).on( 'click', function( event ) {
 			event.preventDefault();
 
-			var gallery = $( this ).closest( '.rl-gallery-widget' ),
-				gallery_id = 0,
-				gallery_id_attr = $( gallery ).attr( 'id' ),
-				gallery_id_arr = gallery_id_attr.match( /\-\d*\-/ );
+			var gallery = $( this ).closest( '.rl-gallery-widget' );
+			var gallery_id = 0;
+			var gallery_id_attr = $( gallery ).attr( 'id' );
+			var gallery_id_arr = gallery_id_attr.match( /\-\d*\-/ );
 
 			if ( gallery_id_arr != null ) {
 				gallery_id = gallery_id_arr.shift().replace( /-/g, '' );
@@ -122,8 +125,8 @@
 				} );
 
 				rl_gallery_frames[gallery_id].on( 'open', function() {
-					var selection = rl_gallery_frames[gallery_id].state().get( 'selection' ),
-						attachment_ids = rl_gallery_ids[gallery_id].val().split( ',' );
+					var selection = rl_gallery_frames[gallery_id].state().get( 'selection' );
+					var attachment_ids = rl_gallery_ids[gallery_id].val().split( ',' );
 
 					$.each( attachment_ids, function() {
 						let _this = this;
@@ -138,10 +141,10 @@
 
 				// when an image is selected, run a callback.
 				rl_gallery_frames[gallery_id].on( 'select', function() {
-					var selection = rl_gallery_frames[gallery_id].state().get( 'selection' ),
-						selected_ids = [ ],
-						attachment_ids = rl_gallery_ids[gallery_id].val().split( ',' ).map( function( el ) {
-						return parseInt( el )
+					var selection = rl_gallery_frames[gallery_id].state().get( 'selection' );
+					var selected_ids = [ ];
+					var attachment_ids = rl_gallery_ids[gallery_id].val().split( ',' ).map( function( el ) {
+						return parseInt( el );
 					} );
 
 					if ( selection ) {
@@ -150,9 +153,8 @@
 								selected_ids.push( attachment.id );
 
 								// is image already in gallery?
-								if ( $.inArray( attachment.id, attachment_ids ) !== -1 ) {
+								if ( $.inArray( attachment.id, attachment_ids ) !== -1 )
 									return;
-								}
 
 								attachment_ids.push( attachment.id );
 								attachment = attachment.toJSON();
@@ -164,8 +166,8 @@
 
 								rl_gallery_images[gallery_id].append( '\
 									<li class="rl-gallery-image" data-attachment_id="' + attachment.id + '">\
-										<div class="rl-gallery-inner"><img src="' + attachment.url + '" /></div>\
-										<div class="rl-gallery-actions"><a href="#" class="rl-gallery-image-remove dashicons dashicons-no" title="' + rlArgsWidgets.textRemoveImage + '"></a></div>\
+										<div class="rl-gallery-inner"><div class="centered"><img src="' + attachment.url + '" /></div></div>\
+										<div class="rl-gallery-actions"><a href="#" class="rl-gallery-image-remove dashicons-before dashicons-no" title="' + rlArgsWidgets.textRemoveImage + '"></a></div>\
 									</li>'
 									);
 							}
@@ -185,6 +187,7 @@
 					}
 
 					rl_gallery_ids[gallery_id].val( _.uniq( copy ).join( ',' ) );
+					rl_gallery_ids[gallery_id].trigger( 'change' );
 				} );
 
 				// finally, open the modal.
@@ -222,6 +225,7 @@
 
 				// send the attachment id to our hidden input
 				rl_image_input.val( attachment.id );
+				rl_image_input.trigger( 'change' );
 			} );
 
 			// when an image is already selected in the media frame...
@@ -230,6 +234,7 @@
 
 				// get current image
 				var attachment = wp.media.attachment( rl_image_input.val() );
+
 				attachment.fetch();
 
 				// preselect in media frame
@@ -240,11 +245,10 @@
 		} );
 
 		$( '.rl-image-link-to' ).on( 'change', function() {
-			if ( $( this ).val() == 'custom' ) {
+			if ( $( this ).val() === 'custom' )
 				$( this ).parent().next().slideDown( 'fast' );
-			} else {
+			else
 				$( this ).parent().next().slideUp( 'fast' );
-			}
 		} );
 	}
 

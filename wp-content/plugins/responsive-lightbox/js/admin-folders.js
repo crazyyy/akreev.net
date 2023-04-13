@@ -52,9 +52,9 @@
 					grid_frame.controller.states.get( 'library' ).get( 'library' ).observe( wp.Uploader.queue );
 			},
 			createFilters: function() {
-				var filters = {},
-					term_id = 0,
-					terms = $( $.parseHTML( rlFoldersArgs.terms ) ).find( 'option' );
+				var filters = {};
+				var term_id = 0;
+				var terms = $( $.parseHTML( rlFoldersArgs.terms ) ).find( 'option' );
 
 				// root
 				var root = {
@@ -210,8 +210,8 @@
 				$( '#rl_folders_upload_files' ).val( $( this ).val() );
 			} );
 		} else {
-			var active_nodes = [],
-				plugins = ['sort', 'dnd'];
+			var active_nodes = [];
+			var plugins = ['sort', 'dnd'];
 
 			// detect active library mode
 			active_mode = ( $( 'body' ).hasClass( 'rl-folders-upload-grid-mode' ) ? 'grid' : 'list' );
@@ -235,9 +235,8 @@
 			}
 
 			// activate wholerow plugin if needed
-			if ( rlFoldersArgs.wholerow === '1' ) {
+			if ( rlFoldersArgs.wholerow )
 				plugins.push( 'wholerow' );
-			}
 
 			// initialize jstree
 			$( '#rl-folders-tree' ).jstree( {
@@ -294,9 +293,9 @@
 
 				// open old node
 				$( '#rl-folders-tree' ).jstree( 'open_node', parent_node, function() {
-					var link = $( '#' + new_node + '_anchor' ),
-						content = link.html().match( '<i(?:.+)?/i>' )[0],
-						tree = $( '#rl-folders-tree' ).jstree( true ).get_json( '#', { 'flat': true } );
+					var link = $( '#' + new_node + '_anchor' );
+					var content = link.html().match( '<i(?:.+)?/i>' )[0];
+					var tree = $( '#rl-folders-tree' ).jstree( true ).get_json( '#', { 'flat': true } );
 
 					// unbind event
 					$( document ).off( 'click', '.jstree-anchor' );
@@ -339,14 +338,13 @@
 
 			// rename folder
 			$( document ).on( 'click', '.rl-folders-rename-folder', function() {
-				var node_id = $( '#rl-folders-tree' ).jstree().get_selected().toString(),
-					link = $( '#' + node_id + '_anchor' ),
-					term_id = link.data( 'term_id' );
+				var node_id = $( '#rl-folders-tree' ).jstree().get_selected().toString();
+				var link = $( '#' + node_id + '_anchor' );
+				var term_id = link.data( 'term_id' );
 
 				// prevent renaming main folders ('root' and 'all files')
-				if ( term_id === 'all' || term_id === 0 ) {
+				if ( term_id === 'all' || term_id === 0 )
 					return false;
-				}
 
 				var content = link.html().match( '(<i(?:.+)?/i>)(.+)' ),
 					split = content[2].split( ' ' ),
@@ -422,18 +420,18 @@
 
 			// delete folder
 			$( document ).on( 'click', '.rl-folders-delete-folder', function() {
-				if ( ! $( this ).hasClass( 'disabled-link' ) && confirm( rlFoldersArgs.remove_children === '1' ? rlFoldersArgs.delete_terms : rlFoldersArgs.delete_term ) ) {
+				if ( ! $( this ).hasClass( 'disabled-link' ) && confirm( rlFoldersArgs.remove_children ? rlFoldersArgs.delete_terms : rlFoldersArgs.delete_term ) ) {
 					// show spinner
 					toggle_spinner( true );
 
-					var node_id = $( '#rl-folders-tree' ).jstree().get_selected().toString(),
-						term_id = parseInt( $( '#' + node_id + '_anchor' ).data( 'term_id' ) );
+					var node_id = $( '#rl-folders-tree' ).jstree().get_selected().toString();
+					var term_id = parseInt( $( '#' + node_id + '_anchor' ).data( 'term_id' ) );
 
 					// delete term with children using ajax
 					$.post( ajaxurl, {
 						action: 'rl-folders-delete-term',
 						term_id: term_id,
-						children: rlFoldersArgs.remove_children,
+						children: rlFoldersArgs.remove_children ? 1 : 0,
 						nonce: rlFoldersArgs.nonce
 					} ).done( function( response ) {
 						try {
@@ -445,7 +443,7 @@
 								update_upload_select( $( response.data ).find( 'option' ), '' );
 
 								// remove children?
-								if ( rlFoldersArgs.remove_children === '0' && ! $( '#rl-folders-tree' ).jstree( 'is_leaf', node_id ) ) {
+								if ( ! rlFoldersArgs.remove_children && ! $( '#rl-folders-tree' ).jstree( 'is_leaf', node_id ) ) {
 									// open removing node
 									$( '#rl-folders-tree' ).jstree( 'open_node', node_id, function() {
 										// move every child to a new parent
@@ -566,9 +564,8 @@
 
 			// jstree is ready
 			$( '#rl-folders-tree' ).on( 'ready.jstree', function( e, data ) {
-				if ( active_mode === 'list' ) {
+				if ( active_mode === 'list' )
 					droppable( 'list' );
-				}
 
 				// initialize perfect scrollbar
 				rl_ps = new PerfectScrollbar( '#rl-folders-tree', {
@@ -789,8 +786,8 @@
 
 	// update mode link (grid or list)
 	function update_mode_link( mode ) {
-		var selector = $( '.view-switch > a.view-' + mode ),
-			link = selector.prop( 'href' );
+		var selector = $( '.view-switch > a.view-' + mode );
+		var link = selector.prop( 'href' );
 
 		// get query string
 		var query = link.split( 'upload.php' )[1];
@@ -831,7 +828,7 @@
 		var node_id = $( '#rl-folders-tree' ).jstree( 'get_selected', false );
 
 		// is wholerow plugin active?
-		if ( rlFoldersArgs.wholerow === '1' ) {
+		if ( rlFoldersArgs.wholerow ) {
 			var wholerow = $( 'div.jstree-wholerow.jstree-wholerow-clicked' );
 
 			// destroy only selected droppable node first if needed
@@ -859,12 +856,12 @@
 				accept: '#the-list tr',
 				tolerance: 'pointer',
 				drop: function( event, ui ) {
-					var node = $( event.target ).closest( 'li' ).find( 'a.jstree-anchor' ),
-						old_node = $( '#' + $( '#rl-folders-tree' ).jstree().get_selected().toString() + '_anchor' ),
-						attachments = [],
-						ids = $( '#the-list .check-column input[type="checkbox"]:checked' ),
-						old_term_id = parseInt( old_node.data( 'term_id' ) ),
-						new_term_id = parseInt( node.data( 'term_id' ) );
+					var node = $( event.target ).closest( 'li' ).find( 'a.jstree-anchor' );
+					var old_node = $( '#' + $( '#rl-folders-tree' ).jstree().get_selected().toString() + '_anchor' );
+					var attachments = [];
+					var ids = $( '#the-list .check-column input[type="checkbox"]:checked' );
+					var old_term_id = parseInt( old_node.data( 'term_id' ) );
+					var new_term_id = parseInt( node.data( 'term_id' ) );
 
 					if ( isNaN( old_term_id ) )
 						old_term_id = -1;
@@ -931,11 +928,11 @@
 				accept: 'li.attachment',
 				tolerance: 'pointer',
 				drop: function( event, ui ) {
-					var node = $( event.target ).closest( 'li' ).find( 'a.jstree-anchor' ),
-						old_node = $( '#' + $( '#rl-folders-tree' ).jstree().get_selected().toString() + '_anchor' ),
-						term_id = old_node.data( 'term_id' ),
-						old_term_id = term_id === 'all' ? -1 : parseInt( term_id ),
-						attachments = [];
+					var node = $( event.target ).closest( 'li' ).find( 'a.jstree-anchor' );
+					var old_node = $( '#' + $( '#rl-folders-tree' ).jstree().get_selected().toString() + '_anchor' );
+					var term_id = old_node.data( 'term_id' );
+					var old_term_id = term_id === 'all' ? -1 : parseInt( term_id );
+					var attachments = [];
 
 					toggle_spinner( true );
 
@@ -1091,8 +1088,8 @@
 
 	// cancel renaming/adding node
 	function restore_node( new_node, cancel ) {
-		var node_id = '#' + $( '#rl-folders-tree' ).jstree().get_selected().toString(),
-			tree = $( '#rl-folders-tree' ).jstree( true ).get_json( '#', { 'flat': true } );
+		var node_id = '#' + $( '#rl-folders-tree' ).jstree().get_selected().toString();
+		var tree = $( '#rl-folders-tree' ).jstree( true ).get_json( '#', { 'flat': true } );
 
 		// show icon
 		$( new_node ? '.rl-folders-add-new-folder' : '.rl-folders-rename-folder' ).show();
@@ -1141,9 +1138,9 @@
 	// save node with new name
 	function save_node( new_node, parent_id ) {
 		var input = $( new_node ? '#rl-folders-enter-new-folder' : '#rl-folders-enter-folder' );
-			node_id = $( '#rl-folders-tree' ).jstree().get_selected().toString(),
-			name = input.val().trim(),
-			nof = input.data( 'nof' );
+		var node_id = $( '#rl-folders-tree' ).jstree().get_selected().toString();
+		var name = input.val().trim();
+		var nof = input.data( 'nof' );
 
 		if ( ! new_node ) {
 			var term_id = parseInt( input.data( 'term_id' ) );
@@ -1251,8 +1248,8 @@
 
 	// parse query string
 	function parse_str( name, str ) {
-		var regex = new RegExp( '[?&]' + name.replace( /[\[\]]/g, '\\$&' ) + '(=([^&#]*)|&|#|$)' ),
-			results = regex.exec( '&' + str );
+		var regex = new RegExp( '[?&]' + name.replace( /[\[\]]/g, '\\$&' ) + '(=([^&#]*)|&|#|$)' );
+		var results = regex.exec( '&' + str );
 
 		return ( ! results || ! results[2] ? '' : decodeURIComponent( results[2].replace( /\+/g, ' ' ) ) );
 	}

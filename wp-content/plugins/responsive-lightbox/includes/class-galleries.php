@@ -10,24 +10,25 @@ if ( ! defined( 'ABSPATH' ) )
  */
 class Responsive_Lightbox_Galleries {
 
-	public $tabs;
 	public $fields;
-	public $sizes;
-	public $gallery_args;
+	private $tabs;
+	private $sizes;
+	private $gallery_args;
 	private $menu_item;
+	private $revision_id;
 	private $allowed_select_html = [
 		'select'	=> [
-			'name'				=> [],
-			'id'				=> [],
-			'class'				=> [],
-			'required'			=> [],
-			'tabindex'			=> [],
-			'aria-describedby'	=> []
+			'name'				=> true,
+			'id'				=> true,
+			'class'				=> true,
+			'required'			=> true,
+			'tabindex'			=> true,
+			'aria-describedby'	=> true
 		],
 		'option'	=> [
-			'value'		=> [],
-			'class'		=> [],
-			'selected'	=> []
+			'value'		=> true,
+			'class'		=> true,
+			'selected'	=> true
 		]
 	];
 
@@ -77,6 +78,16 @@ class Responsive_Lightbox_Galleries {
 
 		if ( ! empty( $_POST['rl_active_tab'] ) )
 			add_filter( 'redirect_post_location', array( $this, 'add_active_tab' ) );
+	}
+
+	/**
+	 * Get class data.
+	 *
+	 * @param string $attr
+	 * @return mixed
+	 */
+	public function get_data( $attr ) {
+		return property_exists( $this, $attr ) ? $this->{$attr} : null;
 	}
 
 	/**
@@ -188,7 +199,7 @@ class Responsive_Lightbox_Galleries {
 		if ( isset( $_GET['rl_gallery_no'], $_GET['rl_page'], $_GET['rl_lightbox_script'] ) )
 			$rl->set_lightbox_script( sanitize_key( $_GET['rl_lightbox_script'] ) );
 
-		$config_menu_items = apply_filters( 'rl_gallery_types', $rl->gallery_types );
+		$config_menu_items = apply_filters( 'rl_gallery_types', $rl->get_data( 'gallery_types' ) );
 		$config_menu_items['default'] = __( 'Global', 'responsive-lightbox' );
 
 		// set tabs
@@ -250,7 +261,7 @@ class Responsive_Lightbox_Galleries {
 		);
 
 		// merge titles
-		$merged_titles = array( 'global' => __( 'Global', 'responsive-lightbox' ) ) + $rl->settings->image_titles;
+		$merged_titles = array( 'global' => __( 'Global', 'responsive-lightbox' ) ) + $rl->settings->get_data( 'image_titles' );
 
 		// set fields
 		$this->fields = apply_filters(
@@ -1099,20 +1110,19 @@ class Responsive_Lightbox_Galleries {
 
 		$run++;
 
-		// assign main instance
+		// get main instance
 		$rl = Responsive_Lightbox();
 
 		wp_enqueue_script( 'responsive-lightbox-admin-gallery', RESPONSIVE_LIGHTBOX_URL . '/js/admin-gallery.js', array( 'jquery', 'underscore' ), $rl->defaults['version'], false );
 
-		wp_localize_script(
-			'responsive-lightbox-admin-gallery',
-			'rlArgsGallery',
-			array(
-				'nonce'		=> wp_create_nonce( 'rl-gallery-post' ),
-				'post_id'	=> get_the_ID(),
-				'page'		=> esc_url( $pagenow )
-			)
-		);
+		// prepare script data
+		$script_data = [
+			'nonce'		=> wp_create_nonce( 'rl-gallery-post' ),
+			'post_id'	=> get_the_ID(),
+			'page'		=> esc_url( $pagenow )
+		];
+
+		wp_add_inline_script( 'responsive-lightbox-admin-gallery', 'var rlArgsGallery = ' . wp_json_encode( $script_data ) . ";\n", 'before' );
 
 		wp_enqueue_style( 'responsive-lightbox-admin-gallery', RESPONSIVE_LIGHTBOX_URL . '/css/admin-gallery.css', [], $rl->defaults['version'] );
 	}
@@ -1447,7 +1457,7 @@ class Responsive_Lightbox_Galleries {
 				} else {
 					$buttons[] = '<a href="#" class="rl-gallery-select button button-secondary">' . __( 'Select images', 'responsive-lightbox' ) . '</a>';
 					$buttons[] = '<a href="#" class="rl-gallery-select button button-disabled" disabled="true">' . __( 'Select images & videos', 'responsive-lightbox' ) . '</a>';
-					$buttons_desc_args = [ '<a href="https://dfactory.co/products/fancybox-pro/" target="_blank">Fancybox Pro</a>', '<a href="https://dfactory.co/products/lightgallery-lightbox/" target="_blank">Lightgallery Lightbox</a>', '<a href="https://dfactory.co/products/lightcase-lightbox/" target="_blank">Lightcase Lightbox</a>' ];
+					$buttons_desc_args = [ '<a href="http://www.dfactory.co/products/fancybox-pro/" target="_blank">Fancybox Pro</a>', '<a href="http://www.dfactory.co/products/lightgallery-lightbox/" target="_blank">Lightgallery Lightbox</a>', '<a href="http://www.dfactory.co/products/lightcase-lightbox/" target="_blank">Lightcase Lightbox</a>' ];
 					$buttons_desc = '<p class="description">' . wp_sprintf( __( 'HTML5 Videos and Embed Videos available only in %l.', 'responsive-lightbox' ), $buttons_desc_args ) . '</p>';
 				}
 
@@ -2152,7 +2162,7 @@ class Responsive_Lightbox_Galleries {
 		// maybe add description
 		$html .= ! empty( $callback_args['args']['description'] ) ? '<p class="rl-gallery-tab-description">' . esc_html( $callback_args['args']['description'] ) . '</p>' : '';
 
-		// assign main instance
+		// get main instance
 		$rl = Responsive_Lightbox();
 
 		// maybe add menu
@@ -2275,7 +2285,7 @@ class Responsive_Lightbox_Galleries {
 
 		switch ( $tab_id ) {
 			case 'config':
-				// assign main instance
+				// get main instance
 				$rl = Responsive_Lightbox();
 
 				// get default gallery fields
@@ -2392,7 +2402,7 @@ class Responsive_Lightbox_Galleries {
 		$images = [];
 		$excluded = [];
 
-		// assign main instance
+		// get main instance
 		$rl = Responsive_Lightbox();
 
 		// get args
@@ -2963,14 +2973,14 @@ class Responsive_Lightbox_Galleries {
 			$class = '';
 
 		// set base arguments
-		$base_args = [ 'rl_gallery_no' => $rl->frontend->gallery_no, 'rl_page' => '%#%' ];
+		$base_args = [ 'rl_gallery_no' => $rl->frontend->get_data( 'gallery_no' ), 'rl_page' => '%#%' ];
 
 		if ( empty( $args['pagination_type'] ) )
 			$args['pagination_type'] = 'paged';
 
 		// infinite scroll?
 		if ( $args['pagination_type'] === 'infinite' )
-			$base_args['rl_lightbox_script'] = $rl->get_lightbox_script();
+			$base_args['rl_lightbox_script'] = $rl->get_data( 'current_script' );
 
 		echo
 		'<div class="rl-pagination ' . esc_attr( $class ) . '"' . ( $args['pagination_type'] === 'infinite' ? ' data-button="' . esc_attr( $args['load_more'] ) . '"' : '' ) .'>' .
@@ -3056,7 +3066,7 @@ class Responsive_Lightbox_Galleries {
 			wp_send_json_error();
 
 		// check page
-		$page = preg_replace( '/[^a-z.]/i', '', $_POST['page'] );
+		$page = preg_replace( '/[^a-z-.]/i', '', $_POST['page'] );
 
 		// check page
 		if ( ! in_array( $page, [ 'widgets.php', 'customize.php', 'post.php', 'post-new.php' ], true ) )
@@ -3128,7 +3138,7 @@ class Responsive_Lightbox_Galleries {
 			wp_send_json_error();
 
 		// check page
-		$page = preg_replace( '/[^a-z.]/i', '', $_POST['page'] );
+		$page = preg_replace( '/[^a-z-.]/i', '', $_POST['page'] );
 
 		// check page
 		if ( ! in_array( $page, [ 'widgets.php', 'customize.php', 'post.php', 'post-new.php' ], true ) )
@@ -3334,7 +3344,7 @@ class Responsive_Lightbox_Galleries {
 
 					foreach ( $provider['response_args'] as $arg ) {
 						if ( array_key_exists( $arg, $response ) )
-							$response_data[$provider['slug']][$arg] = base64_encode( json_encode( $response[$arg] ) );
+							$response_data[$provider['slug']][$arg] = base64_encode( wp_json_encode( $response[$arg] ) );
 					}
 				}
 			} else {
@@ -3352,7 +3362,7 @@ class Responsive_Lightbox_Galleries {
 
 							foreach ( $provider['response_args'] as $arg ) {
 								if ( array_key_exists( $arg, $response ) )
-									$response_data[$provider['slug']][$arg] = base64_encode( json_encode( $response[$arg] ) );
+									$response_data[$provider['slug']][$arg] = base64_encode( wp_json_encode( $response[$arg] ) );
 							}
 						}
 					}
@@ -4676,19 +4686,22 @@ class Responsive_Lightbox_Galleries {
 		foreach ( $this->fields as $tab_id => $menu_items ) {
 			switch ( $tab_id ) {
 				case 'config':
+					// get main instance
+					$rl = Responsive_Lightbox();
+
 					// add menu item
 					$menu_item = isset( $data[$tab_id], $data[$tab_id]['menu_item'] ) && array_key_exists( $data[$tab_id]['menu_item'], $this->tabs[$tab_id]['menu_items'] ) ? $data[$tab_id]['menu_item'] : reset( $this->tabs[$tab_id]['menu_items'] );
 
 					// get default gallery fields
-					$default_gallery_fields = Responsive_Lightbox()->frontend->get_default_gallery_fields();
+					$default_gallery_fields = $rl->frontend->get_default_gallery_fields();
 
 					// prepare fields
 					if ( $menu_item === 'default' )
 						$items = $default_gallery_fields;
 					else {
 						// assign settings and defaults
-						$fields = Responsive_Lightbox()->settings->settings[$menu_item . '_gallery']['fields'];
-						$defaults = Responsive_Lightbox()->defaults[$menu_item . '_gallery'];
+						$fields = $rl->settings->settings[$menu_item . '_gallery']['fields'];
+						$defaults = $rl->defaults[$menu_item . '_gallery'];
 
 						// make a copy
 						$fields_copy = $fields;
@@ -4702,7 +4715,7 @@ class Responsive_Lightbox_Galleries {
 								$fields[$field_id]['default'] = $defaults[$field_id];
 						}
 
-						$items = Responsive_Lightbox()->frontend->get_unique_fields( $default_gallery_fields, $fields );
+						$items = $rl->frontend->get_unique_fields( $default_gallery_fields, $fields );
 					}
 
 					// sanitize fields

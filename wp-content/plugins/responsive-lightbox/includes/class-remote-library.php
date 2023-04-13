@@ -38,7 +38,7 @@ class Responsive_Lightbox_Remote_Library {
 	 * @return string
 	 */
 	public function remote_library_response_data( $args ) {
-		// access main instance
+		// get main instance
 		$rl = Responsive_Lightbox();
 
 		// get active providers
@@ -58,7 +58,7 @@ class Responsive_Lightbox_Remote_Library {
 
 					foreach ( $provider['response_args'] as $arg ) {
 						if ( array_key_exists( $arg, $response ) ) {
-							$html .= '<span id="' . esc_attr( 'rl_' . $args['tab_id'] . '_' . $args['menu_item'] . '_' . $args['field'] . '_' . $provider['slug'] . '_' . $arg ) . '" class="rl-response-data" data-value="' . esc_attr( base64_encode( json_encode( $response[$arg] ) ) ) . '" data-name="' . esc_attr( $arg ) . '" data-provider="' . esc_attr( $provider['slug'] ) . '"></span>';
+							$html .= '<span id="' . esc_attr( 'rl_' . $args['tab_id'] . '_' . $args['menu_item'] . '_' . $args['field'] . '_' . $provider['slug'] . '_' . $arg ) . '" class="rl-response-data" data-value="' . esc_attr( base64_encode( wp_json_encode( $response[$arg] ) ) ) . '" data-name="' . esc_attr( $arg ) . '" data-provider="' . esc_attr( $provider['slug'] ) . '"></span>';
 						}
 					}
 				}
@@ -103,7 +103,7 @@ class Responsive_Lightbox_Remote_Library {
 	 * @return array
 	 */
 	public function get_providers() {
-		return apply_filters( 'rl_get_providers', Responsive_Lightbox()->providers );
+		return (array) apply_filters( 'rl_get_providers', Responsive_Lightbox()->providers );
 	}
 
 	/**
@@ -120,7 +120,7 @@ class Responsive_Lightbox_Remote_Library {
 				$active_providers[] = $provider;
 		}
 
-		return apply_filters( 'rl_get_active_providers', $active_providers );
+		return (array) apply_filters( 'rl_get_active_providers', $active_providers );
 	}
 
 	/**
@@ -155,23 +155,22 @@ class Responsive_Lightbox_Remote_Library {
 		// get main instance
 		$rl = Responsive_Lightbox();
 
-		wp_enqueue_script( 'rl-remote-library-media', RESPONSIVE_LIGHTBOX_URL . '/js/admin-media.js', [ 'jquery', 'media-models', 'underscore' ], $rl->defaults['version'] );
+		wp_enqueue_script( 'responsive-lightbox-remote-library-media', RESPONSIVE_LIGHTBOX_URL . '/js/admin-media.js', [ 'jquery', 'media-models', 'underscore' ], $rl->defaults['version'] );
 
-		wp_localize_script(
-			'rl-remote-library-media',
-			'rlRemoteLibraryMedia',
-			[
-				'thumbnailID'			=> $rl->galleries->maybe_generate_thumbnail(),
-				'postID'				=> get_the_ID(),
-				'providers'				=> $this->get_providers(),
-				'providersActive'		=> $this->get_active_providers(),
-				'allProviders'			=> __( 'All providers', 'responsive-lightbox' ),
-				'uploadAndInsert'		=> __( 'Upload and Insert', 'responsive-lightbox' ),
-				'uploadAndSelect'		=> __( 'Upload and Select', 'responsive-lightbox' ),
-				'filterByremoteLibrary'	=> __( 'Filter by remote library', 'responsive-lightbox' ),
-				'getUploadNonce'		=> wp_create_nonce( 'rl-remote-library-upload-image' )
-			]
-		);
+		// prepare script data
+		$script_data = [
+			'thumbnailID'			=> $rl->galleries->maybe_generate_thumbnail(),
+			'postID'				=> get_the_ID(),
+			'providers'				=> $this->get_providers(),
+			'providersActive'		=> $this->get_active_providers(),
+			'allProviders'			=> esc_html__( 'All providers', 'responsive-lightbox' ),
+			'uploadAndInsert'		=> esc_html__( 'Upload and Insert', 'responsive-lightbox' ),
+			'uploadAndSelect'		=> esc_html__( 'Upload and Select', 'responsive-lightbox' ),
+			'filterByremoteLibrary'	=> esc_html__( 'Filter by remote library', 'responsive-lightbox' ),
+			'getUploadNonce'		=> wp_create_nonce( 'rl-remote-library-upload-image' )
+		];
+
+		wp_add_inline_script( 'responsive-lightbox-remote-library-media', 'var rlRemoteLibraryMedia = ' . wp_json_encode( $script_data ) . ";\n", 'before' );
 
 		// enqueue gallery
 		$rl->galleries->enqueue_gallery_scripts_styles();
@@ -214,7 +213,7 @@ class Responsive_Lightbox_Remote_Library {
 
 						foreach ( $provider['response_args'] as $arg ) {
 							if ( array_key_exists( $arg, $response ) )
-								$results['data'][$provider['slug']][$arg] = base64_encode( json_encode( $response[$arg] ) );
+								$results['data'][$provider['slug']][$arg] = base64_encode( wp_json_encode( $response[$arg] ) );
 						}
 					}
 				} else {
@@ -232,7 +231,7 @@ class Responsive_Lightbox_Remote_Library {
 
 								foreach ( $provider['response_args'] as $arg ) {
 									if ( array_key_exists( $arg, $response ) )
-										$results['data'][$provider['slug']][$arg] = base64_encode( json_encode( $response[$arg] ) );
+										$results['data'][$provider['slug']][$arg] = base64_encode( wp_json_encode( $response[$arg] ) );
 								}
 							}
 						}
@@ -434,7 +433,7 @@ class Responsive_Lightbox_Remote_Library {
 			];
 		}
 
-		return apply_filters( 'rl_remote_library_wp_attachments', $copy, $args );
+		return (array) apply_filters( 'rl_remote_library_wp_attachments', $copy, $args );
 	}
 
 	/**
