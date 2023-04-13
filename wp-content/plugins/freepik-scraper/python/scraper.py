@@ -39,16 +39,17 @@ def get_browser_options(browser="chrome"):
     return browser_options
 # end get_browser_options()
 
-def download_image(image_url, image_name):
+def download_image(image_url, image_name, collection_id):
     """
-    Downloads the given image from the specified url and saves it in the 'data\images' folder with the given name.
+    Downloads the given image from the specified url and saves it in the 'data\images\{collection_id}' folder with the given name.
     Returns the local path of the downloaded image.
     """
     try:
         response = requests.get(image_url)
-        if not os.path.exists('./data/images'):
-            os.makedirs('./data/images')
-        image_path = f'./data/images/{image_name}'
+        folder_path = f'./data/images/{collection_id}'
+        if not os.path.exists(folder_path):
+            os.makedirs(folder_path)
+        image_path = os.path.join(folder_path, image_name)
         with open(image_path, 'wb') as f:
             f.write(response.content)
         return image_path
@@ -69,13 +70,16 @@ def get_hd_image_url(image_url):
             return hd_image_url
     return image_url
 
-def get_collection_data(collection_url):
+def get_collection_data(collection_url, collection_data={}):
     """
     Scrapes the webpage of the given collection url using Selenium.
     Returns a dictionary containing data for all images in the collection and metadata for the collection itself.
     """
     # Setting up Selenium driver
-    driver = webdriver.Firefox()
+    # driver = webdriver.Firefox()
+    driver = webdriver.Firefox(
+      options=get_browser_options('firefox')
+    )
     driver.get(collection_url)
     time.sleep(3)
 
@@ -113,12 +117,12 @@ def get_collection_data(collection_url):
             else:
                 print('Unable to extract image name from URL')
             # print('IMG name: ' + image_name)
-            image_local_path = download_image(image_hd_url, image_name)
+            image_local_path = download_image(image_hd_url, image_name, collection_id)
             if not image_local_path:
                 # Fallback to original image url if hd url not available or download fails
                 image_hd_url = image_preview_url
                 image_name = image_hd_url.split('/')[-1]
-                image_local_path = download_image(image_hd_url, image_name)
+                image_local_path = download_image(image_hd_url, image_name, collection_id)
             # Extracting link to image page and image id
             image_link_to_page = image.find_element(By.TAG_NAME, 'a').get_attribute('href')
             image_link_to_page = image_link_to_page[:image_link_to_page.find('.htm')+4]
@@ -159,7 +163,7 @@ def get_collection_data(collection_url):
     driver.quit()
 
     # Creating dictionary with collection metadata and images data
-    collection_data = {}
+    # collection_data = {}
     collection_data['collection_id'] = collection_id
     collection_data['collection_url'] = collection_url
     collection_data['collection_title'] = collection_title
@@ -185,6 +189,6 @@ def save_to_json(data, file_name):
         print(f"An error occurred while saving the data to {file_name}. Error message: {e}")
 
 # Example usage
-collection_url = 'https://www.freepik.com/collection/psd-white-unbranded-smartphone-template-with-customizable-design-for-ui-ux-product-showcase-3d/4747261'
-collection_data = get_collection_data(collection_url)
-save_to_json(collection_data, f"{collection_data['collection_id']}.json")
+# collection_url = 'https://www.freepik.com/collection/psd-white-unbranded-smartphone-template-with-customizable-design-for-ui-ux-product-showcase-3d/4747261'
+# collection_data = get_collection_data(collection_url)
+# save_to_json(collection_data, f"{collection_data['collection_id']}.json")
