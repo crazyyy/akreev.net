@@ -1,6 +1,7 @@
 <?php
 
 // ToDo: Write Wordpress REST API function that for create, show and update posts for already registered custom post type "collections" with title, content, thumbnails and ACF fields: gallery (ACF gallery field),  gallery_id (ACF Number field),  collection_size (ACF Number field),  collection_url (ACF text field), original_description (ACF text area field). Add descriptions, comments and examples how to use it
+// add Wordpress Adding Custom Endpoints  for custom post type "collection". I want to create, update and delete post with support ACF fields gallery (ACF gallery field),  gallery_id (ACF Number field),  collection_size (ACF Number field),  collection_url (ACF text field), original_description (ACF text area field). Add descriptions, comments and examples how to use it
 
 function freepik_scraper_collections_rest_routes() {
     // Register REST API routes for Collections
