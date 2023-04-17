@@ -4,7 +4,6 @@ import * as rsssl_api from "../utils/api";
 import sleeper from "../utils/sleeper.js";
 import {__} from '@wordpress/i18n';
 import {dispatch} from '@wordpress/data';
-import {in_array} from "../utils/lib";
 
 const fetchFields = () => {
     return rsssl_api.getFields().then((response) => {
@@ -202,6 +201,9 @@ const isNextButtonDisabled = (fields, selectedMenuItem) => {
 
 const updateFieldsListWithConditions = (fields) => {
     let newFields = [];
+    if (!fields || !Array.isArray(fields)) {
+        return [];
+    }
     fields.forEach(function(field, i) {
         let enabled = !( field.hasOwnProperty('react_conditions') && !validateConditions(field.react_conditions, fields, field.id) );
         let previouslyEnabled = !field.conditionallyDisabled;
