@@ -8,7 +8,7 @@ requests.packages.urllib3.disable_warnings(InsecureRequestWarning)
 
 # set up variables for authentication and site URL
 username = 'aparserok'
-password = 'sadsd'
+password = 'xxx'
 auth = (username, password)
 
 site_url = 'https://akreev.local'
@@ -66,6 +66,7 @@ for json_filename in os.listdir(jsons_directory):
                   'collection_gallery_img_ids': [],
                   'collection_id': data['collection_id'],
                   'collection_preview': data['collection_preview'],
+                  'published': False,
                   'collection_published_id': 0,
                   'collection_published_link': '',
                   'collection_size': data['collection_size'],
@@ -140,15 +141,17 @@ for json_filename in os.listdir(jsons_directory):
                     'title': collection_object['collection_title'],
                     'content': collection_object['collection_description'],
                     'featured_media': collection_object['featured_media_id'],
-                    'acf': {
-                        'gallery_id': collection_object['collection_id'],
-                        'original_description': collection_object['collection_description'],
-                        'collection_size': collection_object['collection_size'],
-                        'collection_url': collection_object['collection_url'],
-                        'gallery': collection_object['collection_gallery_img_ids']
-                    },
+                    'acf[gallery_id]': collection_object['collection_id'],
+                    'acf[original_description]': collection_object['collection_description'],
+                    'acf[collection_size]': collection_object['collection_size'],
+                    'acf[collection_url]': collection_object['collection_url'],
+                    'acf[gallery]': collection_object['collection_gallery_img_ids'],
                     'status': 'publish'
                 }
+
+                for key, value in collection_post_data['acf'].items():
+                    if not isinstance(value, dict):
+                        print(f"WARNING: Property {key} is not a dictionary.")
 
                 post_collection_url = "https://akreev.local/wp-json/wp/v2/collection"
                 headers = {
@@ -157,16 +160,28 @@ for json_filename in os.listdir(jsons_directory):
 
                 response_post_collection = requests.post(post_collection_url, headers=headers, auth=auth, data=collection_post_data, verify=verify_ssl)
 
-                response_post_collection_id = response_post_collection.json()['id']
-                response_post_collection_link = response_post_collection.json()['link']
+                if response_post_collection.status_code == 201:
+                    response_post_collection_id = response_post_collection.json()['id']
+                    response_post_collection_link = response_post_collection.json()['link']
+                    print('Article posted successfully with image ID', response_post_collection_id)
 
-                collection_object['collection_published_id'] = response_post_collection_id
-                collection_object['collection_published_link'] = response_post_collection_link
+                    collection_object['collection_published_id'] = response_post_collection_id
+                    collection_object['collection_published_link'] = response_post_collection_link
 
-                print('Collection published: ' + str(response_post_collection_id))
-                print('URL: ' + response_post_collection_link)
+                    print('Collection published: ' + str(response_post_collection_id))
+                    print('URL: ' + response_post_collection_link)
+
+                else:
+                    print('Error posting article:', response_post_collection.content)
+                    print('>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>')
+                    print('Error posting article:', response_post_collection.json())
+                    print('=============================================================')
+                    print('Error posting article:', response_post_collection.text)
+                    print('<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<')
+
 
                 collection_object['updated_at'] = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+                collection_object['published'] = True
 
                 # ToDo: save with replace "collection_object" to original JSON file
                 # write the data to the file
