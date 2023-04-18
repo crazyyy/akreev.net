@@ -8,7 +8,7 @@ requests.packages.urllib3.disable_warnings(InsecureRequestWarning)
 
 # set up variables for authentication and site URL
 username = 'aparserok'
-password = 'xxx'
+password = 'sadsd'
 auth = (username, password)
 
 site_url = 'https://akreev.local'
@@ -17,7 +17,7 @@ site_url = 'https://akreev.local'
 headers = {'Content-Type': 'application/json'}
 # headers = {'Content-Type': 'multipart/form-data'}
 # headers = {
-#   'Authorization': 'Basic xxx'
+#   'Authorization': 'Basic '
 # }
 
 # disable SSL verification
@@ -59,19 +59,22 @@ for json_filename in os.listdir(jsons_directory):
                 # response = requests.post(site_url + '/wp-json/wp/v2/media', headers=headers, auth=auth, data=image_payload, files=image_files, verify=verify_ssl)
 
                 response_thumb_id = response_thumb.json()['id']
-                print('Thumb published: ' + response_thumb_id)
+                print('Thumb published: ' + str(response_thumb_id))
 
                 collection_object = {
-                  'featured_media_id': response_thumb_id,
-                  'collection_preview': data['collection_preview'],
-                  'collection_id': data['collection_id'],
-                  'collection_size': data['collection_size'],
-                  'collection_url': data['collection_url'],
-                  'collection_title': data['collection_title'],
                   'collection_description': data['collection_description'],
                   'collection_gallery_img_ids': [],
+                  'collection_id': data['collection_id'],
+                  'collection_preview': data['collection_preview'],
+                  'collection_published_id': 0,
+                  'collection_published_link': '',
+                  'collection_size': data['collection_size'],
+                  'collection_title': data['collection_title'],
+                  'collection_url': data['collection_url'],
+                  'created_at': data['created_at'],
+                  'featured_media_id': response_thumb_id,
                   'images': [],
-                  'created_at': data['created_at']
+                  'updated_at': ''
                 }
 
                 # loop through images and publish them, adding ID to collection gallery and updating postmeta
@@ -116,18 +119,18 @@ for json_filename in os.listdir(jsons_directory):
                         'collection_image_media_id': response_image_id,
                         'collection_image_source_url': response_image_source_url,
                         'image_alt': collection_image_alt,
-                        'image_title': collection_image_title,
-                        'image_link': collection_image['image_link'],
                         'image_file_name': collection_image_file_name,
                         'image_hd': collection_image['image_hd'],
                         'image_hd_local': collection_image['image_hd_local'],
-                        'link_to_image_page': collection_image['link_to_image_page'],
-                        'image_id': collection_image['image_id']
+                        'image_id': collection_image['image_id'],
+                        'image_link': collection_image['image_link'],
+                        'image_title': collection_image_title,
+                        'link_to_image_page': collection_image['link_to_image_page']
                     }
 
                     collection_object['images'].append(collection_image_object)
 
-                    print('Gallery image published: ' + response_image_id)
+                    print('Gallery image published: ' + str(response_image_id))
                     print('URL: ' + response_image_source_url)
                 # end loop through images
 
@@ -137,11 +140,13 @@ for json_filename in os.listdir(jsons_directory):
                     'title': collection_object['collection_title'],
                     'content': collection_object['collection_description'],
                     'featured_media': collection_object['featured_media_id'],
-                    'acf[gallery_id]': collection_object['collection_id'],
-                    'acf[original_description]': collection_object['collection_description'],
-                    'acf[collection_size]': collection_object['collection_size'],
-                    'acf[collection_url]': collection_object['collection_url'],
-                    'acf[gallery]': collection_object['collection_gallery_img_ids'],
+                    'acf': {
+                        'gallery_id': collection_object['collection_id'],
+                        'original_description': collection_object['collection_description'],
+                        'collection_size': collection_object['collection_size'],
+                        'collection_url': collection_object['collection_url'],
+                        'gallery': collection_object['collection_gallery_img_ids']
+                    },
                     'status': 'publish'
                 }
 
@@ -158,7 +163,7 @@ for json_filename in os.listdir(jsons_directory):
                 collection_object['collection_published_id'] = response_post_collection_id
                 collection_object['collection_published_link'] = response_post_collection_link
 
-                print('Collection published: ' + response_post_collection_id)
+                print('Collection published: ' + str(response_post_collection_id))
                 print('URL: ' + response_post_collection_link)
 
                 collection_object['updated_at'] = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
