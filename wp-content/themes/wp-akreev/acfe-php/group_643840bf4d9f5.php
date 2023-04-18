@@ -29,7 +29,7 @@ acf_add_local_field_group(array(
 		array(
 			'key' => 'field_64384195a37dd',
 			'label' => 'HD Image Link',
-			'name' => 'original_image_link',
+			'name' => 'hd_image_link',
 			'aria-label' => '',
 			'type' => 'text',
 			'instructions' => '',
@@ -40,8 +40,12 @@ acf_add_local_field_group(array(
 				'class' => '',
 				'id' => '',
 			),
+			'acfe_save_meta' => 0,
 			'default_value' => '',
+			'acfe_settings' => '',
+			'acfe_validate' => '',
 			'maxlength' => '',
+			'acfe_permissions' => '',
 			'placeholder' => '',
 			'prepend' => '',
 			'append' => '',
@@ -136,7 +140,7 @@ acf_add_local_field_group(array(
 	'acfe_form' => 1,
 	'acfe_meta' => '',
 	'acfe_note' => '',
-	'modified' => 1681768911,
+	'modified' => 1681813255,
 ));
 
 endif;
