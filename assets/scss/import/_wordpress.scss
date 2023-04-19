@@ -1,0 +1,140 @@
+@use "variables";
+@use "helpers";
+
+.alignnone {
+  margin: variables.$small-spacing;
+}
+
+.aligncenter,
+div.aligncenter {
+  display: block;
+
+  margin: variables.$small-spacing auto;
+}
+
+.alignright {
+  float: right;
+
+  margin: variables.$small-spacing 0 variables.$base-spacing variables.$base-spacing;
+}
+
+.alignleft {
+  float: left;
+
+  margin: variables.$small-spacing variables.$base-spacing variables.$base-spacing 0;
+}
+
+.wp-caption {
+  max-width: 96%;
+  padding: variables.$small-spacing variables.$small-spacing variables.$small-spacing;
+
+  text-align: center;
+
+  border: variables.$base-border;
+  background-color: variables.$secondary-background-color;
+  img {
+    width: auto;
+    max-width: 98.5%;
+    height: auto;
+    margin: 0;
+    padding: 0;
+
+    border: 0;
+  }
+  .wp-caption-text {
+    font-size: 80%;
+    line-height: variables.$base-line-height;
+
+    margin: 0;
+    padding: 0 variables.$small-spacing variables.$small-spacing;
+  }
+}
+.gallery-caption {
+  font-size: 60%;
+  line-height: variables.$base-line-height;
+
+  margin: 0;
+  padding: 0 variables.$small-spacing variables.$small-spacing;
+}
+
+
+/* Comments
+--------------------------------------------- */
+
+.comment-respond,
+.entry-comments,
+.entry-pings {
+  margin: 0 0 variables.$base-spacing;
+}
+
+.entry-comments {
+  padding: variables.$base-spacing;
+}
+
+.comment-respond,
+.entry-pings {
+  padding: variables.$base-spacing variables.$base-spacing variables.$base-spacing;
+}
+
+.comment-content {
+  @include helpers.clearfix;
+}
+
+.entry-comments {
+  .comment-author {
+    margin-bottom: 0;
+  }
+}
+
+.comment-respond {
+  input[type='url']
+  input[type='text'],
+  input[type='email'] {
+    width: 50%;
+  }
+  label {
+    display: block;
+
+    margin-right: variables.$base-spacing;
+  }
+}
+
+.comment-list,
+.ping-list {
+  li {
+    list-style-type: none;
+  }
+}
+
+.comment-list {
+  li {
+    margin-top: variables.$base-spacing * 1.5;
+    padding: variables.$base-spacing * 2;
+    li {
+      margin-right: - variables.$base-spacing * 1.5;
+    }
+  }
+}
+
+.comment {
+  border: 2px solid #fff;
+  border-right: none;
+  background-color: variables.$secondary-background-color;
+  .avatar {
+    margin: 0 variables.$base-spacing variables.$base-spacing * 1.5 0;
+  }
+}
+
+.entry-pings {
+  .reply {
+    display: none;
+  }
+}
+
+.form-allowed-tags {
+  font-size: 80%;
+
+  padding: variables.$base-spacing * 1.5;
+
+  background-color: variables.$secondary-background-color;
+}

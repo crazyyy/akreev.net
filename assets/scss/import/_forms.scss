@@ -1,0 +1,106 @@
+@use "sass:math";
+@use "variables";
+
+fieldset {
+  margin: 0 0 variables.$small-spacing;
+  padding: variables.$base-spacing;
+
+  border: variables.$base-border;
+  background-color: variables.$secondary-background-color;
+}
+
+input,
+label,
+select {
+  font-family: variables.$font-family-base;
+  font-size: variables.$base-font-size;
+
+  display: block;
+}
+
+label {
+  font-weight: 600;
+
+  margin-bottom: math.div(variables.$small-spacing, 2);
+  &.required::after {
+    content: '*';
+  }
+  abbr {
+    display: none;
+  }
+}
+
+input[type='color'],
+input[type='date'],
+input[type='datetime'],
+input[type='datetime-local'],
+input[type='email'],
+input[type='month'],
+input[type='number'],
+input[type='password'],
+input[type='search'],
+input[type='tel'],
+input[type='text'],
+input[type='time'],
+input[type='url'],
+input[type='week'],
+textarea,
+select[multiple=multiple] {
+  font-family: variables.$font-family-base;
+  font-size: variables.$base-font-size;
+
+  box-sizing: border-box;
+  width: 100%;
+  margin-bottom: variables.$small-spacing;
+  padding: math.div(variables.$base-spacing, 3);
+
+  transition: variables.$base-transition;
+
+  border: variables.$base-border;
+  border-radius: variables.$base-border-radius;
+  outline: none;
+  background-color: variables.$base-background-color;
+  box-shadow: variables.$form-box-shadow;
+  &:hover {
+    border-color: shade(variables.$base-border-color, 20%);
+  }
+  &:focus {
+    border-color: variables.$action-color;
+    outline: none;
+    box-shadow: variables.$form-box-shadow-focus;
+  }
+  &:disabled {
+    cursor: not-allowed;
+
+    background-color: shade(variables.$base-background-color, 5%);
+    &:hover {
+      border: variables.$base-border;
+    }
+  }
+}
+
+textarea {
+  resize: vertical;
+}
+
+input[type='search'] {
+  appearance: none;
+}
+
+input[type='checkbox'],
+input[type='radio'] {
+  display: inline;
+
+  margin-right:  math.div(variables.$small-spacing, 2);
+}
+
+input[type='file'] {
+  width: 100%;
+  margin-bottom: variables.$small-spacing;
+}
+
+select {
+  width: auto;
+  max-width: 100%;
+  margin-bottom: variables.$base-spacing;
+}

@@ -23,38 +23,27 @@
   <?php wp_head(); ?>
 </head>
 <body <?php body_class(); ?>>
-  <!--================= loader start ================-->
-  <div class="loader-holder">
-    <div class="loader-inner loader-vis">
-      <div class="loader"></div>
-    </div>
-  </div>
-  <!-- loader end -->
-  <!--================= main start ================-->
-  <div id="main">
-    <!--=============== header ===============-->
-    <header>
-      <div class="logo-holder">
-          <?php if ( !is_front_page() && !is_home() ){ ?>
-            <a href="<?php echo home_url(); ?>">
-          <?php } ?>
-              <img src="<?php echo get_template_directory_uri(); ?>/img/logo.png" alt="<?php wp_title( '' ); ?>" title="<?php wp_title( '' ); ?>" class="logo-img">
-          <?php if ( !is_front_page() && !is_home() ){ ?>
-            </a>
-          <?php } ?>
-      </div>
-      <div class="mob_head_btn">
-        <a href="http://akreev.net/contact.html" class="title-btn-write">Email me</a>
-        <a href="https://www.upwork.com/freelancers/~018bfbfec4275a7872" class="title-btn-write" target="_blank">Via
-          Upwork</a>
-      </div>
-      <?php /* wpeHeadNav(); */ ?>
-      <div class="nav-button">
-        <span class="nos"></span>
-        <span class="ncs"></span>
-        <span class="nbs"></span>
-      </div>
-    </header>
-    <!-- header  end -->
-    <!--=============== wrapper ===============-->
-    <div id="wrapper">
+<!-- wrapper -->
+<div class="wrapper">
+  <header role="banner">
+    <div class="inner">
+
+      <div class="logo">
+        <?php if ( !is_front_page() && !is_home() ){ ?>
+          <a href="<?php echo home_url(); ?>">
+        <?php } ?>
+            <img src="<?php echo get_template_directory_uri(); ?>/img/logo.png" alt="<?php wp_title( '' ); ?>" title="<?php wp_title( '' ); ?>" class="logo-img">
+        <?php if ( !is_front_page() && !is_home() ){ ?>
+          </a>
+        <?php } ?>
+      </div><!-- /logo -->
+
+      <nav class="nav" role="navigation">
+        <?php wpeHeadNav(); ?>
+      </nav><!-- /nav -->
+
+    </div><!-- /.inner -->
+  </header><!-- /header -->
+
+  <section role="main">
+    <div class="inner">

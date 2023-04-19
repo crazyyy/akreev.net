@@ -1,0 +1,837 @@
+/*
+    Remove all the styles of the "User-Agent-Stylesheet", except for the 'display' property
+    - The "symbol *" part is to solve Firefox SVG sprite bug
+ */
+*:where(:not(html, iframe, canvas, img, svg, video, audio):not(svg *, symbol
+      *)) {
+  all: unset;
+  display: revert;
+}
+
+/**
+ * 1. Add border box sizing in all browsers (opinionated).
+ * 2. Backgrounds do not repeat by default (opinionated).
+ */
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box; /* 1 */
+  background-repeat: no-repeat; /* 2 */
+}
+
+* {
+  margin: 0;
+  padding: 0;
+
+  font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+  &:after,
+  &:before {
+    font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+  }
+}
+
+/**
+ * 1. Add text decoration inheritance in all browsers (opinionated).
+ * 2. Add vertical alignment inheritance in all browsers (opinionated).
+ */
+::before,
+::after {
+  text-decoration: inherit; /* 1 */
+  vertical-align: inherit; /* 2 */
+}
+
+/**
+ * 1. Use the default cursor in all browsers (opinionated).
+ * 2. Change the line height in all browsers (opinionated).
+ * 3. Breaks words to prevent overflow in all browsers (opinionated).
+ * 4. Use a 4-space tab width in all browsers (opinionated).
+ * 5. Remove the grey highlight on links in iOS (opinionated).
+ * 6. Prevent adjustments of font size after orientation changes in iOS.
+ */
+
+:root {
+  cursor: default; /* 1 */
+  line-height: 1; /* 2 */
+  overflow-wrap: break-word; /* 3 */
+  tab-size: 4; /* 4 */
+  -webkit-tap-highlight-color: transparent; /* 5 */
+  text-size-adjust: 100%; /* 6 */
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+}
+
+html,
+body,
+div,
+span,
+applet,
+object,
+iframe,
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+blockquote,
+pre,
+a,
+abbr,
+acronym,
+address,
+big,
+cite,
+code,
+del,
+dfn,
+em,
+img,
+ins,
+kbd,
+q,
+s,
+samp,
+small,
+strike,
+strong,
+sub,
+sup,
+tt,
+var,
+b,
+u,
+i,
+center,
+dl,
+dt,
+dd,
+ol,
+ul,
+li,
+fieldset,
+form,
+label,
+legend,
+table,
+caption,
+tbody,
+tfoot,
+thead,
+tr,
+th,
+td,
+article,
+aside,
+canvas,
+details,
+embed,
+figure,
+figcaption,
+footer,
+header,
+hgroup,
+menu,
+nav,
+output,
+ruby,
+section,
+summary,
+time,
+mark,
+audio,
+video {
+  font: inherit;
+  font-size: 100%;
+
+  margin: 0;
+  padding: 0;
+
+  vertical-align: baseline;
+
+  border: 0;
+}
+
+article,
+aside,
+details,
+figcaption,
+figure,
+footer,
+header,
+hgroup,
+main,
+menu,
+nav,
+section {
+  display: block;
+}
+
+html,
+body {
+  height: 100%;
+  width: 100%;
+  margin: 0;
+  padding: 0;
+  left: 0;
+  top: 0;
+  font-size: 100%;
+}
+
+html,
+body,
+button {
+  font-smoothing: antialiased;
+}
+
+html {
+  scroll-behavior: smooth;
+  text-size-adjust: 100%;
+  line-height: 1;
+  -webkit-text-size-adjust: 100%;
+  -ms-text-size-adjust: 100%;
+  -moz-text-size-adjust: 100%;
+}
+
+body {
+  -webkit-text-size-adjust: 100%;
+  -ms-text-size-adjust: 100%;
+  -moz-text-size-adjust: 100%;
+  -webkit-tap-highlight-color: rgba(#fff, 0);
+
+  position: relative;
+
+  width: 100%;
+  margin: 0;
+
+  overscroll-behavior: none;
+}
+
+ol,
+ul {
+  list-style: none;
+}
+
+dd,
+ol,
+ul {
+  padding: 0;
+  dd,
+  ol,
+  ul {
+    margin: 0;
+  }
+}
+
+p {
+  hyphens: auto;
+}
+
+blockquote,
+q {
+  margin: 0;
+
+  quotes: none;
+  &:before,
+  &:after {
+    content: "";
+  }
+}
+
+a {
+  background-color: transparent;
+  &:focus {
+    outline: 0;
+  }
+  &:focus,
+  &:active,
+  &:hover {
+    outline: 0;
+  }
+  &[href^="tel:"],
+  a[href^="mailto:"] {
+    white-space: nowrap;
+    text-decoration: none;
+
+    color: inherit;
+  }
+}
+
+// And undo these styles for placeholder links/named anchors (without href).
+// It would be more straightforward to just use a[href] in previous block, but that
+// causes specificity issues in many other styles that are too complex to fix.
+// See https://github.com/twbs/bootstrap/issues/19402
+
+a:not([href]):not([class]) {
+  &,
+  &:hover {
+    color: inherit;
+    text-decoration: none;
+  }
+}
+
+b,
+strong {
+  font-weight: bolder;
+}
+
+pre {
+  white-space: pre;
+  font-family: monospace, monospace;
+  font-size: 100%;
+  word-wrap: break-word;
+
+  // Account for some code outputs that place code tags in pre tags
+  code {
+    font-size: 100%;
+    color: inherit;
+    word-break: normal;
+  }
+}
+
+code,
+kbd,
+samp {
+  font-family: monospace, monospace;
+  font-size: 100%;
+}
+
+code {
+  word-wrap: break-word;
+
+  // Streamline the style when inside anchors to avoid broken underline and more
+  a > & {
+    color: inherit;
+  }
+}
+
+// Correct element displays
+output {
+  display: inline-block;
+}
+
+/* Reset default appearance */
+textarea,
+select,
+input,
+progress {
+  appearance: none;
+}
+
+button,
+input,
+optgroup,
+select,
+textarea {
+  font-family: inherit;
+  font-size: 100%;
+  line-height: inherit;
+  border-radius: 0;
+
+  margin: 0;
+
+  cursor: pointer;
+  vertical-align: baseline;
+}
+
+select {
+  // Remove the inheritance of word-wrap in Safari.
+  // See https://github.com/twbs/bootstrap/issues/24990
+  word-wrap: normal;
+
+  // Undo the opacity change from Chrome
+  &:disabled {
+    opacity: 1;
+  }
+}
+
+// Explicitly remove focus outline in Chromium when it shouldn't be
+// visible (e.g. as result of mouse click or touch tap). It already
+// should be doing this automatically, but seems to currently be
+// confused and applies its very visible two-tone outline anyway.
+
+button:focus:not(:focus-visible) {
+  outline: 0;
+}
+
+// Textareas should really only resize vertically so they don't break their (horizontal) containers.
+textarea {
+  overflow: auto;
+  white-space: unset;
+  resize: vertical;
+  vertical-align: top;
+}
+
+/* reset default text opacity of input placeholder */
+::placeholder {
+  color: unset;
+}
+
+/* minimum style to allow to style meter element */
+meter {
+  -webkit-appearance: revert;
+  appearance: revert;
+}
+
+/* Safari - solving issue when using user-select:none on the <body> text input doesn't working */
+input,
+textarea {
+  -webkit-user-select: auto;
+}
+
+optgroup {
+  font-weight: bold;
+}
+
+button,
+input {
+  overflow: visible;
+}
+
+// Remove the inheritance of text transform in Firefox
+button,
+select {
+  text-transform: none;
+}
+
+input {
+  overflow: visible;
+  &[type="button"],
+  &[type="reset"],
+  &[type="submit"] {
+    cursor: pointer;
+
+    -webkit-appearance: button;
+    -ms-appearance: button;
+    -moz-appearance: button;
+  }
+  &[disabled] {
+    cursor: default;
+  }
+  &[type="checkbox"],
+  &[type="radio"] {
+    padding: 0;
+  }
+  // 1. Correct the outline style in Safari.
+  // 2. This overrides the extra rounded corners on search inputs in iOS so that our
+  //    `.form-control` class can properly style them. Note that this cannot simply
+  //    be added to `.form-control` as it's not specific enough. For details, see
+  //    https://github.com/twbs/bootstrap/issues/11586.
+  &[type="search"] {
+    box-sizing: content-box;
+    -webkit-appearance: textfield;
+    -moz-appearance: textfield;
+    -ms-appearance: textfield;
+    outline-offset: -2px;
+    &::-webkit-search-cancel-button {
+      -webkit-appearance: none;
+      -moz-appearance: none;
+      -ms-appearance: none;
+    }
+  }
+  &[type="number"] {
+    &::-webkit-inner-spin-button,
+    &::-webkit-outer-spin-button {
+      height: auto;
+    }
+  }
+}
+
+button[disabled],
+html input[disabled] {
+  cursor: default;
+}
+
+// Remove inner border and padding from Firefox, but don't restore the outline like Normalize.
+::-moz-focus-inner {
+  padding: 0;
+  border: 0;
+}
+
+:-moz-focusring {
+  outline: 1px dotted ButtonText;
+}
+
+:-moz-ui-invalid {
+  box-shadow: none;
+}
+
+// Set the cursor for non-`<button>` buttons
+// Details at https://github.com/twbs/bootstrap/pull/30562
+[role="button"] {
+  cursor: pointer;
+}
+
+table {
+  caption-side: bottom;
+  border-spacing: 0;
+  border-collapse: collapse;
+
+  th {
+    text-align: -webkit-match-parent;
+  }
+
+  thead,
+  tbody,
+  tfoot,
+  tr,
+  td,
+  th {
+    border-color: inherit;
+    border-style: solid;
+    border-width: 0;
+    padding: 0;
+  }
+}
+
+hr {
+  box-sizing: content-box;
+  height: 0;
+  overflow: visible;
+}
+
+dfn {
+  font-style: italic;
+}
+
+mark {
+  color: #000000;
+  background-color: #ffff00;
+}
+
+audio,
+canvas,
+video {
+  display: inline-block;
+
+  *zoom: 1;
+}
+
+audio,
+canvas,
+iframe,
+img,
+svg,
+video {
+  vertical-align: middle;
+}
+
+audio:not([controls]) {
+  display: none;
+
+  height: 0;
+}
+
+// Remove border from iframe
+iframe {
+  border: 0;
+}
+
+// Restrict sizing to the page width in all browsers (opinionated).
+:where(iframe, img, input, video, select, textarea) {
+  height: auto;
+  max-width: 100%;
+}
+
+// Add the correct display in IE 10+.
+
+template {
+  display: none;
+}
+
+// Add the correct display in IE 10.
+.hidden,
+[hidden] {
+  display: none !important;
+}
+
+abbr[title] {
+  text-decoration: underline;
+  text-decoration: underline dotted;
+  cursor: help;
+  text-decoration-skip-ink: none;
+}
+
+abbr[title],
+acronym[title],
+dfn {
+  cursor: help;
+}
+
+small {
+  font-size: 80%;
+}
+
+sub,
+sup {
+  font-size: 75%;
+  line-height: 0;
+
+  position: relative;
+
+  vertical-align: baseline;
+}
+
+sub {
+  bottom: -0.25em;
+}
+
+sup {
+  top: -0.5em;
+}
+
+/* Remove list styles (bullets/numbers) */
+nav {
+  menu,
+  ul,
+  ol {
+    list-style-type: none;
+    padding: 0;
+  }
+}
+
+img {
+  font-style: italic;
+
+  width: auto; /* IE8 */
+  max-width: 100%;
+  height: auto;
+
+  vertical-align: middle;
+
+  -ms-interpolation-mode: bicubic;
+  border: 0;
+}
+
+/**
+ * Change the fill color to match the text color in all browsers (opinionated).
+ */
+svg {
+  &:not([fill]) {
+    fill: currentColor;
+  }
+  &:not(:root) {
+    overflow: hidden;
+  }
+}
+
+
+
+figure,
+form {
+  margin: 0;
+}
+
+// 1. Browsers set a default `min-width: min-content;` on fieldsets,
+//    unlike e.g. `<div>`s, which have `min-width: 0;` by default.
+//    So we reset that to ensure fieldsets behave more like a standard block element.
+//    See https://github.com/twbs/bootstrap/issues/12359
+//    and https://html.spec.whatwg.org/multipage/#the-fieldset-and-legend-elements
+// 2. Reset the default outline behavior of fieldsets so they don't affect page layout.
+fieldset {
+  margin: 0;
+  padding: 0;
+  min-width: 0;
+  border: 0;
+}
+
+legend {
+  padding: 0;
+
+  white-space: normal;
+
+  border: 0;
+
+  box-sizing: border-box;
+  color: inherit;
+  display: table;
+  max-width: 100%;
+
+  float: left;
+  width: 100%;
+
+  line-height: inherit;
+
+  + * {
+    clear: left;
+  }
+}
+
+// Allow labels to use `margin` for spacing.
+label {
+  display: inline-block; // 1
+}
+
+// Add the correct vertical alignment in Chrome, Firefox, and Opera.
+progress {
+  display: inline-block;
+  vertical-align: baseline;
+}
+
+/* revert for bug in Chromium browsers
+   - fix for the content editable attribute will work properly.
+   - webkit-user-select: auto; added for Safari in case of using user-select:none on wrapper element*/
+:where([contenteditable]:not([contenteditable="false"])) {
+  -moz-user-modify: read-write;
+  -webkit-user-modify: read-write;
+  overflow-wrap: break-word;
+  -webkit-line-break: after-white-space;
+  -webkit-user-select: auto;
+}
+
+/* apply back the draggable feature - exist only in Chromium and Safari */
+:where([draggable="true"]) {
+  -webkit-user-drag: element;
+}
+
+embed,
+iframe,
+img,
+object,
+video,
+.wp-caption {
+  max-width: 100%;
+}
+
+::selection {
+  color: #000000;
+  background-color: #fbd404;
+}
+
+video,
+audio {
+  max-width: 100%;
+  height: auto;
+}
+
+// Remove the dropdown arrow only from text type inputs built with datalists in Chrome.
+// See https://stackoverflow.com/a/54997118
+[list]:not([type="date"]):not([type="datetime-local"]):not([type="month"]):not([type="week"]):not([type="time"])::-webkit-calendar-picker-indicator {
+  display: none !important;
+}
+
+// 1. Correct the inability to style clickable types in iOS and Safari.
+// 2. Change font properties to `inherit` in Safari.
+::-webkit-file-upload-button {
+  -webkit-appearance: button;
+  -ms-appearance: button;
+  -moz-appearance: button;
+  font: inherit;
+}
+
+// Remove the inner padding in Chrome and Safari on macOS.
+::-webkit-search-decoration {
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  -ms-appearance: none;
+}
+
+// Remove padding around color pickers in webkit browsers
+::-webkit-color-swatch-wrapper {
+  padding: 0;
+}
+
+// Fix height of inputs with a type of datetime-local, date, month, week, or time
+// See https://github.com/twbs/bootstrap/issues/18842
+::-webkit-datetime-edit-fields-wrapper,
+::-webkit-datetime-edit-text,
+::-webkit-datetime-edit-minute,
+::-webkit-datetime-edit-hour-field,
+::-webkit-datetime-edit-day-field,
+::-webkit-datetime-edit-month-field,
+::-webkit-datetime-edit-year-field {
+  padding: 0;
+}
+
+::-webkit-inner-spin-button {
+  height: auto;
+}
+
+/*
+ * Remove text-shadow in selection highlight:
+ * https://twitter.com/miketaylr/status/12228805301
+ */
+::-moz-selection {
+  text-shadow: none;
+}
+
+// 1. Inherit font family and line height for file input buttons
+// 2. Correct the inability to style clickable types in iOS and Safari.
+::file-selector-button {
+  font: inherit; // 1
+  -webkit-appearance: button;
+  -ms-appearance: button;
+  -moz-appearance: button;
+}
+
+/* Interactive
+ * ========================================================================== */
+/*
+ * Add the correct styles in Safari.
+ */
+dialog {
+  background-color: inherit;
+  border: solid;
+  color: inherit;
+  display: block;
+  height: fit-content;
+  left: 0;
+  margin: auto;
+  padding: 1em;
+  position: absolute;
+  right: 0;
+  width: fit-content;
+}
+
+dialog:not([open]) {
+  display: none;
+}
+
+summary {
+  display: list-item;
+}
+
+/*
+ * Add the correct display in Safari.
+ */
+:where(details > summary:first-of-type) {
+  display: list-item;
+}
+
+/* Accessibility
+ * ========================================================================== */
+/**
+ * Change the cursor on busy elements in all browsers (opinionated).
+ */
+:where([aria-busy="true" i]) {
+  cursor: progress;
+}
+
+/*
+ * Change the cursor on disabled, not-editable, or otherwise
+ * inoperable elements in all browsers (opinionated).
+ */
+:where([aria-disabled="true" i], [disabled]) {
+  cursor: not-allowed;
+}
+
+/*
+ * Change the display on visually hidden accessible elements
+ * in all browsers (opinionated).
+ */
+:where([aria-hidden="false" i][hidden]) {
+  display: initial;
+}
+
+:where([aria-hidden="false" i][hidden]:not(:focus)) {
+  clip: rect(0, 0, 0, 0);
+  position: absolute;
+}
+
+@media (max-width: 30em) {
+  a[href^="tel:"] {
+    text-decoration: underline;
+    pointer-events: auto;
+  }
+}

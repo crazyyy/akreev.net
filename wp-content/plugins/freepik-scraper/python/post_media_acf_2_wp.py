@@ -8,7 +8,7 @@ requests.packages.urllib3.disable_warnings(InsecureRequestWarning)
 
 # set up variables for authentication and site URL
 username = 'aparserok'
-password = 'xxxx'
+password = 'xxx'
 auth = (username, password)
 
 site_url = 'https://akreev.local'
@@ -17,7 +17,7 @@ site_url = 'https://akreev.local'
 headers = {'Content-Type': 'application/json'}
 # headers = {'Content-Type': 'multipart/form-data'}
 # headers = {
-#   'Authorization': 'Basic '
+#   'Authorization': 'Basic xxxxxx'
 # }
 
 # disable SSL verification

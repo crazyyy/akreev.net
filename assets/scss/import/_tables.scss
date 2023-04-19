@@ -1,0 +1,37 @@
+@use "variables";
+
+table {
+  width: 100%;
+  margin: variables.$small-spacing 0 0;
+
+  table-layout: fixed;
+  border-collapse: collapse;
+  thead {
+    color: #fff;
+    background: variables.$blue;
+  }
+  th,
+  td {
+    position: relative;
+  }
+  th {
+    font-weight: bold;
+
+    padding: variables.$small-spacing 0;
+
+    text-align: center;
+
+    border-bottom: 1px solid darken(variables.$base-border-color, 15%);
+  }
+  td {
+    padding: variables.$small-spacing 0;
+
+    border-bottom: variables.$base-border;
+  }
+}
+
+tr,
+td,
+th {
+  vertical-align: middle;
+}

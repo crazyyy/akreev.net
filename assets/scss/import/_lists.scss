@@ -1,0 +1,28 @@
+@use "variables";
+
+ul,
+ol {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  li {
+    position: relative;
+    margin: 0;
+    padding: 0;
+    &:before {
+      content: "";
+      display: none;
+    }
+  }
+}
+
+dl {
+  margin-bottom: variables.$small-spacing;
+  dt {
+    font-weight: bold;
+    margin-top: variables.$small-spacing;
+  }
+  dd {
+    margin: 0;
+  }
+}

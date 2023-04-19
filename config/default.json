@@ -1,0 +1,36 @@
+{
+  "domain": "akreev.local",
+  "theme": "wp-akreev",
+  "ssl": {
+    "key": "d:\\apps\\persist\\laragon\\etc\\ssl\\laragon.key",
+    "cert": "d:\\apps\\persist\\laragon\\etc\\ssl\\laragon.crt"
+  },
+  "path": {
+    "base": {
+      "src":"assets/",
+      "dest": "./html/",
+      "destHtml": "./html/**/*.{html,htm,php}"
+    },
+    "images": {
+      "src": "assets/img/",
+      "srcImg": "assets/img/**/*.{png,jpg,jpeg,gif,svg}",
+      "srcImgContent": "wp-content/uploads/",
+      "dest": "./html/img/"
+    },
+    "fonts": {
+      "src": "assets/fonts/**",
+      "dest": "./html/fonts/"
+    },
+    "styles": {
+      "src": "assets/scss/",
+      "srcFiles": "assets/scss/**/*.scss",
+      "css": "assets/css/",
+      "cssFiles": "assets/css/**/*.css",
+      "dest": "./html/css/"
+    },
+    "scripts": {
+      "src": "assets/js/**",
+      "dest": "./html/js/"
+    }
+  }
+}
