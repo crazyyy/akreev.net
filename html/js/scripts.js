@@ -1,0 +1,2 @@
+"use strict";!function(){for(var e=function(){},n=window.console||{},o=0,r=["assert","clear","count","debug","dir","dirxml","error","exception","group","groupCollapsed","groupEnd","info","log","markTimeline","profile","profileEnd","table","time","timeEnd","timeline","timelineEnd","timeStamp","trace","warn"];o<r.length;o++){var i=r[o];n[i]||(n[i]=e)}}(),"undefined"==typeof jQuery?console.warn("jQuery hasn't loaded"):console.log("jQuery ".concat(jQuery.fn.jquery," has loaded"));
+//# sourceMappingURL=maps/scripts.js.map
