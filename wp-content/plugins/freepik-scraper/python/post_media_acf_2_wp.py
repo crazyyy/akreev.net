@@ -8,7 +8,7 @@ requests.packages.urllib3.disable_warnings(InsecureRequestWarning)
 
 # set up variables for authentication and site URL
 username = 'aparserok'
-password = 'xxx'
+password = 'xxxx'
 auth = (username, password)
 
 site_url = 'https://akreev.local'
@@ -105,6 +105,8 @@ for json_filename in os.listdir(jsons_directory):
 
                     collection_object['collection_gallery_img_ids'].append(response_image_id)
 
+                    print(collection_object['collection_gallery_img_ids'])
+
                     postmeta_url = site_url + '/wp-json/wp/v3/postmeta'
                     headers = {
                         'Content-Type': 'application/x-www-form-urlencoded'
@@ -136,6 +138,9 @@ for json_filename in os.listdir(jsons_directory):
                 # end loop through images
 
                 print('Try to publish collection: ' + collection_object['collection_title'])
+
+                collection_gallery_img_ids_str = ', '.join(map(str, collection_object['collection_gallery_img_ids']))
+
                 # Define the post data for the article with the image ID as the featured image
                 collection_post_data = {
                     'title': collection_object['collection_title'],
@@ -145,13 +150,9 @@ for json_filename in os.listdir(jsons_directory):
                     'acf[original_description]': collection_object['collection_description'],
                     'acf[collection_size]': collection_object['collection_size'],
                     'acf[collection_url]': collection_object['collection_url'],
-                    'acf[gallery]': collection_object['collection_gallery_img_ids'],
+                    'acf[gallery]': collection_gallery_img_ids_str,
                     'status': 'publish'
                 }
-
-                for key, value in collection_post_data['acf'].items():
-                    if not isinstance(value, dict):
-                        print(f"WARNING: Property {key} is not a dictionary.")
 
                 post_collection_url = "https://akreev.local/wp-json/wp/v2/collection"
                 headers = {
@@ -183,15 +184,14 @@ for json_filename in os.listdir(jsons_directory):
                 collection_object['updated_at'] = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
                 collection_object['published'] = True
 
-                # ToDo: save with replace "collection_object" to original JSON file
-                # write the data to the file
+                # Write the updated data to the file
                 with open(os.path.join(jsons_directory, json_filename), 'w') as updated_data_json:
                   json.dump(collection_object, updated_data_json)
 
                 print('JSON file updated: ' + json_filename)
                 # end loop through collections
-            else:
-              print('Collection already published: ' + collection_object['collection_title'])
+            # else:
+            #   print('Collection already published: ' + collection_object['collection_title'])
             # end loop through collections
         # end loop through posts
     # end loop through pages
