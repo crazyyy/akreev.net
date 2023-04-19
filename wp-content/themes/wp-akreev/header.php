@@ -17,14 +17,15 @@
     <link href="<?php echo get_template_directory_uri(); ?>/favicon.ico" rel="shortcut icon">
 
     <!--[if lt IE 9]>
-    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.3/html5shiv.min.js"></script>
-    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/selectivizr/1.0.2/selectivizr-min.js"></script>
-    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/respond.js/1.4.2/respond.min.js"></script>
-  <![endif]-->
+      <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.3/html5shiv.min.js"></script>
+      <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/selectivizr/1.0.2/selectivizr-min.js"></script>
+      <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+
     <!-- css + javascript -->
     <?php wp_head(); ?>
-    <link rel="stylesheet" href="<?php echo get_template_directory_uri(); ?>/css/proto.css" type="text/css">
-    <link rel="stylesheet" href="<?php echo get_template_directory_uri(); ?>/css/index.css" type="text/css">
+    <!-- <link rel="stylesheet" href="<?php echo get_template_directory_uri(); ?>/css/proto.css" type="text/css"> -->
+    <!-- <link rel="stylesheet" href="<?php echo get_template_directory_uri(); ?>/css/index.css" type="text/css"> -->
     <!-- <link rel="stylesheet" href="css/merged.css" type="text/css"> -->
   </head>
 
