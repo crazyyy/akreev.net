@@ -86,3 +86,6 @@ __pycache__
 /wp-content/plugins/freepik-scraper/python/data/images/**/*.jpg
 /wp-content/plugins/freepik-scraper/python/data/images/**/*.png
 /wp-content/plugins/freepik-scraper/python/data/data/json/*.json
+wp-content/ewww/gifsicle.exe
+wp-content/ewww/jpegtran.exe
+wp-content/ewww/optipng.exe
