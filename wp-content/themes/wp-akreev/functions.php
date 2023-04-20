@@ -6,8 +6,8 @@
  */
 
 //  Enable styles for WP admin panel
-add_action('admin_enqueue_scripts', 'wpeAdminThemeStyle');
-function wpeAdminThemeStyle() {
+add_action('admin_enqueue_scripts', 'wpe_admin_theme_style');
+function wpe_admin_theme_style() {
   wp_register_style('wpe-editor-style', get_template_directory_uri() . '/css/editor-style.css');
   wp_enqueue_style('wpe-editor-style');
   wp_register_script('wpe-editor-script', get_template_directory_uri() . '/js/admin.js');
@@ -33,24 +33,23 @@ function my_acf_init() {
   acf_update_setting('google_api_key', 'AIzaSyCZF31krTQH_5QnEpdIsEgmsBV-Iy884rE');
 }
 
-
-add_action('wp_enqueue_scripts', 'wpeStyles'); // Add Theme Stylesheet
-function wpeStyles()  {
+add_action('wp_enqueue_scripts', 'wpe_styles'); // Add Theme Stylesheet
+function wpe_styles()  {
   wp_dequeue_style('fancybox');
   wp_dequeue_style('wp_dequeue_style');
 
-  wp_register_style('wpeasy-proto', get_template_directory_uri() . '/css/proto.css', array(), '1.0', 'all');
-  wp_enqueue_style('wpeasy-proto'); // Enqueue it!
+  // wp_register_style('wpe-proto', get_template_directory_uri() . '/css/proto.css', array(), '1.0', 'all');
+  // wp_enqueue_style('wpe-proto'); // Enqueue it!
 
-  wp_register_style('wpeasy-index', get_template_directory_uri() . '/css/index.css', array(), '1.0', 'all');
-  wp_enqueue_style('wpeasy-index'); // Enqueue it!
+  wp_register_style('wpe-index', get_template_directory_uri() . '/css/index.css', array(), '1.0', 'all');
+  wp_enqueue_style('wpe-index'); // Enqueue it!
 
-  // wp_register_style('wpeasy-style', get_template_directory_uri() . '/css/main.css', array(), '1.0', 'all');
-  // wp_enqueue_style('wpeasy-style'); // Enqueue it!
+  // wp_register_style('wpe-style', get_template_directory_uri() . '/css/main.css', array(), '1.0', 'all');
+  // wp_enqueue_style('wpe-style'); // Enqueue it!
 }
 
-add_action('wp_enqueue_scripts', 'wpeHeaderScripts'); // Add Scripts to wp_head
-function wpeHeaderScripts() {
+add_action('wp_enqueue_scripts', 'wpe_header_scripts'); // Add Scripts to wp_head
+function wpe_header_scripts() {
   // wp_deregister_script('jquery');
   // wp_deregister_script('jquery-migrate');
   wp_deregister_script('modernizr');
@@ -60,9 +59,13 @@ function wpeHeaderScripts() {
   wp_enqueue_script('jquery');
 
   //  Load footer scripts (footer.php)
-  wp_register_script('wpeScripts', get_template_directory_uri() . '/js/scripts.js', array(), '1.0.0', true);
-  wp_enqueue_script('wpeScripts');
-  wp_localize_script( 'wpeScripts', 'adminAjax', array(
+  wp_register_script('wpe-scripts', get_template_directory_uri() . '/js/scripts.js', array(), '1.0.0', true);
+  wp_enqueue_script('wpe-scripts');
+
+  wp_register_script('wpe-main', get_template_directory_uri() . '/js/main.js', array(), '1.0.0', true);
+  wp_enqueue_script('wpe-main');
+
+  wp_localize_script( 'wpe-scripts', 'adminAjax', array(
     'ajaxurl' => admin_url( 'admin-ajax.php' ),
     'templatePath' => get_template_directory_uri(),
     'posts_per_page' => get_option('posts_per_page')
@@ -82,7 +85,6 @@ function my_remove_recent_comments_style() {
 /*------------------------------------*\
     Theme Support
 \*------------------------------------*/
-
 if (!isset($content_width)) {
   $content_width = 980;
 }
@@ -431,7 +433,6 @@ function single_result() {
 /* <?php if (function_exists('easy_breadcrumbs')) easy_breadcrumbs(); ?> */
 
   function easy_breadcrumbs() {
-
   // Settings
   $separator = ' &raquo; ';
   $breadcrums_id = 'breadcrumbs';
@@ -440,13 +441,10 @@ function single_result() {
 
   // If you have any custom post types with custom taxonomies, put the taxonomy name below (e.g. product_cat)
   $custom_taxonomy = 'categories';
-
   // Get the query & post information
   global $post,$wp_query;
-
   // Do not display on the homepage
   if ( !is_front_page() ) {
-
   // Build the breadcrums
   echo '<ul id="' . $breadcrums_id . '" class="' . $breadcrums_class . '">';
 
@@ -459,15 +457,11 @@ function single_result() {
 
     echo '<li class="item-current item-archive"><span class="bread-current bread-archive">' .
         post_type_archive_title($prefix, false) . '</span></li>';
-
     } else if ( is_archive() && is_tax() && !is_category() && !is_tag() ) {
-
     // If post is a custom post type
     $post_type = get_post_type();
-
     // If it is a custom post type display name and link
     if($post_type != 'post') {
-
     $post_type_object = get_post_type_object($post_type);
     $post_type_archive = get_post_type_archive_link($post_type);
 
@@ -475,7 +469,6 @@ function single_result() {
         class="bread-cat bread-custom-post-type-' . $post_type . '" href="' . $post_type_archive . '"
         title="' . $post_type_object->labels->name . '">' . $post_type_object->labels->name . '</a></li>';
     echo '<li class="separator"> ' . $separator . ' </li>';
-
     }
 
     $custom_tax_name = get_queried_object()->name;

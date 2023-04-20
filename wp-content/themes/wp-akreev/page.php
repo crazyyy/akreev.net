@@ -1,15 +1,35 @@
 <?php get_header(); ?>
+<div class="page-container">
 
   <?php if (have_posts()): while (have_posts()) : the_post(); ?>
-    <article id="post-<?php the_ID(); ?>" <?php post_class(); ?>>
 
-      <h1 class="page-title inner-title"><?php the_title(); ?></h1>
-      <?php the_content(); ?>
-      <?php edit_post_link(); ?>
+  <section id="post-<?php the_ID(); ?>" <?php post_class("page standard-modules"); ?>>
+    <header class="page-header content">
+      <h1 class="title preserve-whitespace e2e-site-logo-text">
+        <?php the_title(); ?>
+      </h1>
+      <p class="description"></p>
+    </header>
 
-    </article>
+    <div class="page-content js-page-content">
+      <div id="project-canvas" class="js-project-modules modules content">
+        <div id="project-modules">
+
+          <div
+            class="project-module module text project-module-text align-center js-project-module e2e-site-project-module-text">
+            <div class="rich-text js-text-editable module-text">
+              <?php the_content(); ?>
+            </div>
+          </div>
+          <!-- project-module module text project-module-text align-center js-project-module e2e-site-project-module-text -->
+
+        </div> <!-- /#project-modules -->
+      </div>
+      <!-- /#project-canvas .js-project-modules modules content -->
+    </div> <!-- /.page-content js-page-content -->
+
+  </section>
   <?php endwhile; endif; ?>
 
-  <?php get_sidebar(); ?>
-
+</div><!-- /.page-container -->
 <?php get_footer(); ?>

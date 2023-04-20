@@ -31,8 +31,6 @@
 
   <body <?php body_class(); ?>>
     <!-- <body class="link-transition disable-download"> -->
-    <div class="page-background-video page-background-video-with-panel">
-    </div>
     <div class="js-responsive-nav">
       <div class="responsive-nav has-social">
         <div class="close-responsive-click-area js-close-responsive-nav">
@@ -53,10 +51,12 @@
           </nav>
         </div>
       </div>
-    </div>
+    </div><!-- ./js-responsive-nav -->
+
     <div class="site-wrap cfix js-site-wrap">
       <div class="site-container">
         <div class="site-content e2e-site-content">
+
           <header class="site-header">
             <div class="logo-container">
               <div class="logo-wrap">
@@ -92,4 +92,5 @@
               </nav>
             </div>
           </header>
+
           <main>

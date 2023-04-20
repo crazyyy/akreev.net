@@ -1,34 +1,35 @@
 <?php get_header(); ?>
+<div class="page-container">
 
   <?php if (have_posts()): while (have_posts()) : the_post(); ?>
-    <article id="post-<?php the_ID(); ?>" <?php post_class(); ?>>
 
-      <h1 class="single-title inner-title"><?php the_title(); ?></h1>
-      <?php if ( has_post_thumbnail()) :?>
-        <a class="single-thumb" href="<?php the_permalink(); ?>" title="<?php the_title(); ?>">
-          <?php the_post_thumbnail(); // Fullsize image for the single post ?>
-        </a>
-      <?php endif; ?><!-- /post thumbnail -->
+  <section id="post-<?php the_ID(); ?>" <?php post_class("page standard-modules"); ?>>
+    <header class="page-header content">
+      <h1 class="title e2e-site-logo-text">
+        <?php the_title(); ?>
+      </h1>
+      <p class="description"></p>
+    </header>
 
-      <span class="date"><?php the_time('d F Y'); ?> <?php the_time('H:i'); ?></span>
-      <span class="author"><?php _e( 'Published by', 'wpeasy' ); ?> <?php the_author_posts_link(); ?></span>
-      <span class="comments"><?php comments_popup_link( __( 'Leave your thoughts', 'wpeasy' ), __( '1 Comment', 'wpeasy' ), __( '% Comments', 'wpeasy' )); ?></span><!-- /post details -->
+    <div class="page-content js-page-content">
+      <div id="project-canvas" class="js-project-modules modules content">
+        <div id="project-modules">
 
-      <?php the_content(); ?>
+          <div
+            class="project-module module text project-module-text align-center js-project-module e2e-site-project-module-text">
+            <div class="rich-text js-text-editable module-text">
+              <?php the_content(); ?>
+            </div>
+          </div>
+          <!-- project-module module text project-module-text align-center js-project-module e2e-site-project-module-text -->
 
-      <?php the_tags( __( 'Tags: ', 'wpeasy' ), ', ', '<br>'); // Separated by commas with a line break at the end ?>
+        </div> <!-- /#project-modules -->
+      </div>
+      <!-- /#project-canvas .js-project-modules modules content -->
+    </div> <!-- /.page-content js-page-content -->
 
-      <p><?php _e( 'Categorised in: ', 'wpeasy' ); the_category(', '); // Separated by commas ?></p>
-
-      <p><?php _e( 'This post was written by ', 'wpeasy' ); the_author(); ?></p>
-
-      <?php edit_post_link(); ?>
-
-      <?php comments_template(); ?>
-
-    </article>
+  </section>
   <?php endwhile; endif; ?>
 
-  <?php get_sidebar(); ?>
-
+</div><!-- /.page-container -->
 <?php get_footer(); ?>
