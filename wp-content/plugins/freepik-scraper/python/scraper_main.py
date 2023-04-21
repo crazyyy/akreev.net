@@ -2,7 +2,7 @@ import os
 import re
 import json
 import time
-from PIL import Image
+# from PIL import Image
 from scraper import save_to_json, get_collection_data
 from selenium import webdriver
 from selenium.webdriver.common.by import By
