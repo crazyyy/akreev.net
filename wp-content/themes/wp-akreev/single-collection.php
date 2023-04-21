@@ -43,7 +43,7 @@
                 $image_sizes = wp_get_attachment_image_srcset($image_id, 'medium');
               ?>
               <div class="grid__item-container lightbox-link hoverable">
-                <img class="grid__item-image js-grid__item-image grid__item-image-lazy js-lazy image-loaded"
+                <img class="grid__item-image js-grid__item-image grid__item-image-lazy img-lightbox"
                   data-full-size="<?php echo esc_url($image_src); ?>" data-id="<?php echo esc_url($image_id); ?>"
                   data-original-id="<?php echo esc_url($image_original_id); ?>"
                   data-original-link="<?php echo esc_url($image_original_link); ?>"
@@ -59,13 +59,11 @@
 
           <div
             class="project-module module text project-module-text align-center js-project-module e2e-site-project-module-text">
-            <div class="rich-text js-text-editable module-text">
-              <div>
-                All set is here:
-                <a href="<?php the_field("collection_url") ?>" target="_blank" rel="nofollow">
-                  <?php the_field("collection_size") ?>
-                </a>
-              </div>
+            <div class="rich-text js-text-editable module-text rich-text--centered">
+              All set is here:
+              <a href="<?php the_field("collection_url") ?>" target="_blank" rel="nofollow">
+                <?php the_field("collection_size") ?>
+              </a>
             </div> <!-- ./rich-text js-text-editable module-text -->
           </div>
           <!-- ./project-module module text project-module-text align-center js-project-module e2e-site-project-module-text -->

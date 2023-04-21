@@ -5,15 +5,26 @@
   <?php
     $args = array(
         'post_type' => 'collection',
-        'posts_per_page' => 24,
+        'posts_per_page' => 96,
     );
     $collection_query = new WP_Query( $args );
   ?>
   <?php if ( $collection_query->have_posts() ) : ?>
   <?php while ( $collection_query->have_posts() ) : $collection_query->the_post(); ?>
+  <?php
+    $terms = get_the_terms( get_the_ID(), 'collection-type' );
+    if ( $terms && ! is_wp_error( $terms ) ) {
+      $term_names = array_map( function( $term ) {
+        return $term->name;
+        }, $terms );
+      $data_category = implode( ' ', $term_names );
+    } else {
+      $data_category = '';
+    }
+  ?>
 
   <a class="project-cover js-project-cover-touch hold-space" href="<?php the_permalink(); ?>"
-    title="<?php the_title(); ?>">
+    title="<?php the_title(); ?>" data-category="<?php echo esc_attr( $data_category ); ?>">
     <div class="cover-content-container">
       <div class="cover-image-wrap">
         <div class="cover-image">
@@ -31,13 +42,8 @@
         </div><!-- ./cover-image -->
       </div><!-- ./cover-image-wrap -->
       <div class="details-wrap">
-        <div class="details">
-          <div class="details-inner">
-            <div class="title preserve-whitespace">
-              <?php the_title(); ?>
-            </div>
-            <div class="date">2023</div>
-          </div>
+        <div class="title">
+          <?php the_title(); ?>
         </div>
       </div><!-- ./details-wrap -->
     </div><!-- ./cover-content-container -->

@@ -30,7 +30,6 @@
   </head>
 
   <body <?php body_class(); ?>>
-    <!-- <body class="link-transition disable-download"> -->
     <div class="js-responsive-nav">
       <div class="responsive-nav has-social">
         <div class="close-responsive-click-area js-close-responsive-nav">
@@ -38,7 +37,7 @@
         </div>
         <div class="nav-container">
           <nav>
-            <div class="gallery-title"><a href="/work" class="active">PSD Mockups</a>
+            <div class="gallery-title"><a href="/work" class="active">PSD sssMockups</a>
             </div>
             <div class="gallery-title"><a href="/jpg">3D Render assets</a></div>
             <div class="page-title">
@@ -62,9 +61,10 @@
               <div class="logo-wrap">
                 <div class="logo e2e-site-logo-text logo-text">
                   <?php if ( !is_front_page() && !is_home() ){ ?>
-                  <a class="preserve-whitespace" href="<?php echo home_url(); ?>">
+                  <a href="<?php echo home_url(); ?>">
                     <?php } ?>
-                    <span class="preserve-whitespace">Akreev</span>
+                    <img src="<?php echo get_template_directory_uri(); ?>/img/logo.png" alt="<?php wp_title( '' ); ?>"
+                      title="<?php wp_title( '' ); ?>" class="logo-img">
                     <?php if ( !is_front_page() && !is_home() ){ ?>
                   </a>
                   <?php } ?>
@@ -80,15 +80,7 @@
             </div>
             <div class="nav-container">
               <nav>
-                <div class="gallery-title">
-                  <a href="/work" class="active">PSD Mockups</a>
-                </div>
-                <div class="gallery-title">
-                  <a href="/jpg">3D Render assets</a>
-                </div>
-                <div class="page-title">
-                  <a href="/contact">Contact</a>
-                </div>
+                <?php wpeHeadNav(); ?>
               </nav>
             </div>
           </header>

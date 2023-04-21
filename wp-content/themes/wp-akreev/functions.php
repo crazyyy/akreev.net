@@ -62,8 +62,8 @@ function wpe_header_scripts() {
   wp_register_script('wpe-scripts', get_template_directory_uri() . '/js/scripts.js', array(), '1.0.0', true);
   wp_enqueue_script('wpe-scripts');
 
-  wp_register_script('wpe-main', get_template_directory_uri() . '/js/main.js', array(), '1.0.0', true);
-  wp_enqueue_script('wpe-main');
+  // wp_register_script('wpe-main', get_template_directory_uri() . '/js/main.js', array(), '1.0.0', true);
+  // wp_enqueue_script('wpe-main');
 
   wp_localize_script( 'wpe-scripts', 'adminAjax', array(
     'ajaxurl' => admin_url( 'admin-ajax.php' ),
@@ -130,8 +130,9 @@ function wpeHeadNav() {
     )
   );
 }
-// WPE footer navigation
-function wpeFootNav() {
+
+// WPE sidebar navigation
+function wpeSideNav() {
   wp_nav_menu(
   array(
     'theme_location'  => 'footer-menu',
@@ -147,30 +148,7 @@ function wpeFootNav() {
     'after'           => '',
     'link_before'     => '',
     'link_after'      => '',
-    'items_wrap'      => '<ul class="footernav">%3$s</ul>',
-    'depth'           => 0,
-    'walker'          => ''
-    )
-  );
-}
-// WPE sidebar navigation
-function wpeSideNav() {
-  wp_nav_menu(
-  array(
-    'theme_location'  => 'sidebar-menu',
-    'menu'            => '',
-    'container'       => 'div',
-    'container_class' => 'menu-{menu slug}-container',
-    'container_id'    => '',
-    'menu_class'      => 'menu',
-    'menu_id'         => '',
-    'echo'            => true,
-    'fallback_cb'     => 'wp_page_menu',
-    'before'          => '',
-    'after'           => '',
-    'link_before'     => '',
-    'link_after'      => '',
-    'items_wrap'      => '<ul class="sidebarnav">%3$s</ul>',
+    'items_wrap'      => '<ul class="footer--nav">%3$s</ul>',
     'depth'           => 0,
     'walker'          => ''
     )
@@ -181,7 +159,6 @@ add_action('init', 'register_html5_menu'); // Add HTML5 Blank Menu
 function register_html5_menu() {
   register_nav_menus(array(
     'header-menu' => __('Header Nav', 'wpeasy'),
-    'sidebar-menu' => __('Sidebar Nav', 'wpeasy'),
     'footer-menu' => __('Footer Nav', 'wpeasy')
   ));
 }
