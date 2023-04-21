@@ -39,12 +39,12 @@
                 $image_src = $image['url'];
                 $image_src_medium = $image['sizes']['medium'];
                 $image_original_id = get_field('id', $image_id);
-                $image_original_link = get_field('original_image_link', $image_id);
+                $image_original_link = get_field('original_page', $image_id);
                 $image_sizes = wp_get_attachment_image_srcset($image_id, 'medium');
               ?>
               <a class="grid__item-container lightbox-link hoverable"
-                data-full-size="<?php echo esc_url($image_src); ?>" data-id="<?php echo esc_url($image_id); ?>"
-                data-original-id="<?php echo esc_url($image_original_id); ?>"
+                data-full-size="<?php echo esc_url($image_src); ?>" data-id="<?php echo $image_id; ?>"
+                data-original-id="<?php echo $image_original_id; ?>"
                 data-original-link="<?php echo esc_url($image_original_link); ?>" />
               <img class="grid__item-image js-grid__item-image grid__item-image-lazy img-lightbox"
                 src="<?php echo esc_url($image_src_medium); ?>" />

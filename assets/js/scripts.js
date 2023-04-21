@@ -44,7 +44,7 @@ if (typeof jQuery === 'undefined') {
 }
 
 // Place any jQuery/helper plugins in here.
-
+const $ = jQuery
 // Slow scroll back to top
 // Select the back-to-top link
 const backToTopButton = document.querySelector('.back-to-top a');
@@ -108,41 +108,76 @@ document.querySelectorAll('.headnav a').forEach(function(link) {
 });
 
 // collection page show lightbox
-// please write a code to show lightbox on pure JS:
-// - when click on IMG with class "img-lightbox" create new modal window with maxium 80% of height and width of user window and show image from main IMG attribute "data-full-size"
-// - at the bottom of modal window shown text "Original image: " + attribute "data-original-link" from original IMG
-// - close modal windows on presing "ESC" keyboard button or "close" button on modal window or click outside modal window
+$(document).ready(function() {
+  var $lightboxModal = $('#lightbox-modal');
+  var $lightboxContent = $('.lightbox-content');
+  var $lightboxImage = $('#lightbox-image');
+  var $downloadLink = $('#download-link');
+  var $closeButton = $('#close-button');
+  var $prevButton = $('#prev-button');
+  var $nextButton = $('#next-button');
+  var $lightboxLinks = $('.lightbox-link');
+  var currentIndex = 0;
 
-// const imgLightboxElems = document.querySelectorAll('.img-lightbox');
-// const modalElem = document.querySelector('.img-modal');
-// const lightboxImgElem = document.querySelector('.lightbox-img');
-// const originalLinkElem = document.querySelector('.original-link');
+  function openLightbox(index) {
+    currentIndex = index;
+    var $lightboxLink = $lightboxLinks.eq(currentIndex);
+    var fullSize = $lightboxLink.data('full-size');
+    var originalLink = $lightboxLink.data('original-link');
+    $lightboxImage.attr('src', fullSize);
+    $downloadLink.attr('href', originalLink);
+    $lightboxModal.show();
+  }
 
-// imgLightboxElems.forEach(imgLightboxElem => {
-//   imgLightboxElem.addEventListener('click', function(event) {
-//     event.preventDefault();
-//     event.stopPropagation();
+  function closeLightbox() {
+    $lightboxModal.hide();
+  }
 
-//     // Show the modal
-//     modalElem.classList.add('show');
+  function prevImage() {
+    if (currentIndex > 0) {
+      currentIndex--;
+      openLightbox(currentIndex);
+    }
+  }
 
-//     // Set the full-size image and the original link in the modal
-//     lightboxImgElem.src = imgLightboxElem.dataset.fullSize;
-//     originalLinkElem.textContent = `Original image: ${imgLightboxElem.dataset.originalLink}`;
+  function nextImage() {
+    if (currentIndex < $lightboxLinks.length - 1) {
+      currentIndex++;
+      openLightbox(currentIndex);
+    }
+  }
 
-// modalElem.addEventListener('click', function(event) {
-//   if (event.target === this || event.target.classList.contains('close-btn')) {
-//     // Hide the modal when the user clicks outside the image or the "close" button
-//     modalElem.classList.remove('show');
-//   }
-// });
+  $lightboxLinks.click(function(event) {
+    event.preventDefault();
+    var index = $lightboxLinks.index(this);
+    openLightbox(index);
+  });
 
-// document.addEventListener('keydown', function(event) {
-//   if (event.key === 'Escape') {
-//     // Hide the modal when the user presses the "ESC" key
-//     modalElem.classList.remove('show');
-//   }
-// });
+  $closeButton.click(function() {
+    closeLightbox();
+  });
 
-//   });
-// });
+  $(document).keydown(function(event) {
+    if (event.keyCode === 27) {
+      closeLightbox();
+    } else if (event.keyCode === 37) {
+      prevImage();
+    } else if (event.keyCode === 39) {
+      nextImage();
+    }
+  });
+
+  $lightboxModal.click(function(event) {
+    if (event.target === this) {
+      closeLightbox();
+    }
+  });
+
+  $prevButton.click(function() {
+    prevImage();
+  });
+
+  $nextButton.click(function() {
+    nextImage();
+  });
+});

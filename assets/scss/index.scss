@@ -739,7 +739,6 @@ nav {
 
 .masthead,
 .masthead-contents {
-  display: box;
   display: flex;
   box-align: center;
   align-items: center;
@@ -2112,46 +2111,111 @@ nav {
   display: block;
 }
 
-.img-modal {
+.lightbox-modal {
+  display: none;
   position: fixed;
-  z-index: 1000;
   top: 0;
   left: 0;
   width: 100%;
   height: 100%;
-  background: rgba(0, 0, 0, 0.9);
-  // display: flex;
-  display: none;
-  justify-content: center;
-  align-items: center;
-  overflow: hidden;
-  opacity: 0;
-  transition: opacity 0.2s ease;
-  .lightbox-img {
-  max-height: 80vh;
-  max-width: 80vw;
+  background-color: rgba(0, 0, 0, 0.8);
+  z-index: 9999;
 }
 
-.close-btn {
+.lightbox-content {
   position: absolute;
-  top: 10px;
-  right: 10px;
-  border: none;
-  background: none;
-  color: white;
-  font-size: 1.5rem;
-  cursor: pointer;
-}
-
-.original-link {
-  color: white;
-  margin-top: 10px;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  max-width: 80%;
+  max-height: 80%;
+  overflow: auto;
   text-align: center;
-}
+
+  .lightbox-image {
+    max-width: 100%;
+    max-height: 100%;
+  }
+
+  .download-link--container {
+    bottom: 30px;
+    width: 100%;
+    left: 0;
+    right: 0;
+    text-align: center;
+    display: block;
+    position: absolute;
+
+    .download-link {
+      display: inline-block;
+      color: #fff;
+      text-decoration: none;
+      padding: 10px 20px;
+      border-radius: 5px;
+      background-color: #888;
+
+      &:hover {
+        background-color: #fff;
+        color: #000;
+      }
+    }
+  }
+
+  .close-button,
+  .prev-button,
+  .next-button {
+    position: absolute;
+    color: #fff;
+    background-color: transparent;
+    border: none;
+    font-size: 24px;
+    cursor: pointer;
+    opacity: 0.7;
+
+    &:hover {
+      opacity: 1;
+    }
+  }
+
+  .close-button {
+    right: 15px;
+    top: 0;
+  }
+
+  .prev-button {
+    left: 0;
+    top: 50%;
+  }
+
+  .next-button {
+    right: 0;
+
+    top: 50%;
+  }
 }
 
-.img-modal.show {
-  opacity: 1;
+.container__entry-button {
+  text-align: center;
+  padding-top: 20px;
+}
+
+.entry-button {
+  display: inline-block;
+
+  text-decoration: none;
+  padding: 10px 20px;
+  border-radius: 5px;
+
+
+  &.entry-button__see-all {
+    color: #fff;
+    background-color: #888;
+
+    &:hover {
+      background-color: #fff;
+      color: #000;
+    }
+  }
 }
 
 
