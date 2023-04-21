@@ -20,10 +20,10 @@
             <div class="rich-text js-text-editable module-text">
               <?php the_content(); ?>
 
-              <div>
-                All set is here:
-                <a href="<?php the_field("collection_url") ?>" target="_blank" rel="nofollow">
-                  <?php the_field("collection_size") ?>
+              <div class="container__entry-button">
+                <a href="<?php the_field("collection_url") ?>" target="_blank" rel="nofollow"
+                  class="entry-button entry-button__see-all">
+                  Check all set
                 </a>
               </div>
             </div>
@@ -42,14 +42,14 @@
                 $image_original_link = get_field('original_image_link', $image_id);
                 $image_sizes = wp_get_attachment_image_srcset($image_id, 'medium');
               ?>
-              <div class="grid__item-container lightbox-link hoverable">
-                <img class="grid__item-image js-grid__item-image grid__item-image-lazy img-lightbox"
-                  data-full-size="<?php echo esc_url($image_src); ?>" data-id="<?php echo esc_url($image_id); ?>"
-                  data-original-id="<?php echo esc_url($image_original_id); ?>"
-                  data-original-link="<?php echo esc_url($image_original_link); ?>"
-                  src="<?php echo esc_url($image_src_medium); ?>" />
-                <span class="grid__item-filler" style="padding-bottom:74%;"></span>
-              </div>
+              <a class="grid__item-container lightbox-link hoverable"
+                data-full-size="<?php echo esc_url($image_src); ?>" data-id="<?php echo esc_url($image_id); ?>"
+                data-original-id="<?php echo esc_url($image_original_id); ?>"
+                data-original-link="<?php echo esc_url($image_original_link); ?>" />
+              <img class="grid__item-image js-grid__item-image grid__item-image-lazy img-lightbox"
+                src="<?php echo esc_url($image_src_medium); ?>" />
+              <span class="grid__item-filler" style="padding-bottom:74%;"></span>
+              </a>
               <?php } # end foreach ?>
 
               <div class="js-grid-spacer" style="display: none;"></div>
@@ -60,9 +60,9 @@
           <div
             class="project-module module text project-module-text align-center js-project-module e2e-site-project-module-text">
             <div class="rich-text js-text-editable module-text rich-text--centered">
-              All set is here:
-              <a href="<?php the_field("collection_url") ?>" target="_blank" rel="nofollow">
-                <?php the_field("collection_size") ?>
+              <a href="<?php the_field("collection_url") ?>" target="_blank" rel="nofollow"
+                class="entry-button entry-button__see-all">
+                All set (<?php the_field("collection_size") ?> images)
               </a>
             </div> <!-- ./rich-text js-text-editable module-text -->
           </div>
