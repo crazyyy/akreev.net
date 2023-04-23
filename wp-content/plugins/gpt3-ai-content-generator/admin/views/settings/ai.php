@@ -29,7 +29,7 @@ if ( ! defined( 'ABSPATH' ) ) exit;
         <p><?php echo sprintf(esc_html__('Please note that GPT-4 is currently in limited beta, which means that access to the GPT-4 API from OpenAI is available only through a waiting list and is not open to everyone yet. You can sign up for the waiting list at %shere%s.','gpt3-ai-content-generator'),'<a href="https://openai.com/waitlist/gpt-4-api" target="_blank">','</a>')?></p>
     </div>
     <div class="wpcgai_form_row wpaicg_sleep_time" style="<?php echo $wpaicg_ai_model == 'gpt-3.5-turbo' || $wpaicg_ai_model == 'gpt-4-32k' || $wpaicg_ai_model == 'gpt-4' ? '' : 'display:none'?>">
-        <label class="wpcgai_label"><?php echo esc_html__('Sleep Time?','gpt3-ai-content-generator')?>:</label>
+        <label class="wpcgai_label"><?php echo esc_html__('Rate Limit Buffer','gpt3-ai-content-generator')?>:</label>
         <select class="regular-text"  name="wpaicg_sleep_time" >
             <?php
             for($i=1;$i<=10;$i++){

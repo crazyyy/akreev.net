@@ -70,7 +70,11 @@ $default_setting = array(
     'moderation_notice' => __('Your message has been flagged as potentially harmful or inappropriate. Please ensure that your messages are respectful and do not contain language or content that could be offensive or harmful to others. Thank you for your cooperation.','gpt3-ai-content-generator'),
     'role_limited' => false,
     'limited_roles' => [],
-    'log_request' => false
+    'log_request' => false,
+    'fullscreen' => false,
+    'download_btn' => false,
+    'bar_color' => '#fff',
+    'thinking_color' => '#fff',
 );
 $wpaicg_pinecone_api = get_option('wpaicg_pinecone_api','');
 $wpaicg_pinecone_environment = get_option('wpaicg_pinecone_environment','');
@@ -87,6 +91,10 @@ $wpaicg_user_tokens = isset($wpaicg_settings['user_tokens']) ? $wpaicg_settings[
 $wpaicg_guest_tokens = isset($wpaicg_settings['guest_tokens']) ? $wpaicg_settings['guest_tokens'] : 0;
 $wpaicg_reset_limit = isset($wpaicg_settings['reset_limit']) ? $wpaicg_settings['reset_limit'] : 0;
 $wpaicg_limited_message = isset($wpaicg_settings['limited_message']) && !empty($wpaicg_settings['limited_message']) ? $wpaicg_settings['limited_message'] : __('You have reached your token limit.','gpt3-ai-content-generator');
+$wpaicg_chat_fullscreen = isset($wpaicg_settings['fullscreen']) && !empty($wpaicg_settings['fullscreen']) ? $wpaicg_settings['fullscreen'] : false;
+$wpaicg_chat_download_btn = isset($wpaicg_settings['download_btn']) && !empty($wpaicg_settings['download_btn']) ? $wpaicg_settings['download_btn'] : false;
+$wpaicg_bar_color = isset($wpaicg_settings['bar_color']) && !empty($wpaicg_settings['bar_color']) ? $wpaicg_settings['bar_color'] : '#fff';
+$wpaicg_thinking_color = isset($wpaicg_settings['thinking_color']) && !empty($wpaicg_settings['thinking_color']) ? $wpaicg_settings['thinking_color'] : '#fff';
 $wpaicg_roles = wp_roles()->get_names();
 ?>
 <style>
@@ -231,6 +239,9 @@ endif;
                             <option value="no" <?php
                             echo  ( esc_html( $wpaicg_settings['language'] ) == 'no' ? 'selected' : '' ) ;
                             ?>>Norwegian</option>
+                            <option value="fa" <?php
+                            echo  ( esc_html( $wpaicg_settings['language'] ) == 'fa' ? 'selected' : '' ) ;
+                            ?>>Persian</option>
                             <option value="pl" <?php
                             echo  ( esc_html( $wpaicg_settings['language'] ) == 'pl' ? 'selected' : '' ) ;
                             ?>>Polish</option>
@@ -429,6 +440,22 @@ endif;
                                 <strong><?php echo esc_html__('Custom','gpt3-ai-content-generator')?></strong>
                             </div>
                         </div>
+                    </div>
+                    <div class="mb-5">
+                        <label class="wpaicg-form-label"><?php echo esc_html__('Fullscreen Button','gpt3-ai-content-generator')?>:</label>
+                        <input<?php echo $wpaicg_chat_fullscreen ? ' checked':''?> value="1" type="checkbox" class="wpaicgchat_fullscreen" name="wpaicg_chat_shortcode_options[fullscreen]">
+                    </div>
+                    <div class="mb-5">
+                        <label class="wpaicg-form-label"><?php echo esc_html__('Download Button','gpt3-ai-content-generator')?>:</label>
+                        <input<?php echo $wpaicg_chat_download_btn ? ' checked':''?> value="1" type="checkbox" class="wpaicgchat_download_btn" name="wpaicg_chat_shortcode_options[download_btn]">
+                    </div>
+                    <div class="mb-5" style="position: relative">
+                        <label class="wpaicg-form-label"><?php echo esc_html__('Bar Icons Color','gpt3-ai-content-generator')?>:</label>
+                        <input value="<?php echo esc_html($wpaicg_bar_color)?>" type="text" class="wpaicgchat_color wpaicgchat_bar_color" name="wpaicg_chat_shortcode_options[bar_color]">
+                    </div>
+                    <div class="mb-5" style="position: relative">
+                        <label class="wpaicg-form-label"><?php echo esc_html__('AI Thinking Text Color','gpt3-ai-content-generator')?>:</label>
+                        <input value="<?php echo esc_html($wpaicg_thinking_color)?>" type="text" class="wpaicgchat_color wpaicgchat_thinking_color" name="wpaicg_chat_shortcode_options[thinking_color]">
                     </div>
                 </div>
             </div>
@@ -988,6 +1015,7 @@ endif;
                 $('.wpaicg-mic-icon').css('color', '');
             }
         });
+        $('.wpaicgchat_thinking_color').wpColorPicker();
         $('.wpaicg_user_bg_color').wpColorPicker({
             change: function (event, ui){
                 var color = ui.color.toString();
@@ -1033,6 +1061,15 @@ endif;
                 $('.wpaicg-chat-shortcode-send').css('color', '#fff');
             }
         });
+        $('.wpaicgchat_bar_color').wpColorPicker({
+            change: function (event, ui){
+                var color = ui.color.toString();
+                $('.wpaicg-chatbox-action-bar').css('color', color);
+            },
+            clear: function(event){
+                $('.wpaicg-chatbox-action-bar').css('color', '');
+            }
+        });
         $('.wpaicg_ai_bg_color').wpColorPicker({
             change: function (event, ui){
                 var color = ui.color.toString();
@@ -1045,7 +1082,6 @@ endif;
         $('.wpaicg_chat_shortcode_width').on('input', function (){
             var chatbox_width = $(this).val();
             var preview_width = $('.wpaicg-chat-shortcode-preview').width();
-            console.log(preview_width);
             if(chatbox_width.indexOf('%') > -1){
                 chatbox_width = chatbox_width.replace('%','');
                 chatbox_width = parseFloat(chatbox_width);

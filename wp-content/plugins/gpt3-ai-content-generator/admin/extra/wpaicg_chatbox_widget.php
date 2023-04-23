@@ -30,6 +30,8 @@ if($wpaicg_bot_content && isset($wpaicg_bot_content->post_id)){
         $wpaicg_ai_thinking = isset($wpaicg_chat_widget['ai_thinking']) && !empty($wpaicg_chat_widget['ai_thinking']) ? $wpaicg_chat_widget['ai_thinking'] : $wpaicg_ai_thinking;
     }
 }
+$wpaicg_chat_widget_width = isset($wpaicg_chat_widget['width']) && !empty($wpaicg_chat_widget['width']) ? $wpaicg_chat_widget['width'] : '350';
+$wpaicg_chat_widget_height = isset($wpaicg_chat_widget['height']) && !empty($wpaicg_chat_widget['height']) ? $wpaicg_chat_widget['height'] : '400';
 /*End check*/
 $wpaicg_ai_name = !empty($wpaicg_ai_name) ? $wpaicg_ai_name : esc_html__('AI','gpt3-ai-content-generator');
 $wpaicg_ai_thinking = !empty($wpaicg_ai_thinking) ? $wpaicg_ai_thinking : esc_html__('AI thinking','gpt3-ai-content-generator');
@@ -55,16 +57,32 @@ $wpaicg_log_notice_message = isset($wpaicg_chat_widget['log_notice_message']) &&
 $wpaicg_audio_enable = isset($wpaicg_chat_widget['audio_enable']) ? $wpaicg_chat_widget['audio_enable'] : false;
 $wpaicg_mic_color = isset($wpaicg_chat_widget['mic_color']) ? $wpaicg_chat_widget['mic_color'] : '#222';
 $wpaicg_stop_color = isset($wpaicg_chat_widget['stop_color']) ? $wpaicg_chat_widget['stop_color'] : '#f00';
+$wpaicg_chat_fullscreen = isset($wpaicg_chat_widget['fullscreen']) && !empty($wpaicg_chat_widget['fullscreen']) ? $wpaicg_chat_widget['fullscreen'] : false;
+$wpaicg_chat_close_btn = isset($wpaicg_chat_widget['close_btn']) && !empty($wpaicg_chat_widget['close_btn']) ? $wpaicg_chat_widget['close_btn'] : false;
+$wpaicg_chat_download_btn = isset($wpaicg_chat_widget['download_btn']) && !empty($wpaicg_chat_widget['download_btn']) ? $wpaicg_chat_widget['download_btn'] : false;
+$wpaicg_has_action_bar = false;
+$wpaicg_chat_bgcolor = isset($wpaicg_chat_widget['bgcolor']) && !empty($wpaicg_chat_widget['bgcolor']) ? $wpaicg_chat_widget['bgcolor'] : '#222222';
+$wpaicg_bar_color = isset($wpaicg_chat_widget['bar_color']) && !empty($wpaicg_chat_widget['bar_color']) ? $wpaicg_chat_widget['bar_color'] : '#fff';
+$wpaicg_thinking_color = isset($wpaicg_chat_widget['thinking_color']) && !empty($wpaicg_chat_widget['thinking_color']) ? $wpaicg_chat_widget['thinking_color'] : '#fff';
+$wpaicg_delay_time = isset($wpaicg_chat_widget['delay_time']) && !empty($wpaicg_chat_widget['delay_time']) ? $wpaicg_chat_widget['delay_time'] : '';
+if($wpaicg_chat_fullscreen || $wpaicg_chat_download_btn || $wpaicg_chat_close_btn){
+    $wpaicg_has_action_bar = true;
+}
 ?>
 <style>
     .wpaicg_chat_widget,.wpaicg_chat_widget_content{
         z-index: 99999;
     }
+    .wpaicg_chat_widget{
+        overflow: hidden;
+    }
+    .wpaicg_widget_open.wpaicg_chat_widget{
+        overflow: unset;
+    }
     .wpaicg-chatbox{
         width: 100%;
         border-top-left-radius: 5px;
         border-top-right-radius: 5px;
-        overflow: hidden;
     }
     .wpaicg-chatbox-content{
         position: relative;
@@ -97,7 +115,6 @@ $wpaicg_stop_color = isset($wpaicg_chat_widget['stop_color']) ? $wpaicg_chat_wid
     .wpaicg-bot-thinking{
         bottom: 0;
         font-size: 11px;
-        color: #90EE90;
         padding: 2px 6px;
         display: none;
     }
@@ -221,8 +238,94 @@ $wpaicg_stop_color = isset($wpaicg_chat_widget['stop_color']) ? $wpaicg_chat_wid
         width: 100%;
         background-color: <?php echo esc_html($wpaicg_chat_widget['bgcolor'])?>;
     }
+    .wpaicg-chatbox-action-bar{
+        height: 30px;
+        padding: 0 5px;
+        display: none;
+        justify-content: flex-end;
+        align-items: center;
+        border-top-left-radius: 2px;
+        border-top-right-radius: 2px;
+        background: <?php echo esc_html($wpaicg_chat_bgcolor)?>;
+        color: <?php echo esc_html($wpaicg_bar_color)?>;
+    }
+    .wpaicg-chatbox-preview-box .wpaicg-chatbox-action-bar{
+        width: calc(100% - 10px);
+    }
+    .wpaicg_widget_open .wpaicg-chatbox-action-bar{
+        display: flex;
+    }
+    .wpaicg-chatbox-download-btn{
+        cursor: pointer;
+        padding: 2px;
+        display: flex;
+        align-items: center;
+        margin: 0 3px;
+    }
+    .wpaicg-chatbox-download-btn svg{
+        fill: currentColor;
+        height: 16px;
+        width: 16px;
+    }
+    .wpaicg-chatbox-fullscreen{
+        cursor: pointer;
+        padding: 2px;
+        display: flex;
+        align-items: center;
+        margin: 0 3px;
+    }
+    .wpaicg-chatbox-close-btn{
+        cursor: pointer;
+        padding: 2px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin: 0 3px;
+    }
+    .wpaicg-chatbox-close-btn svg{
+        fill: currentColor;
+        height: 16px;
+        width: 16px;
+    }
+    .wpaicg-chatbox-fullscreen svg.wpaicg-exit-fullscreen{
+        display: none;
+        fill: none;
+        height: 16px;
+        width: 16px;
+    }
+    .wpaicg-chatbox-fullscreen svg.wpaicg-exit-fullscreen path{
+        fill: currentColor;
+    }
+    .wpaicg-chatbox-fullscreen svg.wpaicg-active-fullscreen{
+        fill: none;
+        height: 16px;
+        width: 16px;
+    }
+    .wpaicg-chatbox-fullscreen svg.wpaicg-active-fullscreen path{
+        fill: currentColor;
+    }
+    .wpaicg-chatbox-fullscreen.wpaicg-fullscreen-box svg.wpaicg-active-fullscreen{
+        display:none;
+    }
+    .wpaicg-chatbox-fullscreen.wpaicg-fullscreen-box svg.wpaicg-exit-fullscreen{
+        display: block;
+    }
+    .wpaicg-fullscreened .wpaicg-chatbox-action-bar{
+        top: 0;
+        z-index: 99;
+        border-top-left-radius: 0;
+        border-top-right-radius: 0;
+        border-bottom-left-radius: 3px;
+    }
+    .wpaicg-chatbox .wpaicg-chatbox-footer{
+        margin: 0px;
+    }
+    .wpaicg-chat-widget-has-footer .wpaicg-chatbox-type{
+        border-bottom-left-radius: 0;
+        border-bottom-right-radius: 0;
+    }
 </style>
-<div class="wpaicg-chatbox"
+<div class="wpaicg-chatbox<?php echo $wpaicg_has_action_bar ? ' wpaicg-chatbox-has-action-bar':''?><?php echo isset($wpaicg_chat_widget['footer_text']) && !empty($wpaicg_chat_widget['footer_text']) ? ' wpaicg-chat-widget-has-footer':' wpaicg-chat-widget-no-footer'?>"
      data-user-bg-color="<?php echo esc_html($wpaicg_user_bg_color)?>"
      data-color="<?php echo esc_html($wpaicg_chat_fontcolor)?>"
      data-fontsize="<?php echo esc_html($wpaicg_chat_fontsize)?>"
@@ -236,7 +339,46 @@ $wpaicg_stop_color = isset($wpaicg_chat_widget['stop_color']) ? $wpaicg_chat_wid
      data-post-id="<?php echo get_the_ID()?>"
      data-url="<?php echo home_url( $wp->request )?>"
      data-bot-id="<?php echo esc_html($wpaicg_bot_id)?>"
+     data-width="<?php echo esc_html($wpaicg_chat_widget_width)?>"
+     data-height="<?php echo esc_html($wpaicg_chat_widget_height)?>"
+     data-footer="<?php echo isset($wpaicg_chat_widget['footer_text']) && !empty($wpaicg_chat_widget['footer_text']) ? 'true' : 'false'?>"
 >
+    <?php
+    if($wpaicg_has_action_bar):
+    ?>
+    <div class="wpaicg-chatbox-action-bar">
+        <?php
+        if($wpaicg_chat_download_btn):
+        ?>
+        <span data-type="widget" class="wpaicg-chatbox-download-btn">
+            <svg version="1.1" id="_x32_" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 512 512"  xml:space="preserve"><path class="st0" d="M243.591,309.362c3.272,4.317,7.678,6.692,12.409,6.692c4.73,0,9.136-2.376,12.409-6.689l89.594-118.094 c3.348-4.414,4.274-8.692,2.611-12.042c-1.666-3.35-5.631-5.198-11.168-5.198H315.14c-9.288,0-16.844-7.554-16.844-16.84V59.777 c0-11.04-8.983-20.027-20.024-20.027h-44.546c-11.04,0-20.022,8.987-20.022,20.027v97.415c0,9.286-7.556,16.84-16.844,16.84 h-34.305c-5.538,0-9.503,1.848-11.168,5.198c-1.665,3.35-0.738,7.628,2.609,12.046L243.591,309.362z"/><path class="st0" d="M445.218,294.16v111.304H66.782V294.16H0v152.648c0,14.03,11.413,25.443,25.441,25.443h461.118 c14.028,0,25.441-11.413,25.441-25.443V294.16H445.218z"/></svg>
+        </span>
+        <?php
+        endif;
+        ?>
+        <?php
+        if($wpaicg_chat_fullscreen):
+        ?>
+        <span data-type="widget" class="wpaicg-chatbox-fullscreen">
+            <svg class="wpaicg-active-fullscreen" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" clip-rule="evenodd" d="M10 15H15V10H13.2V13.2H10V15ZM6 15V13.2H2.8V10H1V15H6ZM10 2.8H12.375H13.2V6H15V1H10V2.8ZM6 1V2.8H2.8V6H1V1H6Z"/></svg>
+            <svg class="wpaicg-exit-fullscreen" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg"><path d="M1 6L6 6L6 1L4.2 1L4.2 4.2L1 4.2L1 6Z"/><path d="M15 10L10 10L10 15L11.8 15L11.8 11.8L15 11.8L15 10Z"/><path d="M6 15L6 10L1 10L1 11.8L4.2 11.8L4.2 15L6 15Z"/><path d="M10 1L10 6L15 6L15 4.2L11.8 4.2L11.8 1L10 1Z"/></svg>
+        </span>
+        <?php
+        endif;
+        ?>
+        <?php
+        if($wpaicg_chat_close_btn):
+            ?>
+        <span class="wpaicg-chatbox-close-btn">
+            <svg viewBox="0 0 1024 1024" xmlns="http://www.w3.org/2000/svg"><path d="M195.2 195.2a64 64 0 0 1 90.496 0L512 421.504 738.304 195.2a64 64 0 0 1 90.496 90.496L602.496 512 828.8 738.304a64 64 0 0 1-90.496 90.496L512 602.496 285.696 828.8a64 64 0 0 1-90.496-90.496L421.504 512 195.2 285.696a64 64 0 0 1 0-90.496z"/></svg>
+        </span>
+        <?php
+        endif;
+        ?>
+    </div>
+    <?php
+    endif;
+    ?>
     <div class="wpaicg-chatbox-content">
         <ul class="wpaicg-chatbox-messages">
             <?php
@@ -261,7 +403,7 @@ $wpaicg_stop_color = isset($wpaicg_chat_widget['stop_color']) ? $wpaicg_chat_wid
                 </p>
             </li>
         </ul>
-        <span class="wpaicg-bot-thinking"><?php echo esc_html($wpaicg_ai_thinking)?>&nbsp;<span class="wpaicg-jumping-dots"><span class="wpaicg-dot-1">.</span><span class="wpaicg-dot-2">.</span><span class="wpaicg-dot-3">.</span></span></span>
+        <span class="wpaicg-bot-thinking" style="color: <?php echo esc_html($wpaicg_thinking_color)?>;"><?php echo esc_html($wpaicg_ai_thinking)?>&nbsp;<span class="wpaicg-jumping-dots"><span class="wpaicg-dot-1">.</span><span class="wpaicg-dot-2">.</span><span class="wpaicg-dot-3">.</span></span></span>
     </div>
     <div class="wpaicg-chatbox-type">
         <input type="text" class="wpaicg-chatbox-typing" placeholder="<?php echo esc_html($wpaicg_typing_placeholder)?>">

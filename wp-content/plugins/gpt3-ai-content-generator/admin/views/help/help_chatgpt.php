@@ -48,8 +48,8 @@ if ( ! defined( 'ABSPATH' ) ) exit;
           <p>You can customize the shortcode from <b>Main Menu → ChatGPT</b>.</p>
           <p>You can customize the widget from <b>Settings → ChatGPT</b>.</p>
           <p>Here you can change the following settings:</p>
-          <p>1. <b>Language</b>: You can change the language of the chatbot. We support total of 40 languages.</p>
-          <p><i>Afrikaans, Arabic, Armenian, Bulgarian, Chinese, Croatian, Czech, Danish, Dutch, English, Estonian, Filipino, Finnish, French, German, Greek, Hebrew, Hindi, Hungarian, Indonesian, Italian, Japanese, Korean, Latvian, Lithuanian, Malay, Norwegian, Polish, Portuguese, Romanian, Russian, Serbian, Slovak, Slovenian, Spanish, Swedish, Thai, Turkish, Ukrainian and Vietnamese.</i></p>
+          <p>1. <b>Language</b>: You can change the language of the chatbot. We support following languages:</p>
+          <p><i>Afrikaans, Arabic, Armenian, Bulgarian, Chinese, Croatian, Czech, Danish, Dutch, English, Estonian, Filipino, Finnish, French, German, Greek, Hebrew, Hindi, Hungarian, Indonesian, Italian, Japanese, Korean, Latvian, Lithuanian, Malay, Norwegian, Persian, Polish, Portuguese, Romanian, Russian, Serbian, Slovak, Slovenian, Spanish, Swedish, Thai, Turkish, Ukrainian and Vietnamese.</i></p>
           <p>2. <b>Tone</b>: You can change the tone of the chatbot. We support total of 6 tones. They help you to make your chatbot more human-like.</p>
           <p><i>Friendly, Proffesional, Sarcastic, Humorous, Cheerful and Anecdotal.</i></p>
           <p>3. <b>Act As</b>: You can change the act as of the chatbot. We support more than 30 proffesion. You can give your chatbot a proffesion.</p>

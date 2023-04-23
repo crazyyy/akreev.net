@@ -46,7 +46,7 @@ if(file_exists(WPAICG_PLUGIN_DIR.'admin/data/models.json')){
     }
 }
 $sql = "SELECT p.ID as id,p.post_title as title,p.post_author as author, p.post_content as description";
-$wpaicg_meta_keys = array('fields','editor','prompt','response','category','engine','max_tokens','temperature','top_p','best_of','frequency_penalty','presence_penalty','stop','color','icon','bgcolor','header','dans','ddraft','dclear','dnotice','generate_text','noanswer_text','draft_text','clear_text','stop_text','cnotice_text');
+$wpaicg_meta_keys = array('fields','editor','prompt','response','category','engine','max_tokens','temperature','top_p','best_of','frequency_penalty','presence_penalty','stop','color','icon','bgcolor','header','dans','ddraft','dclear','dnotice','generate_text','noanswer_text','draft_text','clear_text','stop_text','cnotice_text','download_text','ddownload');
 
 foreach ($wpaicg_meta_keys as $wpaicg_meta_key) {
     $sql .= $wpdb->prepare(
@@ -497,6 +497,7 @@ $allowed_tags = array_merge( $kses_defaults, $svg_args );
             </div>
         </div>
         <div class="wpaicg-modal-tab wpaicg-modal-tab-frontend" style="display: none">
+            <h3><strong><?php echo esc_html__('Response','gpt3-ai-content-generator')?></strong></h3>
             <div class="wpaicg-grid wpaicg-mb-10">
                 <div class="wpaicg-grid-1">
                     <strong class="wpaicg-d-block mb-5"><?php echo esc_html__('Result','gpt3-ai-content-generator')?></strong>
@@ -505,6 +506,9 @@ $allowed_tags = array_merge( $kses_defaults, $svg_args );
                         <option value="div"><?php echo esc_html__('Inline','gpt3-ai-content-generator')?></option>
                     </select>
                 </div>
+            </div>
+            <h3><strong><?php echo esc_html__('Display','gpt3-ai-content-generator')?></strong></h3>
+            <div class="wpaicg-grid wpaicg-mb-10">
                 <div class="wpaicg-grid-1">
                     <strong class="wpaicg-d-block mb-5"><?php echo esc_html__('Header','gpt3-ai-content-generator')?></strong>
                     <select name="header" class="wpaicg-w-100 wpaicg-create-template-header">
@@ -513,7 +517,7 @@ $allowed_tags = array_merge( $kses_defaults, $svg_args );
                     </select>
                 </div>
                 <div class="wpaicg-grid-1">
-                    <strong class="wpaicg-d-block mb-5"><?php echo esc_html__('Number of Answers','gpt3-ai-content-generator')?></strong>
+                    <strong class="wpaicg-d-block mb-5"><?php echo esc_html__('Num. Answers','gpt3-ai-content-generator')?></strong>
                     <select name="dans" class="wpaicg-w-100 wpaicg-create-template-dans">
                         <option value=""><?php echo esc_html__('Yes','gpt3-ai-content-generator')?></option>
                         <option value="no"><?php echo esc_html__('No','gpt3-ai-content-generator')?></option>
@@ -540,12 +544,22 @@ $allowed_tags = array_merge( $kses_defaults, $svg_args );
                         <option value="no"><?php echo esc_html__('No','gpt3-ai-content-generator')?></option>
                     </select>
                 </div>
+                <div class="wpaicg-grid-1">
+                    <strong class="wpaicg-d-block mb-5"><?php echo esc_html__('Download','gpt3-ai-content-generator')?></strong>
+                    <select name="ddownload" class="wpaicg-w-100 wpaicg-create-template-ddownload">
+                        <option value=""><?php echo esc_html__('Yes','gpt3-ai-content-generator')?></option>
+                        <option value="no"><?php echo esc_html__('No','gpt3-ai-content-generator')?></option>
+                    </select>
+                </div>
+            </div>
+            <h3><strong><?php echo esc_html__('Custom Text','gpt3-ai-content-generator')?></strong></h3>
+            <div class="wpaicg-grid wpaicg-mb-10">
                 <div class="wpaicg-grid-2">
                     <strong class="wpaicg-d-block mb-5"><?php echo esc_html__('Generate Button','gpt3-ai-content-generator')?></strong>
                     <input value="<?php echo esc_html__('Generate','gpt3-ai-content-generator')?>" type="text" name="generate_text" class="regular-text wpaicg-w-100 wpaicg-create-template-generate_text">
                 </div>
                 <div class="wpaicg-grid-2">
-                    <strong class="wpaicg-d-block mb-5"><?php echo esc_html__('No. of Answer Text','gpt3-ai-content-generator')?></strong>
+                    <strong class="wpaicg-d-block mb-5"><?php echo esc_html__('Num. Answers Text','gpt3-ai-content-generator')?></strong>
                     <input value="<?php echo esc_html__('Number of Answers','gpt3-ai-content-generator')?>" type="text" name="noanswer_text" class="regular-text wpaicg-w-100 wpaicg-create-template-noanswer_text">
                 </div>
                 <div class="wpaicg-grid-2">
@@ -564,12 +578,15 @@ $allowed_tags = array_merge( $kses_defaults, $svg_args );
                     <strong class="wpaicg-d-block mb-5"><?php echo esc_html__('Notice Text','gpt3-ai-content-generator')?></strong>
                     <input value="<?php echo esc_html__('Please register to save your result','gpt3-ai-content-generator')?>" type="text" name="cnotice_text" class="regular-text wpaicg-w-100 wpaicg-create-template-cnotice_text">
                 </div>
+                <div class="wpaicg-grid-2">
+                    <strong class="wpaicg-d-block mb-5"><?php echo esc_html__('Download Text','gpt3-ai-content-generator')?></strong>
+                    <input value="<?php echo esc_html__('Download','gpt3-ai-content-generator')?>" type="text" name="download_text" class="regular-text wpaicg-w-100 wpaicg-create-template-download_text'">
+                </div>
             </div>
         </div>
     </div>
     <button class="button button-primary wpaicg-create-template-save"><?php echo esc_html__('Save','gpt3-ai-content-generator')?></button>
 </div>
-<p class="wpaicg_notice_text"><?php echo sprintf(esc_html__('Please note that you can only embed %sone form per page%s.','gpt3-ai-content-generator'),'<u><b>','</b></u>')?></p>
 <?php
 if(isset($_GET['update_template']) && !empty($_GET['update_template'])):
     ?>
@@ -701,6 +718,8 @@ endif;
                             data-clear_text="<?php echo isset($wpaicg_item['clear_text']) && !empty($wpaicg_item['clear_text']) ? esc_html($wpaicg_item['clear_text']) : esc_html__('Clear','gpt3-ai-content-generator');?>"
                             data-stop_text="<?php echo isset($wpaicg_item['stop_text']) && !empty($wpaicg_item['stop_text']) ? esc_html($wpaicg_item['stop_text']) : esc_html__('Stop','gpt3-ai-content-generator');?>"
                             data-cnotice_text="<?php echo isset($wpaicg_item['cnotice_text']) && !empty($wpaicg_item['cnotice_text']) ? esc_html($wpaicg_item['cnotice_text']) : esc_html__('Please register to save your result','gpt3-ai-content-generator');?>"
+                            data-download_text="<?php echo isset($wpaicg_item['download_text']) && !empty($wpaicg_item['download_text']) ? esc_html($wpaicg_item['download_text']) : esc_html__('Download','gpt3-ai-content-generator');?>"
+                            data-ddownload="<?php echo isset($wpaicg_item['ddownload']) ? esc_html($wpaicg_item['ddownload']) : '';?>"
                             class="wpaicg-template-item wpaicg-d-flex wpaicg-align-items-center <?php echo implode(' ',$wpaicg_item_categories)?><?php echo ' user-'.esc_html($wpaicg_item['author'])?><?php echo ' wpaicg-template-item-'.$wpaicg_item['type'].'-'.esc_html($wpaicg_item['id']);?>">
                             <div class="wpaicg-template-icon" style="background: <?php echo esc_html($wpaicg_icon_color)?>"><?php echo wp_kses($wpaicg_icon,$allowed_tags)?></div>
                             <div class="wpaicg-template-content">
@@ -715,6 +734,7 @@ endif;
                             if($wpaicg_item['type'] == 'custom'):
                                 ?>
                                 <div class="wpaicg-template-action">
+                                    <button class="button button-small wpaicg-template-action-duplicate" data-id="<?php echo esc_html($wpaicg_item['id'])?>"><?php echo esc_html__('Duplicate','gpt3-ai-content-generator')?></button>
                                     <button class="button button-small wpaicg-template-action-edit" data-id="<?php echo esc_html($wpaicg_item['id'])?>"><?php echo esc_html__('Edit','gpt3-ai-content-generator')?></button>
                                     <button class="button button-small wpaicg-template-action-delete" data-id="<?php echo esc_html($wpaicg_item['id'])?>"><?php echo esc_html__('Delete','gpt3-ai-content-generator')?></button>
                                 </div>
@@ -760,11 +780,12 @@ endif;
                 <div class="wpaicg-template-save-result" style="display: none">
                     <button type="button" class="button button-primary wpaicg-template-save-draft wpaicg-template-text-draft_text"><?php echo esc_html__('Save Draft','gpt3-ai-content-generator')?></button>
                     <button type="button" class="button wpaicg-template-clear wpaicg-template-text-clear_text"><?php echo esc_html__('Clear','gpt3-ai-content-generator')?></button>
+                    <button type="button" class="button wpaicg-template-download wpaicg-template-text-download_text"><?php echo esc_html__('Download','gpt3-ai-content-generator')?></button>
                 </div>
             </div>
             <div class="wpaicg-grid-1">
                 <div class="wpaicg-mb-10 wpaicg-template-settings">
-                    <button type="button" style="width: 100%" class="button button-primary wpaicg-template-action-customize" data-id=""><?php echo esc_html__('Customize','gpt3-ai-content-generator')?></button>
+                    <button type="button" style="width: 100%" class="button button-primary wpaicg-template-action-customize" data-id=""><?php echo esc_html__('Duplicate This Form','gpt3-ai-content-generator')?></button>
                     <h3><?php echo esc_html__('Settings','gpt3-ai-content-generator')?></h3>
                     <div class="mb-5 wpaicg-template-engine">
                         <strong><?php echo esc_html__('Engine','gpt3-ai-content-generator')?>: </strong>
@@ -892,7 +913,7 @@ endif;
             $('.wpaicg_modal_title').html('<?php echo esc_html__('Edit your Template','gpt3-ai-content-generator')?>');
             $('.wpaicg_modal_content').html('<form action="" method="post" class="wpaicg-create-template-form">'+wpaicgTemplateContent.html()+'</form>');
             var form = $('.wpaicg-create-template-form');
-            var wpaicg_template_keys = ['engine','editor','title','description','max_tokens','temperature','top_p','best_of','frequency_penalty','presence_penalty','stop','prompt','response','category','icon','color','bgcolor','header','dans','ddraft','dclear','dnotice','generate_text','noanswer_text','draft_text','clear_text','stop_text','cnotice_text'];
+            var wpaicg_template_keys = ['engine','editor','title','description','max_tokens','temperature','top_p','best_of','frequency_penalty','presence_penalty','stop','prompt','response','category','icon','color','bgcolor','header','dans','ddraft','dclear','dnotice','generate_text','noanswer_text','draft_text','clear_text','stop_text','cnotice_text','download_text','ddownload'];
             for(var i = 0; i < wpaicg_template_keys.length;i++){
                 var wpaicg_template_key = wpaicg_template_keys[i];
                 var wpaicg_template_key_value = item.attr('data-'+wpaicg_template_key);
@@ -945,7 +966,7 @@ endif;
             $('.wpaicg_modal_title').html('<?php echo esc_html__('Customize your Template','gpt3-ai-content-generator')?>');
             $('.wpaicg_modal_content').html('<form action="" method="post" class="wpaicg-create-template-form">'+wpaicgTemplateContent.html()+'</form>');
             var form = $('.wpaicg-create-template-form');
-            var wpaicg_template_keys = ['engine','editor','title','description','max_tokens','temperature','top_p','best_of','frequency_penalty','presence_penalty','stop','prompt','response','category','icon','color','bgcolor','header','dans','ddraft','dclear','dnotice','generate_text','noanswer_text','draft_text','clear_text','stop_text','cnotice_text'];
+            var wpaicg_template_keys = ['engine','editor','title','description','max_tokens','temperature','top_p','best_of','frequency_penalty','presence_penalty','stop','prompt','response','category','icon','color','bgcolor','header','dans','ddraft','dclear','dnotice','generate_text','noanswer_text','draft_text','clear_text','stop_text','cnotice_text','download_text','ddownload'];
             for(var i = 0; i < wpaicg_template_keys.length;i++){
                 var wpaicg_template_key = wpaicg_template_keys[i];
                 var wpaicg_template_key_value = item.attr('data-'+wpaicg_template_key);
@@ -1088,7 +1109,7 @@ endif;
         var wpaicgTemplateItem = $('.wpaicg-template-item');
         var wpaicgTemplateSearch = $('.wpaicg-template-search');
         var wpaicgTemplateItems = $('.wpaicg-template-items');
-        var wpaicgTemplateSettings = ['engine','max_tokens','temperature','top_p','best_of','frequency_penalty','presence_penalty','stop','post_title','generate_text','noanswer_text','draft_text','clear_text','stop_text','cnotice_text'];
+        var wpaicgTemplateSettings = ['engine','max_tokens','temperature','top_p','best_of','frequency_penalty','presence_penalty','stop','post_title','generate_text','noanswer_text','draft_text','clear_text','stop_text','cnotice_text','download_text'];
         var wpaicgTemplateDefaultContent = $('.wpaicg-template-modal-content');
         var wpaicgTemplateEditor = false;
         var eventGenerator = false;
@@ -1296,6 +1317,22 @@ endif;
             }
 
         });
+        $(document).on('click','.wpaicg-template-item .wpaicg-template-action-duplicate',function (e){
+            var id = $(e.currentTarget).attr('data-id');
+            var btn = $(e.currentTarget);
+            $.ajax({
+                url: '<?php echo admin_url('admin-ajax.php')?>',
+                data: {action: 'wpaicg_form_duplicate',id: id,nonce:'<?php echo wp_create_nonce('wpaicg-ajax-nonce')?>'},
+                dataType: 'JSON',
+                type:'POST',
+                beforeSend: function(){
+                    wpaicgLoading(btn);
+                },
+                success: function(res){
+                    window.location.reload();
+                }
+            });
+        });
         $(document).on('click','.wpaicg-template-form .wpaicg-template-clear', function(e){
             var response_type = $('.wpaicg-template-form .wpaicg-template-response-type').val();
             if(response_type === 'textarea') {
@@ -1314,6 +1351,38 @@ endif;
                 $('.wpaicg-template-response-element').empty();
             }
             $('.wpaicg-template-form .wpaicg-template-save-result').hide();
+        });
+        $(document).on('click','.wpaicg-template-download', function(e){
+            var currentContent = '';
+            var response_type = $('.wpaicg-template-form .wpaicg-template-response-type').val();
+            if(response_type === 'textarea') {
+                var basicEditor = true;
+                var editor = tinyMCE.get('editor-' + wpaicgEditorNumber);
+                if ($('#wp-editor-' + wpaicgEditorNumber + '-wrap').hasClass('tmce-active') && editor) {
+                    basicEditor = false;
+                }
+                if (basicEditor) {
+                    currentContent = $('#editor-' + wpaicgEditorNumber).val();
+                } else {
+                    currentContent = editor.getContent();
+                    currentContent = currentContent.replace(/<\/?p(>|$)/g, "");
+                }
+            }
+            else{
+                currentContent = $('.wpaicg-template-response-element').html();
+            }
+            var element = document.createElement('a');
+            currentContent = currentContent.replace(/<br>/g,"\n");
+            currentContent = currentContent.replace(/<br \/>/g,"\n");
+            element.setAttribute('href', 'data:text/plain;charset=utf-8,' + encodeURIComponent(currentContent));
+            element.setAttribute('download', 'ai-response.txt');
+
+            element.style.display = 'none';
+            document.body.appendChild(element);
+
+            element.click();
+
+            document.body.removeChild(element);
         });
         $(document).on('input','.wpaicg-template-form .wpaicg-template-max_tokens input', function(e){
             var maxtokens = $(e.currentTarget).val();

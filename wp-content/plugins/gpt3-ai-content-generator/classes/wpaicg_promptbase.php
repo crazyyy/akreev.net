@@ -72,6 +72,7 @@ if(!class_exists('\\WPAICG\\WPAICG_Promptbase')) {
             add_action('wp_ajax_wpaicg_update_prompt',[$this,'wpaicg_update_prompt']);
             add_action('wp_ajax_wpaicg_prompt_delete',[$this,'wpaicg_prompt_delete']);
             add_action('wp_ajax_wpaicg_prompt_log', [$this,'wpaicg_prompt_log']);
+            add_action('wp_ajax_wpaicg_prompt_duplicate', [$this,'wpaicg_prompt_duplicate']);
             add_action('wp_ajax_nopriv_wpaicg_prompt_log', [$this,'wpaicg_prompt_log']);
             if ( ! wp_next_scheduled( 'wpaicg_remove_promptbase_tokens_limited' ) ) {
                 wp_schedule_event( time(), 'hourly', 'wpaicg_remove_promptbase_tokens_limited' );
@@ -203,19 +204,52 @@ if(!class_exists('\\WPAICG\\WPAICG_Promptbase')) {
                         'post_status' => 'publish'
                     ));
                 }
-                $prompt_fields = array('prompt','response','category','engine','max_tokens','temperature','top_p','best_of','frequency_penalty','presence_penalty','stop','color','icon','editor','bgcolor','header','dans','ddraft','dclear','dnotice','generate_text','noanswer_text','draft_text','clear_text','stop_text','cnotice_text');
+                $prompt_fields = array('prompt','response','category','engine','max_tokens','temperature','top_p','best_of','frequency_penalty','presence_penalty','stop','color','icon','editor','bgcolor','header','dans','ddraft','dclear','dnotice','generate_text','noanswer_text','draft_text','clear_text','stop_text','cnotice_text','download_text','ddownload');
                 foreach($prompt_fields as $prompt_field){
                     if(isset($_POST[$prompt_field]) && !empty($_POST[$prompt_field])){
                         $value = wpaicg_util_core()->sanitize_text_or_array_field($_POST[$prompt_field]);
                         $key = sanitize_text_field($prompt_field);
                         update_post_meta($wpaicg_prompt_id, 'wpaicg_prompt_'.$key, $value);
                     }
-                    elseif(in_array($prompt_field,array('bgcolor','header','dans','ddraft','dclear','dnotice')) && (!isset($_POST[$prompt_field]) || empty($_POST[$prompt_field]))){
+                    elseif(in_array($prompt_field,array('bgcolor','header','dans','ddraft','dclear','dnotice','ddownload')) && (!isset($_POST[$prompt_field]) || empty($_POST[$prompt_field]))){
                         delete_post_meta($wpaicg_prompt_id, 'wpaicg_prompt_'.$prompt_field);
                     }
                 }
                 $wpaicg_result['status'] = 'success';
                 $wpaicg_result['id'] = $wpaicg_prompt_id;
+            }
+            wp_send_json($wpaicg_result);
+        }
+
+        public function wpaicg_prompt_duplicate()
+        {
+            $wpaicg_result = array('status' => 'success');
+            if ( ! wp_verify_nonce( $_POST['nonce'], 'wpaicg-ajax-nonce' ) ) {
+                $wpaicg_result['msg'] = WPAICG_NONCE_ERROR;
+                wp_send_json($wpaicg_result);
+            }
+            if(isset($_POST['id']) && !empty($_POST['id'])){
+                $promptbase = get_post(sanitize_post($_REQUEST['id']));
+                $wpaicg_prompt_id = wp_insert_post(array(
+                    'post_title' => $promptbase->post_title,
+                    'post_type' => 'wpaicg_prompt',
+                    'post_content' => $promptbase->post_content,
+                    'post_status' => 'publish'
+                ));
+                $post_meta = get_post_meta( $promptbase->ID );
+                if( $post_meta ) {
+
+                    foreach ( $post_meta as $meta_key => $meta_values ) {
+
+                        if( '_wp_old_slug' == $meta_key ) { // do nothing for this meta key
+                            continue;
+                        }
+
+                        foreach ( $meta_values as $meta_value ) {
+                            add_post_meta( $wpaicg_prompt_id, $meta_key, $meta_value );
+                        }
+                    }
+                }
             }
             wp_send_json($wpaicg_result);
         }

@@ -1,7 +1,6 @@
 <?php
 if ( ! defined( 'ABSPATH' ) ) exit;
 global $wpdb;
-
 if(isset($_GET['sub_action']) && sanitize_text_field($_GET['sub_action']) == 'delete' && isset($_GET['id']) && !empty($_GET['id'])){
     $wpaicg_delete_id = sanitize_text_field($_GET['id']);
     if(!wp_verify_nonce($_GET['_wpnonce'], 'wpaicg_delete_'.$wpaicg_delete_id)){
@@ -12,18 +11,36 @@ if(isset($_GET['sub_action']) && sanitize_text_field($_GET['sub_action']) == 'de
     echo '<script>window.location.href = "'.admin_url('admin.php?page=wpaicg_bulk_content&wpaicg_action=tracking').'";</script>';
     exit;
 }
+if (isset($_GET['wpaicg_nonce']) && !wp_verify_nonce($_GET['wpaicg_nonce'], 'wpaicg_queue_search_nonce')) {
+    die(WPAICG_NONCE_ERROR);
+}
+
+$search = isset($_GET['wsearch']) && !empty($_GET['wsearch']) ? sanitize_text_field($_GET['wsearch']) : '';
 $wpaicg_tracking_page = isset($_GET['wpage']) && !empty($_GET['wpage']) ? sanitize_text_field($_GET['wpage']) : 1;
 $wpaicg_tracking_per_page = 10;
 $wpaicg_tracking_offset = ( $wpaicg_tracking_page * $wpaicg_tracking_per_page ) - $wpaicg_tracking_per_page;
 $wpaicg_sum_length = $wpdb->prepare("SELECT SUM(meta_value) FROM ".$wpdb->postmeta." l LEFT JOIN ".$wpdb->posts." lp ON lp.ID=l.post_id WHERE l.meta_key='_wpaicg_generator_length' AND lp.post_parent=p.ID");
 $wpaicg_sum_time = $wpdb->prepare("SELECT SUM(meta_value) FROM ".$wpdb->postmeta." l LEFT JOIN ".$wpdb->posts." lp ON lp.ID=l.post_id WHERE l.meta_key='_wpaicg_generator_run' AND lp.post_parent=p.ID");
 $wpaicg_sum_tokens = $wpdb->prepare("SELECT SUM(meta_value) FROM ".$wpdb->postmeta." l LEFT JOIN ".$wpdb->posts." lp ON lp.ID=l.post_id WHERE l.meta_key='_wpaicg_generator_token' AND lp.post_parent=p.ID");
-$wpaicg_trackings_sql = $wpdb->prepare("SELECT p.*,(".$wpaicg_sum_length.") as word_count,(".$wpaicg_sum_time.") as time_run,(".$wpaicg_sum_tokens.") as total_tokens FROM ".$wpdb->posts." p WHERE p.post_type='wpaicg_tracking' AND p.post_status IN ('publish','pending','draft','trash') ORDER BY p.post_date DESC LIMIT %d, %d", $wpaicg_tracking_offset, $wpaicg_tracking_per_page);
-$wpaicg_trackings_total_sql = $wpdb->prepare("SELECT COUNT(*) FROM ".$wpdb->posts." p WHERE p.post_type='wpaicg_tracking' AND p.post_status IN ('publish','pending','draft','trash')");
+$where = " p.post_type='wpaicg_tracking' AND p.post_status IN ('publish','pending','draft','trash')";
+if(!empty($search)){
+    $where .= $wpdb->prepare(" AND p.post_title LIKE %s",'%'.$wpdb->esc_like($search).'%');
+}
+$wpaicg_trackings_sql = $wpdb->prepare("SELECT p.*,(".$wpaicg_sum_length.") as word_count,(".$wpaicg_sum_time.") as time_run,(".$wpaicg_sum_tokens.") as total_tokens FROM ".$wpdb->posts." p WHERE ".$where." ORDER BY p.post_date DESC LIMIT %d, %d", $wpaicg_tracking_offset, $wpaicg_tracking_per_page);
+$wpaicg_trackings_total_sql = $wpdb->prepare("SELECT COUNT(*) FROM ".$wpdb->posts." p WHERE ".$where);
 $wpaicg_trackings = $wpdb->get_results($wpaicg_trackings_sql);
 $wpaicg_trackings_total = $wpdb->get_var( $wpaicg_trackings_total_sql );
 ?>
 <h2>Bulk Tracking</h2>
+<form action="" method="get">
+    <input type="hidden" name="page" value="wpaicg_bulk_content">
+    <input type="hidden" name="wpaicg_action" value="tracking">
+    <?php wp_nonce_field('wpaicg_queue_search_nonce', 'wpaicg_nonce'); ?>
+    <div class="wpaicg-d-flex mb-5">
+        <input style="width: 100%" value="<?php echo esc_html($search)?>" class="regular-text" name="wsearch" type="text" placeholder="<?php echo esc_html__('Type for search','gpt3-ai-content-generator')?>">
+        <button class="button button-primary"><?php echo esc_html__('Search','gpt3-ai-content-generator')?></button>
+    </div>
+</form>
 <table class="wp-list-table widefat fixed striped table-view-list comments">
     <thead>
     <tr>

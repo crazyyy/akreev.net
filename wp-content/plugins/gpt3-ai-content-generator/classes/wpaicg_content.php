@@ -287,7 +287,9 @@ if ( !class_exists( '\\WPAICG\\WPAICG_Content' ) ) {
                                         'post_password' => $post_status,
                                         'post_mime_type' => $wpaicg_source,
                                     );
-
+                                    if(isset($_POST['post_author']) && !empty($_POST['post_author'])){
+                                        $wpaicg_bulk_data['post_author'] = sanitize_text_field($_POST['post_author']);
+                                    }
                                     if (isset($wpaicg_schedules[$key]) && !empty($wpaicg_schedules[$key])) {
                                         $wpaicg_item_schedule = $wpaicg_schedules[$key] . ':00';
                                         if ($this->wpaicg_valid_date($wpaicg_item_schedule)) {

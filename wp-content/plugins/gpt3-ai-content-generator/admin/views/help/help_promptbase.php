@@ -24,7 +24,6 @@ if ( ! defined( 'ABSPATH' ) ) exit;
           <p>You can search for templates by keyword, category, or author. Once you find a template you like, simply click on it to view the details.</p>
           <p>From there, you can copy the shortcode provided and paste it into your WordPress post or page where you want the prompt to appear.</p>
           <p>The shortcode will embed the prompt form on your page, and your users can start interacting with it right away.</p>
-          <p>Please note that you can only embed <b><u>one form per page</b></u>.</p>
         </div>
   <h3>Designing Your Own Prompts</h3>
         <div>

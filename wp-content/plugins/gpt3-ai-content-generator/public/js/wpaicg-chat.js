@@ -11,6 +11,325 @@ function wpaicgChatInit() {
     var wpaicgShortcodeTyping = document.querySelectorAll('.wpaicg-chat-shortcode-typing');
     var wpaicgChatSend = document.querySelectorAll('.wpaicg-chatbox-send');
     var wpaicgShortcodeSend = document.querySelectorAll('.wpaicg-chat-shortcode-send');
+    var wpaicgChatFullScreens = document.getElementsByClassName('wpaicg-chatbox-fullscreen');
+    var wpaicgChatCloseButtons = document.getElementsByClassName('wpaicg-chatbox-close-btn');
+    var wpaicgChatDownloadButtons = document.getElementsByClassName('wpaicg-chatbox-download-btn');
+    var wpaicg_chat_widget_toggles = document.getElementsByClassName('wpaicg_toggle');
+    var wpaicg_chat_widgets = document.getElementsByClassName('wpaicg_chat_widget');
+    if(wpaicg_chat_widget_toggles !== null && wpaicg_chat_widget_toggles.length){
+        for(var i=0;i<wpaicg_chat_widget_toggles.length;i++){
+            var wpaicg_chat_widget_toggle = wpaicg_chat_widget_toggles[i];
+            var wpaicg_chat_widget = wpaicg_chat_widget_toggle.closest('.wpaicg_chat_widget');
+            wpaicg_chat_widget_toggle.addEventListener('click', function (e){
+                e.preventDefault();
+                wpaicg_chat_widget_toggle = e.currentTarget;
+                if(wpaicg_chat_widget_toggle.classList.contains('wpaicg_widget_open')){
+                    wpaicg_chat_widget_toggle.classList.remove('wpaicg_widget_open');
+                    wpaicg_chat_widget.classList.remove('wpaicg_widget_open');
+                }
+                else{
+                    wpaicg_chat_widget.classList.add('wpaicg_widget_open');
+                    wpaicg_chat_widget_toggle.classList.add('wpaicg_widget_open');
+                    if(window.innerWidth < 350){
+                        wpaicg_chat_widget.getElementsByClassName('wpaicg-chatbox')[0].style.width = window.innerWidth+'px';
+                        wpaicg_chat_widget.getElementsByClassName('wpaicg_chat_widget_content')[0].style.width = window.innerWidth+'px';
+                    }
+                }
+            });
+        }
+    }
+    if(wpaicgChatDownloadButtons.length){
+        for(var i=0;i < wpaicgChatDownloadButtons.length;i++){
+            var wpaicgChatDownloadButton = wpaicgChatDownloadButtons[i];
+            wpaicgChatDownloadButton.addEventListener('click', function (e){
+                wpaicgChatDownloadButton = e.currentTarget;
+                var type = wpaicgChatDownloadButton.getAttribute('data-type');
+                var wpaicgWidgetContent,listMessages;
+                if(type === 'shortcode') {
+                    wpaicgWidgetContent = wpaicgChatDownloadButton.closest('.wpaicg-chat-shortcode');
+                    listMessages = wpaicgWidgetContent.getElementsByClassName('wpaicg-chat-shortcode-messages');
+                }
+                else{
+                    wpaicgWidgetContent = wpaicgChatDownloadButton.closest('.wpaicg_chat_widget_content');
+                    listMessages = wpaicgWidgetContent.getElementsByClassName('wpaicg-chatbox-messages');
+                }
+                if(listMessages.length) {
+                    var listMessage = listMessages[0];
+                    var messages = [];
+                    var chatMessages = listMessage.getElementsByTagName('li');
+                    if (chatMessages.length) {
+                        for (var i = 0; i < chatMessages.length; i++) {
+                            messages.push(chatMessages[i].innerText.replace("\n",' '));
+                        }
+                    }
+                    var messagesDownload = messages.join("\n");
+                    var element = document.createElement('a');
+                    element.setAttribute('href', 'data:text/plain;charset=utf-8,' + encodeURIComponent(messagesDownload));
+                    element.setAttribute('download', 'gpt-ai-power-chat.txt');
+
+                    element.style.display = 'none';
+                    document.body.appendChild(element);
+
+                    element.click();
+
+                    document.body.removeChild(element);
+                }
+            })
+        }
+    }
+    if(wpaicgChatCloseButtons.length){
+        for(var i = 0; i < wpaicgChatCloseButtons.length;i++){
+            var wpaicgChatCloseButton = wpaicgChatCloseButtons[i];
+            wpaicgChatCloseButton.addEventListener('click', function (e){
+                wpaicgChatCloseButton = e.currentTarget;
+                var wpaicgWidgetContent = wpaicgChatCloseButton.closest('.wpaicg_chat_widget_content');
+                var chatbox = wpaicgWidgetContent.closest('.wpaicg_chat_widget');
+                if(wpaicgWidgetContent.classList.contains('wpaicg-fullscreened')){
+                    var fullScreenBtn = wpaicgWidgetContent.getElementsByClassName('wpaicg-chatbox-fullscreen')[0];
+                    wpaicgFullScreen(fullScreenBtn);
+                }
+                chatbox.getElementsByClassName('wpaicg_toggle')[0].click();
+
+            })
+        }
+    }
+    function wpaicgFullScreen(btn){
+        var type = btn.getAttribute('data-type');
+        if(type === 'shortcode'){
+            var wpaicgChatShortcode = btn.closest('.wpaicg-chat-shortcode');
+            if (btn.classList.contains('wpaicg-fullscreen-box')) {
+                btn.classList.remove('wpaicg-fullscreen-box');
+                var chatWidth = wpaicgChatShortcode.getAttribute('data-old-width');
+                var chatHeight = wpaicgChatShortcode.getAttribute('data-old-height');
+                wpaicgChatShortcode.setAttribute('data-width', chatWidth);
+                wpaicgChatShortcode.setAttribute('data-height', chatHeight);
+                wpaicgChatShortcode.style.position = '';
+                wpaicgChatShortcode.style.top = '';
+                wpaicgChatShortcode.style.left = '';
+                wpaicgChatShortcode.style.zIndex = '';
+                wpaicgChatShortcode.classList.remove('wpaicg-fullscreened');
+            }
+            else{
+                var newChatBoxWidth = document.body.offsetWidth;
+                var chatWidth = wpaicgChatShortcode.getAttribute('data-width');
+                var chatHeight = wpaicgChatShortcode.getAttribute('data-height');
+                wpaicgChatShortcode.setAttribute('data-old-width', chatWidth);
+                wpaicgChatShortcode.setAttribute('data-old-height', chatHeight);
+                wpaicgChatShortcode.setAttribute('data-width', newChatBoxWidth);
+                wpaicgChatShortcode.setAttribute('data-height', '100%');
+                btn.classList.add('wpaicg-fullscreen-box');
+                wpaicgChatShortcode.style.position = 'fixed';
+                wpaicgChatShortcode.style.top = 0;
+                wpaicgChatShortcode.style.left = 0;
+                wpaicgChatShortcode.style.zIndex = 999999999;
+                wpaicgChatShortcode.classList.add('wpaicg-fullscreened');
+            }
+            wpaicgChatShortcodeSize();
+
+        }
+        else {
+            var wpaicgWidgetContent = btn.closest('.wpaicg_chat_widget_content');
+            var chatbox = wpaicgWidgetContent.getElementsByClassName('wpaicg-chatbox')[0];
+            if (btn.classList.contains('wpaicg-fullscreen-box')) {
+                btn.classList.remove('wpaicg-fullscreen-box');
+                var chatWidth = chatbox.getAttribute('data-old-width');
+                var chatHeight = chatbox.getAttribute('data-old-height');
+                chatbox.setAttribute('data-width', chatWidth);
+                chatbox.setAttribute('data-height', chatHeight);
+                wpaicgWidgetContent.style.position = 'absolute';
+                wpaicgWidgetContent.style.bottom = '';
+                wpaicgWidgetContent.style.left = '';
+                wpaicgWidgetContent.classList.remove('wpaicg-fullscreened');
+            } else {
+                var newChatBoxWidth = document.body.offsetWidth;
+                var chatWidth = chatbox.getAttribute('data-width');
+                var chatHeight = chatbox.getAttribute('data-height');
+                chatbox.setAttribute('data-old-width', chatWidth);
+                chatbox.setAttribute('data-old-height', chatHeight);
+                chatbox.setAttribute('data-width', newChatBoxWidth);
+                chatbox.setAttribute('data-height', '100%');
+                btn.classList.add('wpaicg-fullscreen-box');
+                wpaicgWidgetContent.style.position = 'fixed';
+                wpaicgWidgetContent.style.bottom = 0;
+                wpaicgWidgetContent.style.left = 0;
+                wpaicgWidgetContent.classList.add('wpaicg-fullscreened');
+            }
+            wpaicgChatBoxSize();
+        }
+    }
+    if(wpaicgChatFullScreens.length){
+        for(var i=0; i < wpaicgChatFullScreens.length; i++){
+            var wpaicgChatFullScreen = wpaicgChatFullScreens[i];
+            wpaicgChatFullScreen.addEventListener('click', function (e){
+                wpaicgFullScreen(e.currentTarget);
+            })
+        }
+    }
+    function wpaicgChatShortcodeSize(){
+        var wpaicgWindowWidth = window.innerWidth;
+        var wpaicgWindowHeight = window.innerHeight;
+        var chatShortcodes = document.getElementsByClassName('wpaicg-chat-shortcode');
+        if(chatShortcodes !== null && chatShortcodes.length){
+            for(var i=0;i<chatShortcodes.length;i++){
+                var chatShortcode = chatShortcodes[i];
+                var parentChat = chatShortcode.parentElement;
+                var parentWidth = parentChat.offsetWidth;
+                console.log(parentWidth);
+                var chatWidth = chatShortcode.getAttribute('data-width');
+                var chatHeight = chatShortcode.getAttribute('data-height');
+                var chatFooter = chatShortcode.getAttribute('data-footer');
+                var chatBar = chatShortcode.getAttribute('data-has-bar');
+                chatWidth = chatWidth !== null ? chatWidth : '350';
+                chatHeight = chatHeight !== null ? chatHeight : '400';
+                if(chatShortcode.classList.contains('wpaicg-fullscreened')){
+                    parentWidth = wpaicgWindowWidth;
+                }
+                console.log(parentWidth);
+                if(chatWidth.indexOf('%') < 0){
+                    if(chatWidth.indexOf('px') < 0){
+                        chatWidth = parseFloat(chatWidth);
+                    }
+                    else{
+                        chatWidth = parseFloat(chatWidth.replace(/px/g,''));
+                    }
+                }
+                else{
+                    chatWidth = parseFloat(chatWidth.replace(/%/g,''));
+                    if(chatWidth < 100) {
+                        chatWidth = chatWidth * parentWidth / 100;
+                    }
+                    else{
+                        chatWidth = '';
+                    }
+                }
+                console.log(chatWidth);
+                if(chatHeight.indexOf('%') < 0){
+                    if(chatHeight.indexOf('px') < 0){
+                        chatHeight = parseFloat(chatHeight);
+                    }
+                    else{
+                        chatHeight = parseFloat(chatHeight.replace(/px/g,''));
+                    }
+                }
+                else{
+                    chatHeight = parseFloat(chatHeight.replace(/%/g,''));
+                    chatHeight = chatHeight*wpaicgWindowHeight/100;
+                }
+                if(chatWidth !== '') {
+                    chatShortcode.style.width = chatWidth + 'px';
+                    chatShortcode.style.maxWidth = chatWidth+'px';
+                }
+                else{
+                    chatShortcode.style.width = '';
+                    chatShortcode.style.maxWidth = '';
+                }
+                if(chatShortcode.classList.contains('wpaicg-fullscreened')){
+                    chatShortcode.style.marginTop = 0;
+                }
+                else{
+                    chatShortcode.style.marginTop = '';
+                }
+
+                if(chatBar){
+                    chatShortcode.getElementsByClassName('wpaicg-chat-shortcode-messages')[0].style.height = (chatHeight-74)+'px';
+                }
+                else{
+                    chatShortcode.getElementsByClassName('wpaicg-chat-shortcode-messages')[0].style.height = (chatHeight-44)+'px';
+                }
+            }
+        }
+    }
+    function wpaicgChatBoxSize(){
+        var wpaicgWindowWidth = window.innerWidth;
+        var wpaicgWindowHeight = window.innerHeight;
+        var chatWidgets = document.getElementsByClassName('wpaicg_chat_widget_content');
+        if(chatWidgets !== null && chatWidgets.length){
+            var chatPreviewBox = document.getElementsByClassName('wpaicg-chatbox-preview-box');
+            for(var i=0;i<chatWidgets.length;i++){
+                var chatWidget = chatWidgets[i];
+                var chatbox = chatWidget.getElementsByClassName('wpaicg-chatbox')[0];
+                var chatWidth = chatbox.getAttribute('data-width');
+                var chatHeight = chatbox.getAttribute('data-height');
+                var chatFooter = chatbox.getAttribute('data-footer');
+                var chatboxBar = chatbox.getElementsByClassName('wpaicg-chatbox-action-bar');
+                chatWidth = chatWidth !== null ? chatWidth : '350';
+                chatHeight = chatHeight !== null ? chatHeight : '400';
+                if(chatPreviewBox.length){
+                    wpaicgWindowWidth = chatPreviewBox[0].offsetWidth;
+                }
+                if(chatWidth.indexOf('%') < 0){
+                    if(chatWidth.indexOf('px') < 0){
+                        chatWidth = parseFloat(chatWidth);
+                    }
+                    else{
+                        chatWidth = parseFloat(chatWidth.replace(/px/g,''));
+                    }
+                }
+                else{
+                    chatWidth = parseFloat(chatWidth.replace(/%/g,''));
+                    chatWidth = chatWidth*wpaicgWindowWidth/100;
+                }
+                if(wpaicgWindowWidth < 480 && chatWidth < 350){
+                    chatWidth = wpaicgWindowWidth;
+                }
+                if(chatHeight.indexOf('%') < 0){
+                    if(chatHeight.indexOf('px') < 0){
+                        chatHeight = parseFloat(chatHeight);
+                    }
+                    else{
+                        chatHeight = parseFloat(chatHeight.replace(/px/g,''));
+                    }
+                }
+                else{
+                    chatHeight = parseFloat(chatHeight.replace(/%/g,''));
+                    chatHeight = chatHeight*wpaicgWindowHeight/100;
+                }
+                if(chatPreviewBox.length){
+                    chatPreviewBox[0].style.height = (chatHeight+125)+'px';
+                }
+                chatbox.style.width = chatWidth+'px';
+                chatbox.style.height = chatHeight+'px';
+                chatWidget.style.width = chatWidth+'px';
+                chatWidget.style.height = chatHeight+'px';
+                var chatboxContentHeight,chatboxMessagesHeight;
+                if(chatboxBar && chatboxBar.length){
+                    chatboxContentHeight = chatHeight - 75;
+                    chatboxMessagesHeight = chatHeight - 99;
+                }
+                else{
+                    chatboxContentHeight = chatHeight - 45;
+                    chatboxMessagesHeight = chatHeight - 69;
+                }
+                if(chatFooter === 'true'){
+                    if(chatboxBar && chatboxBar.length) {
+                        chatboxContentHeight = chatHeight - 88;
+                        chatboxMessagesHeight = chatHeight - 112;
+                    }
+                    else{
+                        chatboxContentHeight = chatHeight - 58;
+                        chatboxMessagesHeight = chatHeight - 82;
+                    }
+                }
+                chatWidget.getElementsByClassName('wpaicg-chatbox-content')[0].style.height = chatboxContentHeight+'px';
+                chatWidget.getElementsByClassName('wpaicg-chatbox-messages')[0].style.height = chatboxMessagesHeight+'px';
+            }
+        }
+    }
+    window.addEventListener('resize', function (){
+        wpaicgChatBoxSize();
+        wpaicgChatShortcodeSize();
+        if(wpaicg_chat_widgets !== null && wpaicg_chat_widgets.length){
+            for(var i =0;i<wpaicg_chat_widgets.length;i++){
+                if(window.innerWidth < 350){
+                    var wpaicg_chat_widget = wpaicg_chat_widgets[i];
+                    wpaicg_chat_widget.getElementsByClassName('wpaicg-chatbox')[0].style.width  = window.innerWidth+'px';
+                    wpaicg_chat_widget.getElementsByClassName('wpaicg_chat_widget_content')[0].style.width  = window.innerWidth+'px';
+                }
+            }
+        }
+    })
+    wpaicgChatShortcodeSize();
+    wpaicgChatBoxSize();
 
     function wpaicgescapeHtml(unsafe) {
         return unsafe

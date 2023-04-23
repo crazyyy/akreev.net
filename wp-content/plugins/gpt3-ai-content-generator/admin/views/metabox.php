@@ -210,6 +210,9 @@ echo  ( esc_html( $_wporg_language ) == 'ms' ? 'selected' : '' ) ;
                 <option value="no" <?php 
 echo  ( esc_html( $_wporg_language ) == 'no' ? 'selected' : '' ) ;
 ?>>Norwegian</option>
+                <option value="fa" <?php 
+echo  ( esc_html( $_wporg_language ) == 'fa' ? 'selected' : '' ) ;
+?>>Persian</option>
                 <option value="pl" <?php 
 echo  ( esc_html( $_wporg_language ) == 'pl' ? 'selected' : '' ) ;
 ?>>Polish</option>

@@ -15,7 +15,7 @@
  * @wordpress-plugin
  * Plugin Name:       GPT AI Power: Complete AI Pack
  * Description:       ChatGPT, Content Writer, Auto Content Writer, ChatBot, Image Generator, Audio Converter, WooCommerce Product Writer, SEO optimizer, AI Training, Embeddings, Title Suggestions and hundreds of ready to use prompts and forms.
- * Version:           1.6.61
+ * Version:           1.6.68
  * Author:            Senol Sahin
  * Author URI:        https://gptaipower.com
  * License:           GPL-2.0+
@@ -26,7 +26,7 @@
 if ( !defined( 'WPINC' ) ) {
     die;
 }
-define( 'WP_AI_CONTENT_GENERATOR_VERSION', '1.6.61' );
+define( 'WP_AI_CONTENT_GENERATOR_VERSION', '1.6.68' );
 if ( !class_exists( '\\WPAICG\\WPAICG_OpenAI' ) ) {
     require_once __DIR__ . '/includes/class-wp-ai-openai.php';
 }

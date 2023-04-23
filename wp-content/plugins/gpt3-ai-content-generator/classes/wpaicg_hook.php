@@ -155,7 +155,9 @@ if(!class_exists('\\WPAICG\\WPAICG_Hook')) {
                     bottom: calc(100% + 15px);
                     width: <?php echo esc_html($wpaicg_chat_width)?>px;
                     overflow: hidden;
-
+                }
+                .wpaicg_widget_open .wpaicg_chat_widget_content{
+                    overflow: unset;
                 }
                 .wpaicg_widget_open .wpaicg_chat_widget_content .wpaicg-chatbox{
                     top: 0;
@@ -169,11 +171,9 @@ if(!class_exists('\\WPAICG\\WPAICG_Hook')) {
                     transition: top 300ms cubic-bezier(0.17, 0.04, 0.03, 0.94);
                 }
                 .wpaicg_chat_widget_content .wpaicg-chatbox-content{
-                    height: <?php echo esc_html($wpaicg_chat_height)- ($wpaicg_include_footer ? 58 : 44)?>px;
                 }
                 .wpaicg_chat_widget_content .wpaicg-chatbox-content ul{
                     box-sizing: border-box;
-                    height: <?php echo esc_html($wpaicg_chat_height)- ($wpaicg_include_footer ? 58 : 44) -24?>px;
                     background: <?php echo esc_html($wpaicg_chat_bgcolor)?>;
                 }
                 .wpaicg_chat_widget_content .wpaicg-chatbox-content ul li{
@@ -313,6 +313,9 @@ if(!class_exists('\\WPAICG\\WPAICG_Hook')) {
                     width: 16px;
                     height: 16px;
                     fill: currentColor;
+                }
+                .wp-picker-container{
+                    z-index: 99999;
                 }
 
                 .gpt-ai-power_page_wpaicg_help .ui-state-default,

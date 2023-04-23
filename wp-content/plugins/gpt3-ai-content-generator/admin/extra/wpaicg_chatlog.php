@@ -169,6 +169,16 @@ if($totalPage > 1){
             $('.wpaicg_modal_close').closest('.wpaicg_modal').hide();
             $('.wpaicg-overlay').hide();
         });
+        function wpaicgReplaceStr(str) {
+            str = str.replace(/\\n/g,'---NEWLINE---');
+            str = str.replace(/\n/g,'---NEWLINE---');
+            str = str.replace(/\t/g,'---NEWTAB---');
+            str = str.replace(/\\t/g,'---NEWTAB---');
+            str = str.replace(/\\/g,'');
+            str = str.replace(/---NEWLINE---/g,"\n");
+            str = str.replace(/---NEWTAB---/g,"\t");
+            return str;
+        };
         $('.wpaicg-log-messages').click(function (){
             var wpaicg_messages = $(this).attr('data-messages');
             if(wpaicg_messages !== ''){
@@ -190,7 +200,7 @@ if($totalPage > 1){
                     }
                     if(typeof item.request !== "undefined" && typeof item.request === 'object'){
                         html += '<a href="javascript:void(0)" class="show_message_request">[<?php echo esc_html__('details','gpt3-ai-content-generator')?>]</a>';
-                        html += '<div class="wpaicg_request" style="display: none;padding: 10px;background: #e9e9e9;border-radius: 4px;"><pre style="white-space: pre-wrap">'+JSON.stringify(item.request,undefined, 4)+'</pre></div>';
+                        html += '<div class="wpaicg_request" style="display: none;padding: 10px;background: #e9e9e9;border-radius: 4px;"><pre style="white-space: pre-wrap">'+wpaicgReplaceStr(JSON.stringify(item.request,undefined, 4))+'</pre></div>';
                     }
                     html += '</div>';
                 })

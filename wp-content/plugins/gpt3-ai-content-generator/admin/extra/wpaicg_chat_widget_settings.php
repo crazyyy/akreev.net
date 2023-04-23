@@ -82,6 +82,7 @@ $wpaicg_border_text_field = isset($wpaicg_chat_widget['border_text_field']) && !
 $wpaicg_footer_text = isset($wpaicg_chat_widget['footer_text']) && !empty($wpaicg_chat_widget['footer_text']) ? $wpaicg_chat_widget['footer_text'] : '';
 $wpaicg_user_bg_color = isset($wpaicg_chat_widget['user_bg_color']) && !empty($wpaicg_chat_widget['user_bg_color']) ? $wpaicg_chat_widget['user_bg_color'] : '#444654';
 $wpaicg_ai_bg_color = isset($wpaicg_chat_widget['ai_bg_color']) && !empty($wpaicg_chat_widget['ai_bg_color']) ? $wpaicg_chat_widget['ai_bg_color'] : '#343541';
+$wpaicg_bar_color = isset($wpaicg_chat_widget['bar_color']) && !empty($wpaicg_chat_widget['bar_color']) ? $wpaicg_chat_widget['bar_color'] : '#fff';
 $wpaicg_use_avatar = isset($wpaicg_chat_widget['use_avatar']) && !empty($wpaicg_chat_widget['use_avatar']) ? $wpaicg_chat_widget['use_avatar'] : false;
 $wpaicg_ai_avatar = isset($wpaicg_chat_widget['ai_avatar']) && !empty($wpaicg_chat_widget['ai_avatar']) ? $wpaicg_chat_widget['ai_avatar'] : 'default';
 $wpaicg_ai_avatar_id = isset($wpaicg_chat_widget['ai_avatar_id']) && !empty($wpaicg_chat_widget['ai_avatar_id']) ? $wpaicg_chat_widget['ai_avatar_id'] : '';
@@ -117,6 +118,11 @@ $wpaicg_limited_message = isset($wpaicg_chat_widget['limited_message']) && !empt
 $wpaicg_include_footer = (isset($wpaicg_chat_widget['footer_text']) && !empty($wpaicg_chat_widget['footer_text'])) ? 5 : 0;
 $wpaicg_chat_widget['role_limited'] = isset($wpaicg_chat_widget['role_limited']) && !empty($wpaicg_chat_widget['role_limited']) ? $wpaicg_chat_widget['role_limited'] : false;
 $wpaicg_chat_widget['limited_roles'] = isset($wpaicg_chat_widget['limited_roles']) && !empty($wpaicg_chat_widget['limited_roles']) ? $wpaicg_chat_widget['limited_roles'] : array();
+$wpaicg_chat_fullscreen = isset($wpaicg_chat_widget['fullscreen']) && !empty($wpaicg_chat_widget['fullscreen']) ? $wpaicg_chat_widget['fullscreen'] : false;
+$wpaicg_chat_close_btn = isset($wpaicg_chat_widget['close_btn']) && !empty($wpaicg_chat_widget['close_btn']) ? $wpaicg_chat_widget['close_btn'] : false;
+$wpaicg_chat_download_btn = isset($wpaicg_chat_widget['download_btn']) && !empty($wpaicg_chat_widget['download_btn']) ? $wpaicg_chat_widget['download_btn'] : false;
+$wpaicg_thinking_color = isset($wpaicg_chat_widget['thinking_color']) && !empty($wpaicg_chat_widget['thinking_color']) ? $wpaicg_chat_widget['thinking_color'] : '#fff';
+$wpaicg_delay_time = isset($wpaicg_chat_widget['delay_time']) && !empty($wpaicg_chat_widget['delay_time']) ? $wpaicg_chat_widget['delay_time'] : '';
 $wpaicg_roles = wp_roles()->get_names();
 ?>
 <style>
@@ -146,7 +152,6 @@ $wpaicg_roles = wp_roles()->get_names();
         position: absolute;
         bottom: calc(100% + 15px);
         width: <?php echo esc_html($wpaicg_chat_width)?>px;
-        overflow: hidden;
 
     }
     .wpaicg-collapse-content textarea{
@@ -164,12 +169,8 @@ $wpaicg_roles = wp_roles()->get_names();
         height: <?php echo esc_html($wpaicg_chat_height)?>px;
         transition: top 300ms cubic-bezier(0.17, 0.04, 0.03, 0.94);
     }
-    .wpaicg_chat_widget_content .wpaicg-chatbox-content{
-        height: <?php echo esc_html($wpaicg_chat_height)- ($wpaicg_include_footer ? 58 : 44)?>px;
-    }
     .wpaicg_chat_widget_content .wpaicg-chatbox-content ul{
         box-sizing: border-box;
-        height: <?php echo esc_html($wpaicg_chat_height)- ($wpaicg_include_footer ? 58 : 44) -24?>px;
         background: <?php echo esc_html($wpaicg_chat_bgcolor)?>;
     }
     .wpaicg_chat_widget_content .wpaicg-chatbox-content ul li{
@@ -252,6 +253,12 @@ $wpaicg_roles = wp_roles()->get_names();
         color: inherit!important;
         font-size: inherit!important;
     }
+    .wpaicg_chat_widget_content{
+        overflow: hidden;
+    }
+    .wpaicg_widget_open .wpaicg_chat_widget_content{
+        overflow: unset;
+    }
 </style>
 <div class="wpaicg-alert mb-5">
     <p><?php echo sprintf(esc_html__('If you prefer to use shortcode instead of widget, go to %s tab and configure it.','gpt3-ai-content-generator'),'<b>Shortcode</b>')?></p>
@@ -268,7 +275,7 @@ if ( !empty($errors)) {
 ?>
 <div class="wpaicg-grid-three">
     <div class="wpaicg-grid-2 wpaicg-chatbox-preview">
-        <div class="wpaicg-chatbox-preview-box" style="height: <?php echo esc_html($wpaicg_chat_height)+100?>px;position: relative;">
+        <div class="wpaicg-chatbox-preview-box" style="position: relative;">
             <?php
             include __DIR__.'/wpaicg_chat_widget.php';
             ?>
@@ -292,7 +299,7 @@ if ( !empty($errors)) {
                 </div>
             </div>
             <div class="wpaicg-collapse">
-                <div class="wpaicg-collapse-title"><span>+</span> <?php echo esc_html__('Language, Tone and Profession','')?></div>
+                <div class="wpaicg-collapse-title"><span>+</span> <?php echo esc_html__('Language, Tone and Profession','gpt3-ai-content-generator')?></div>
                 <div class="wpaicg-collapse-content">
                     <div class="mb-5">
                         <label class="wpaicg-form-label">Language:</label>
@@ -375,6 +382,9 @@ if ( !empty($errors)) {
                             <option value="no" <?php
                             echo  ( esc_html( $wpaicg_chat_language ) == 'no' ? 'selected' : '' ) ;
                             ?>>Norwegian</option>
+                            <option value="fa" <?php
+                            echo  ( esc_html( $wpaicg_chat_language ) == 'fa' ? 'selected' : '' ) ;
+                            ?>>Persian</option>
                             <option value="pl" <?php
                             echo  ( esc_html( $wpaicg_chat_language ) == 'pl' ? 'selected' : '' ) ;
                             ?>>Polish</option>
@@ -531,7 +541,15 @@ if ( !empty($errors)) {
                         </select>
                     </div>
                     <div class="mb-5">
-                        <label class="wpaicg-form-label"><?php esc_html__('Font Color','gpt3-ai-content-generator')?>:</label>
+                        <label class="wpaicg-form-label"><?php echo esc_html__('Width','gpt3-ai-content-generator')?>:</label>
+                        <input value="<?php echo esc_html($wpaicg_chat_width)?>" style="width: 100px;" class="wpaicg_chat_widget_width" min="100" type="text" name="wpaicg_chat_widget[width]">
+                    </div>
+                    <div class="mb-5">
+                        <label class="wpaicg-form-label"><?php echo esc_html__('Height','gpt3-ai-content-generator')?>:</label>
+                        <input value="<?php echo esc_html($wpaicg_chat_height)?>" style="width: 100px;" class="wpaicg_chat_widget_height" min="100" type="text" name="wpaicg_chat_widget[height]">
+                    </div>
+                    <div class="mb-5">
+                        <label class="wpaicg-form-label"><?php echo esc_html__('Font Color','gpt3-ai-content-generator')?>:</label>
                         <input value="<?php echo esc_html($wpaicg_chat_fontcolor)?>" type="text" class="wpaicgchat_color wpaicgchat_font_color" name="wpaicg_chat_widget[fontcolor]">
                     </div>
                     <div class="mb-5">
@@ -592,17 +610,33 @@ if ( !empty($errors)) {
                         </div>
                     </div>
                     <div class="mb-5">
-                        <label class="wpaicg-form-label"><?php echo esc_html__('Width','gpt3-ai-content-generator')?>:</label>
-                        <input value="<?php echo esc_html($wpaicg_chat_width)?>" style="width: 100px;" class="wpaicg_chat_widget_width" min="100" type="number" name="wpaicg_chat_widget[width]">px
-                    </div>
-                    <div class="mb-5">
-                        <label class="wpaicg-form-label"><?php echo esc_html__('Height','gpt3-ai-content-generator')?>:</label>
-                        <input value="<?php echo esc_html($wpaicg_chat_height)?>" style="width: 100px;" class="wpaicg_chat_widget_height" min="100" type="number" name="wpaicg_chat_widget[height]">px
-                    </div>
-                    <div class="mb-5">
                         <label class="wpaicg-form-label"><?php echo esc_html__('Position','gpt3-ai-content-generator')?>:</label>
                         <input<?php echo $wpaicg_chat_position == 'left' ? ' checked': ''?> type="radio" value="left" name="wpaicg_chat_widget[position]"> <?php echo esc_html__('Left','gpt3-ai-content-generator')?>
                         <input<?php echo $wpaicg_chat_position == 'right' ? ' checked': ''?> type="radio" value="right" name="wpaicg_chat_widget[position]"> <?php echo esc_html__('Right','gpt3-ai-content-generator')?>
+                    </div>
+                    <div class="mb-5">
+                        <label class="wpaicg-form-label"><?php echo esc_html__('Fullscreen Button','gpt3-ai-content-generator')?>:</label>
+                        <input<?php echo $wpaicg_chat_fullscreen ? ' checked':''?> value="1" type="checkbox" class="wpaicgchat_fullscreen" name="wpaicg_chat_widget[fullscreen]">
+                    </div>
+                    <div class="mb-5">
+                        <label class="wpaicg-form-label"><?php echo esc_html__('Close Button','gpt3-ai-content-generator')?>:</label>
+                        <input<?php echo $wpaicg_chat_close_btn ? ' checked':''?> value="1" type="checkbox" class="wpaicgchat_close_btn" name="wpaicg_chat_widget[close_btn]">
+                    </div>
+                    <div class="mb-5">
+                        <label class="wpaicg-form-label"><?php echo esc_html__('Download Button','gpt3-ai-content-generator')?>:</label>
+                        <input<?php echo $wpaicg_chat_download_btn ? ' checked':''?> value="1" type="checkbox" class="wpaicgchat_download_btn" name="wpaicg_chat_widget[download_btn]">
+                    </div>
+                    <div class="mb-5">
+                        <label class="wpaicg-form-label"><?php echo esc_html__('Bar Icons Color','gpt3-ai-content-generator')?>:</label>
+                        <input value="<?php echo esc_html($wpaicg_bar_color)?>" type="text" class="wpaicgchat_color wpaicgchat_bar_color" name="wpaicg_chat_widget[bar_color]">
+                    </div>
+                    <div class="mb-5">
+                        <label class="wpaicg-form-label"><?php echo esc_html__('AI Thinking Text Color','gpt3-ai-content-generator')?>:</label>
+                        <input value="<?php echo esc_html($wpaicg_thinking_color)?>" type="text" class="wpaicgchat_color wpaicgchat_thinking_color" name="wpaicg_chat_widget[thinking_color]">
+                    </div>
+                    <div class="mb-5">
+                        <label class="wpaicg-form-label"><?php echo esc_html__('Delay time','gpt3-ai-content-generator')?>:</label>
+                        <input placeholder="<?php echo esc_html__('in seconds. eg. 5','gpt3-ai-content-generator')?>" value="<?php echo esc_html($wpaicg_delay_time)?>" type="text" class="wpaicgchat_delay_time" name="wpaicg_chat_widget[delay_time]">
                     </div>
                 </div>
             </div>
@@ -1059,12 +1093,15 @@ if ( !empty($errors)) {
             wpaicgChangeAvatarRealtime();
         })
         function wpaicgUpdateRealtime(){
+            var wpaicgWindowWidth = window.innerWidth;
+            var wpaicgWindowHeight = window.innerHeight;
             let fontsize = $('.wpaicg_chat_widget_font_size').val();
             let fontcolor = $('.wpaicgchat_font_color').iris('color');
             let bgcolor = $('.wpaicgchat_bg_color').iris('color');
             let inputbg = $('.wpaicgchat_input_color').iris('color');
             let inputborder = $('.wpaicgchat_input_border').iris('color');
             let buttoncolor = $('.wpaicgchat_send_color').iris('color');
+            let chatbarcolor = $('.wpaicgchat_bar_color').iris('color');
             let userbg = $('.wpaicgchat_user_color').iris('color');
             let aibg = $('.wpaicgchat_ai_color').iris('color');
             let useavatar = $('.wpaicgchat_use_avatar').val();
@@ -1072,6 +1109,10 @@ if ( !empty($errors)) {
             let height = $('.wpaicg_chat_widget_height').val();
             let mic_color = $('.wpaicg_chat_widget_mic_color').iris('color');
             $('.wpaicg-mic-icon').css('color', mic_color);
+            $('.wpaicg-chatbox-action-bar').css({
+                'color':chatbarcolor,
+                'background-color':bgcolor
+            });
             let footernote = $('.wpaicg-footer-note').val();
             let footerheight = 0;
 
@@ -1108,14 +1149,36 @@ if ( !empty($errors)) {
                 'border-color': inputborder,
                 'background-color': inputbg
             });
+            var previewboxWidth = $('.wpaicg-chatbox-preview-box').width();
             $('.wpaicg-chatbox-send').css('color',buttoncolor);
-            if(width === '' || parseInt(width) === 0){
-                width = 350;
+            if(width.indexOf('%') < 0){
+                if(width.indexOf('px') < 0){
+                    width = parseFloat(width);
+                }
+                else{
+                    width = parseFloat(width.replace(/px/g,''));
+                }
             }
-            if(height === '' || parseInt(height) === 0){
-                height = 400;
+            else{
+                width = parseFloat(width.replace(/%/g,''));
+                width = width*previewboxWidth/100;
             }
-            $('.wpaicg-chatbox-preview-box').height((parseInt(height)+100)+'px');
+            if(height.indexOf('%') < 0){
+                if(height.indexOf('px') < 0){
+                    height = parseFloat(height);
+                }
+                else{
+                    height = parseFloat(height.replace(/px/g,''));
+                }
+            }
+            else{
+                height = parseFloat(height.replace(/%/g,''));
+                height = height*wpaicgWindowHeight/100;
+            }
+            $('.wpaicg-chatbox-preview-box').height((parseInt(height)+125)+'px');
+            if(width > previewboxWidth){
+                width = previewboxWidth;
+            }
             $('.wpaicg_chat_widget_content .wpaicg-chatbox,.wpaicg_widget_open .wpaicg_chat_widget_content').css({
                 'height': height+'px',
                 'width': width+'px',
@@ -1130,7 +1193,7 @@ if ( !empty($errors)) {
         $('.wpaicg_chat_widget_font_size,.wpaicg_chat_widget_width,.wpaicg_chat_widget_height').on('input', function(){
             wpaicgUpdateRealtime();
         });
-        $('.wpaicg_chat_widget_audio,.wpaicgchat_use_avatar').click(function(){
+        $('.wpaicg_chat_widget_audio,.wpaicgchat_use_avatar,.wpaicgchat_fullscreen,.wpaicgchat_close_btn,.wpaicgchat_download_btn').click(function(){
             wpaicgUpdateRealtime();
         })
         $('.wpaicgchat_color').wpColorPicker({

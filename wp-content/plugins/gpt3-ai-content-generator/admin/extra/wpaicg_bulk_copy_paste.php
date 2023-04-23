@@ -1,6 +1,10 @@
 <?php
 if ( ! defined( 'ABSPATH' ) ) exit;
 include __DIR__.'/wpaicg_alert.php';
+$wpaicg_all_categories = get_terms(array(
+    'taxonomy' => 'category',
+    'hide_empty' => false
+));
 ?>
 <h2><?php echo esc_html__('Auto Content From Multi Lines','gpt3-ai-content-generator')?></h2>
 <div class="p-10">
@@ -16,7 +20,32 @@ include __DIR__.'/wpaicg_alert.php';
             </td>
         </tr>
         <tr>
-            <th scope="row"><?php echo esc_html__('Posts Status','gpt3-ai-content-generator')?></th>
+            <th scope="row"><?php echo esc_html__('Category','gpt3-ai-content-generator')?></th>
+            <td>
+                <select name="post_category">
+                    <option value=""><?php echo esc_html__('None','gpt3-ai-content-generator')?></option>
+                    <?php
+                    foreach($wpaicg_all_categories as $wpaicg_all_category){
+                        echo '<option value="'.esc_html($wpaicg_all_category->term_id).'">'.esc_html($wpaicg_all_category->name).'</option>';
+                    }
+                    ?>
+                </select>
+            </td>
+        </tr>
+        <tr>
+            <th scope="row"><?php echo esc_html__('Author','gpt3-ai-content-generator')?></th>
+            <td>
+                <select name="post_author">
+                    <?php
+                    foreach(get_users() as $user){
+                        echo '<option'.($user->ID == get_current_user_id() ? ' selected':'').' value="'.esc_html($user->ID).'">'.esc_html($user->display_name).'</option>';
+                    }
+                    ?>
+                </select>
+            </td>
+        </tr>
+        <tr>
+            <th scope="row"><?php echo esc_html__('Status','gpt3-ai-content-generator')?></th>
             <td>
                 <label>
                     <input<?php echo empty($wpaicg_cron_added) ? ' disabled':''?> checked type="radio" name="post_status" value="draft" class="wpaicg-post-status"> <?php echo esc_html__('Draft','gpt3-ai-content-generator')?>
@@ -69,12 +98,16 @@ include __DIR__.'/wpaicg_alert.php';
                 var wpaicg_schedules = [];
                 var wpaicg_post_status = $('.wpaicg-post-status:checked').val();
                 var wpaicg_schedule = $('.wpaicg-schedule-post').val();
+                var wpaicg_category = $('select[name=post_category]').val();
+                var wpaicg_author = $('select[name=post_author]').val();
+                var wpaicg_categories = [];
                 $.each(wpaicg_titles, function (idx,item){
                     wpaicg_schedules.push(wpaicg_schedule);
+                    wpaicg_categories.push(wpaicg_category);
                 });
                 $.ajax({
                     url: '<?php echo admin_url('admin-ajax.php')?>',
-                    data: {wpaicg_titles: wpaicg_titles,wpaicg_schedules: wpaicg_schedules,post_status: wpaicg_post_status, action: 'wpaicg_bulk_generator',source: 'multi','nonce': '<?php echo wp_create_nonce('wpaicg-ajax-nonce')?>'},
+                    data: {wpaicg_titles: wpaicg_titles,wpaicg_schedules: wpaicg_schedules,post_author: wpaicg_author,post_status: wpaicg_post_status,wpaicg_category: wpaicg_categories, action: 'wpaicg_bulk_generator',source: 'multi','nonce': '<?php echo wp_create_nonce('wpaicg-ajax-nonce')?>'},
                     type: 'POST',
                     dataType: 'JSON',
                     beforeSend: function(){

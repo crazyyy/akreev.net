@@ -31,6 +31,7 @@ if(!class_exists('\\WPAICG\\WPAICG_Forms')) {
             add_action( 'admin_menu', array( $this, 'wpaicg_menu' ) );
             add_action('wp_enqueue_scripts',[$this,'enqueue_scripts']);
             add_action('wp_ajax_wpaicg_form_log', [$this,'wpaicg_form_log']);
+            add_action('wp_ajax_wpaicg_form_duplicate', [$this,'wpaicg_form_duplicate']);
             add_action('wp_ajax_nopriv_wpaicg_form_log', [$this,'wpaicg_form_log']);
             if ( ! wp_next_scheduled( 'wpaicg_remove_forms_tokens_limited' ) ) {
                 wp_schedule_event( time(), 'hourly', 'wpaicg_remove_forms_tokens_limited' );
@@ -194,6 +195,39 @@ if(!class_exists('\\WPAICG\\WPAICG_Forms')) {
             wp_send_json($wpaicg_result);
         }
 
+        public function wpaicg_form_duplicate()
+        {
+            $wpaicg_result = array('status' => 'success');
+            if ( ! wp_verify_nonce( $_POST['nonce'], 'wpaicg-ajax-nonce' ) ) {
+                $wpaicg_result['msg'] = WPAICG_NONCE_ERROR;
+                wp_send_json($wpaicg_result);
+            }
+            if(isset($_POST['id']) && !empty($_POST['id'])){
+                $promptbase = get_post(sanitize_post($_REQUEST['id']));
+                $wpaicg_prompt_id = wp_insert_post(array(
+                    'post_title' => $promptbase->post_title,
+                    'post_type' => 'wpaicg_form',
+                    'post_content' => $promptbase->post_content,
+                    'post_status' => 'publish'
+                ));
+                $post_meta = get_post_meta( $promptbase->ID );
+                if( $post_meta ) {
+
+                    foreach ( $post_meta as $meta_key => $meta_values ) {
+
+                        if( '_wp_old_slug' == $meta_key ) { // do nothing for this meta key
+                            continue;
+                        }
+
+                        foreach ( $meta_values as $meta_value ) {
+                            add_post_meta( $wpaicg_prompt_id, $meta_key, $meta_value );
+                        }
+                    }
+                }
+            }
+            wp_send_json($wpaicg_result);
+        }
+
         public function wpaicg_update_template()
         {
             $wpaicg_result = array('status' => 'error', 'msg' => esc_html__('Something went wrong','gpt3-ai-content-generator'));
@@ -227,7 +261,7 @@ if(!class_exists('\\WPAICG\\WPAICG_Forms')) {
                         'post_status' => 'publish'
                     ));
                 }
-                $template_fields = array('prompt','fields','response','category','engine','max_tokens','temperature','top_p','best_of','frequency_penalty','presence_penalty','stop','color','icon','editor','bgcolor','header','dans','ddraft','dclear','dnotice','generate_text','noanswer_text','draft_text','clear_text','stop_text','cnotice_text');
+                $template_fields = array('prompt','fields','response','category','engine','max_tokens','temperature','top_p','best_of','frequency_penalty','presence_penalty','stop','color','icon','editor','bgcolor','header','dans','ddraft','dclear','dnotice','generate_text','noanswer_text','draft_text','clear_text','stop_text','cnotice_text','download_text','ddownload');
                 foreach($template_fields as $template_field){
                     if(isset($_POST[$template_field]) && !empty($_POST[$template_field])){
                         $value = wpaicg_util_core()->sanitize_text_or_array_field($_POST[$template_field]);
@@ -237,7 +271,7 @@ if(!class_exists('\\WPAICG\\WPAICG_Forms')) {
                         }
                         update_post_meta($wpaicg_prompt_id, 'wpaicg_form_'.$key, $value);
                     }
-                    elseif(in_array($template_field,array('bgcolor','header','dans','ddraft','dclear','dnotice')) && (!isset($_POST[$template_field]) || empty($_POST[$template_field]))){
+                    elseif(in_array($template_field,array('bgcolor','header','dans','ddraft','dclear','dnotice','ddownload')) && (!isset($_POST[$template_field]) || empty($_POST[$template_field]))){
                         delete_post_meta($wpaicg_prompt_id, 'wpaicg_form_'.$template_field);
                     }
                 }

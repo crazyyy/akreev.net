@@ -9,6 +9,12 @@ $wpaicg_bot_content = $wpdb->get_row($wpdb->prepare("SELECT * FROM ".$wpdb->post
 if($wpaicg_bot_content && isset($wpaicg_bot_content->post_id)){
     $wpaicg_bot = get_post($wpaicg_bot_content->post_id);
     if($wpaicg_bot) {
+        if(strpos($wpaicg_bot->post_content,'\"') !== false) {
+            $wpaicg_bot->post_content = str_replace('\"', '&quot;', $wpaicg_bot->post_content);
+        }
+        if(strpos($wpaicg_bot->post_content,"\'") !== false) {
+            $wpaicg_bot->post_content = str_replace('\\', '', $wpaicg_bot->post_content);
+        }
         $wpaicg_chat_widget = json_decode($wpaicg_bot->post_content, true);
         $wpaicg_chat_status = 'active';
     }
@@ -27,43 +33,35 @@ $wpaicg_chat_tone = isset($wpaicg_chat_widget['tone']) && !empty($wpaicg_chat_wi
 $wpaicg_chat_proffesion = isset($wpaicg_chat_widget['proffesion']) && !empty($wpaicg_chat_widget['proffesion']) ? $wpaicg_chat_widget['proffesion'] : 'none';
 $wpaicg_chat_remember_conversation = isset($wpaicg_chat_widget['remember_conversation']) && !empty($wpaicg_chat_widget['remember_conversation']) ? $wpaicg_chat_widget['remember_conversation'] : 'yes';
 $wpaicg_chat_content_aware = isset($wpaicg_chat_widget['content_aware']) && !empty($wpaicg_chat_widget['content_aware']) ? $wpaicg_chat_widget['content_aware'] : 'yes';
+$wpaicg_delay_time = isset($wpaicg_chat_widget['delay_time']) && !empty($wpaicg_chat_widget['delay_time']) ? $wpaicg_chat_widget['delay_time'] : '';
 if($wpaicg_chat_status == 'active'):
+    $randomWidgetID = rand(100000,999999);
 ?>
-<div class="wpaicg_chat_widget<?php echo $wpaicg_chat_position == 'left' ? ' wpaicg_widget_left' : ' wpaicg_widget_right'?>">
+<div data-id="<?php echo esc_html($randomWidgetID)?>" id="wpaicgChat<?php echo esc_html($randomWidgetID)?>" class="wpaicg_chat_widget<?php echo $wpaicg_chat_position == 'left' ? ' wpaicg_widget_left' : ' wpaicg_widget_right'?>">
     <div class="wpaicg_chat_widget_content">
         <?php
         echo do_shortcode('[wpaicg_chatgpt_widget]');
         ?>
     </div>
-    <div class="wpaicg_toggle">
+    <div class="wpaicg_toggle" id="wpaicg_toggle_<?php echo esc_html($randomWidgetID)?>">
         <img src="<?php echo esc_html($wpaicg_chat_icon_url)?>" />
     </div>
 </div>
-<script>
-    var wpaicg_chat_widget_toggle = document.getElementsByClassName('wpaicg_toggle')[0];
-    var wpaicg_chat_widget = document.getElementsByClassName('wpaicg_chat_widget')[0];
-    wpaicg_chat_widget_toggle.addEventListener('click', function (e){
-        e.preventDefault();
-        if(wpaicg_chat_widget_toggle.classList.contains('wpaicg_widget_open')){
-            wpaicg_chat_widget_toggle.classList.remove('wpaicg_widget_open');
-            wpaicg_chat_widget.classList.remove('wpaicg_widget_open');
-        }
-        else{
-            wpaicg_chat_widget.classList.add('wpaicg_widget_open');
-            wpaicg_chat_widget_toggle.classList.add('wpaicg_widget_open');
-            if(window.innerWidth < 350){
-                wpaicg_chat_widget.getElementsByClassName('wpaicg-chatbox')[0].style.width = window.innerWidth+'px';
-                wpaicg_chat_widget.getElementsByClassName('wpaicg_chat_widget_content')[0].style.width = window.innerWidth+'px';
+<?php
+if(!empty($wpaicg_delay_time)){
+?>
+    <script>
+        setTimeout(function (){
+            var widget = document.getElementById('wpaicgChat<?php echo esc_html($randomWidgetID)?>');
+            if(!widget.classList.contains('wpaicg_widget_open')) {
+                var toggleBtn = document.getElementById('wpaicg_toggle_<?php echo esc_html($randomWidgetID)?>');
+                toggleBtn.click();
             }
-        }
-    });
-    window.onresize = function(){
-        if(window.innerWidth < 350){
-            wpaicg_chat_widget.getElementsByClassName('wpaicg-chatbox')[0].style.width  = window.innerWidth+'px';
-            wpaicg_chat_widget.getElementsByClassName('wpaicg_chat_widget_content')[0].style.width  = window.innerWidth+'px';
-        }
-    }
-</script>
+        },<?php echo esc_html($wpaicg_delay_time)*1000?>);
+    </script>
+<?php
+}
+?>
 <?php
 endif;
 ?>

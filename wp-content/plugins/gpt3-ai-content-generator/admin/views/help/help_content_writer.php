@@ -29,9 +29,9 @@ if ( ! defined( 'ABSPATH' ) ) exit;
         </div>
     <h3>Language, Style and Tone</h3>
         <div>
-          <p>GPT AI Power supports 42 languages:</p>
+          <p>GPT AI Power supports following languages:</p>
           <p>Afrikaans, Arabic, Armenian, Bosnian, Bulgarian, Chinese (Simplified), Chinese (Traditional), Croatian, Czech, Danish, Dutch, English, Estonian, Filipino, Finnish, French, German, Greek, Hebrew, Hindi, Hungarian, Indonesian, Italian, Japanese,
-            Korean, Latvian, Lithuanian, Malay, Norwegian, Polish, Portuguese, Romanian, Russian, Serbian, Slovak, Slovenian, Spanish, Swedish, Thai, Turkish, Ukrainian and Vietnamese.
+            Korean, Latvian, Lithuanian, Malay, Norwegian, Persian, Polish, Portuguese, Romanian, Russian, Serbian, Slovak, Slovenian, Spanish, Swedish, Thai, Turkish, Ukrainian and Vietnamese.
           </p>
           <p>By default, the plugin uses the English language. You can change the language, style and tone from <b>Settings → Content</b> tab.</p>
           <p>Our plugin also supports total of 44 writing styles and 24 tones:</p>

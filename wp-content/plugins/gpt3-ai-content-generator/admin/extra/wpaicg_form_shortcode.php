@@ -54,7 +54,7 @@ if(isset($atts) && is_array($atts) && isset($atts['id']) && !empty($atts['id']))
     }
     if($wpaicg_custom){
         $sql = "SELECT p.ID as id,p.post_title as title, p.post_content as description";
-        $wpaicg_meta_keys = array('prompt','editor','fields','response','category','engine','max_tokens','temperature','top_p','best_of','frequency_penalty','presence_penalty','stop','color','icon','bgcolor','header','dans','ddraft','dclear','dnotice','generate_text','noanswer_text','draft_text','clear_text','stop_text','cnotice_text');
+        $wpaicg_meta_keys = array('prompt','editor','fields','response','category','engine','max_tokens','temperature','top_p','best_of','frequency_penalty','presence_penalty','stop','color','icon','bgcolor','header','dans','ddraft','dclear','dnotice','generate_text','noanswer_text','draft_text','clear_text','stop_text','cnotice_text','download_text','ddownload');
         foreach($wpaicg_meta_keys as $wpaicg_meta_key){
             $sql .= ", (".$wpdb->prepare("SELECT %i.%i FROM %i %i WHERE %i.%i=%s AND p.ID=%i.%i LIMIT 1",$wpaicg_meta_key,'meta_value',
                     $wpdb->postmeta,
@@ -97,6 +97,7 @@ if(isset($atts) && is_array($atts) && isset($atts['id']) && !empty($atts['id']))
         $wpaicg_clear_text = isset($wpaicg_item['clear_text']) && !empty($wpaicg_item['clear_text']) ? $wpaicg_item['clear_text'] : esc_html__('Clear','gpt3-ai-content-generator');
         $wpaicg_stop_text = isset($wpaicg_item['stop_text']) && !empty($wpaicg_item['stop_text']) ? $wpaicg_item['stop_text'] : esc_html__('Stop','gpt3-ai-content-generator');
         $wpaicg_cnotice_text = isset($wpaicg_item['cnotice_text']) && !empty($wpaicg_item['cnotice_text']) ? $wpaicg_item['cnotice_text'] : esc_html__('Please register to save your result','gpt3-ai-content-generator');
+        $wpaicg_download_text = isset($wpaicg_item['download_text']) && !empty($wpaicg_item['download_text']) ? $wpaicg_item['download_text'] : __('Download','gpt3-ai-content-generator');
         $wpaicg_stop_lists = '';
         if(is_array($wpaicg_stop) && count($wpaicg_stop)){
             foreach($wpaicg_stop as $item_stop){
@@ -341,8 +342,9 @@ if(isset($atts) && is_array($atts) && isset($atts['id']) && !empty($atts['id']))
             )
         );
         $allowed_tags = array_merge( $kses_defaults, $svg_args );
+        $randomFormID = rand(100000,999999);
         ?>
-        <div class="wpaicg-prompt-item" style="<?php echo isset($wpaicg_item['bgcolor']) && !empty($wpaicg_item['bgcolor']) ? 'background-color:'.esc_html($wpaicg_item['bgcolor']):'';?>">
+        <div class="wpaicg-prompt-item wpaicg-playground-shortcode" style="<?php echo isset($wpaicg_item['bgcolor']) && !empty($wpaicg_item['bgcolor']) ? 'background-color:'.esc_html($wpaicg_item['bgcolor']):'';?>">
             <div class="wpaicg-prompt-head" style="<?php echo isset($wpaicg_item['header']) && $wpaicg_item['header'] == 'no' ? 'display: none;':'';?>">
                 <div class="wpaicg-prompt-icon" style="background: <?php echo esc_html($wpaicg_icon_color)?>"><?php echo wp_kses($wpaicg_icon,$allowed_tags)?></div>
                 <div class="">
@@ -355,7 +357,7 @@ if(isset($atts) && is_array($atts) && isset($atts['id']) && !empty($atts['id']))
                 </div>
             </div>
             <div class="wpaicg-prompt-content">
-                <form method="post" action="" class="wpaicg-prompt-form" id="wpaicg-prompt-form">
+                <form data-source="form" data-id="<?php echo esc_html($randomFormID)?>" method="post" action="" class="wpaicg-prompt-form" id="wpaicg-prompt-form">
                     <?php
                     if($wpaicg_show_setting):
                     ?>
@@ -366,7 +368,7 @@ if(isset($atts) && is_array($atts) && isset($atts['id']) && !empty($atts['id']))
                             ?>
                             <div class="wpaicg-mb-10">
                                 <textarea style="display: none" class="wpaicg-prompt-title" id="wpaicg-prompt-title" rows="8"><?php echo esc_html($wpaicg_item['prompt'])?></textarea>
-                                <textarea style="display: none" name="title" class="wpaicg-prompt-title" id="wpaicg-prompt-title-filled" rows="8"><?php echo esc_html($wpaicg_item['prompt'])?></textarea>
+                                <textarea style="display: none" name="title" class="wpaicg-prompt-title-filled" id="wpaicg-prompt-title-filled" rows="8"><?php echo esc_html($wpaicg_item['prompt'])?></textarea>
                                 <?php
                                 if($wpaicg_fields && is_array($wpaicg_fields) && count($wpaicg_fields)){
                                     foreach($wpaicg_fields as $key=>$wpaicg_field){
@@ -385,7 +387,7 @@ if(isset($atts) && is_array($atts) && isset($atts['id']) && !empty($atts['id']))
                                                     }
                                                 }
                                                 ?>
-                                                <select required id="wpaicg-form-field-<?php echo esc_html($key)?>" name="<?php echo esc_html($wpaicg_field['id'])?>" data-label="<?php echo esc_html(@$wpaicg_field['label'])?>" data-type="<?php echo esc_html(@$wpaicg_field['type'])?>" data-min="<?php echo isset($wpaicg_field['min']) ? esc_html($wpaicg_field['min']) : ''?>" data-max="<?php echo isset($wpaicg_field['max']) ? esc_html($wpaicg_field['max']) : ''?>">
+                                                <select required id="wpaicg-form-field-<?php echo esc_html($key)?>" class="wpaicg-form-field-<?php echo esc_html($key)?>" name="<?php echo esc_html($wpaicg_field['id'])?>" data-label="<?php echo esc_html(@$wpaicg_field['label'])?>" data-type="<?php echo esc_html(@$wpaicg_field['type'])?>" data-min="<?php echo isset($wpaicg_field['min']) ? esc_html($wpaicg_field['min']) : ''?>" data-max="<?php echo isset($wpaicg_field['max']) ? esc_html($wpaicg_field['max']) : ''?>">
                                                     <?php
                                                     foreach($wpaicg_field_options as $wpaicg_field_option){
                                                         echo '<option value="'.esc_html($wpaicg_field_option).'">'.esc_html($wpaicg_field_option).'</option>';
@@ -405,7 +407,7 @@ if(isset($atts) && is_array($atts) && isset($atts['id']) && !empty($atts['id']))
                                                     }
                                                 }
                                                 ?>
-                                                <div id="wpaicg-form-field-<?php echo esc_html($key)?>">
+                                                <div id="wpaicg-form-field-<?php echo esc_html($key)?>" class="wpaicg-form-field-<?php echo esc_html($key)?>">
                                                     <?php
                                                     foreach($wpaicg_field_options as $wpaicg_field_option):
                                                     ?>
@@ -418,12 +420,12 @@ if(isset($atts) && is_array($atts) && isset($atts['id']) && !empty($atts['id']))
                                             }
                                             elseif($wpaicg_field['type'] == 'textarea'){
                                             ?>
-                                                <textarea<?php echo isset($wpaicg_field['rows']) && !empty($wpaicg_field['rows']) ? ' rows="'.esc_html($wpaicg_field['rows']).'"': '';?><?php echo isset($wpaicg_field['cols']) && !empty($wpaicg_field['cols']) ? ' rows="'.esc_html($wpaicg_field['cols']).'"': '';?> required id="wpaicg-form-field-<?php echo esc_html($key)?>" name="<?php echo esc_html($wpaicg_field['id'])?>" data-label="<?php echo esc_html(@$wpaicg_field['label'])?>" data-type="<?php echo esc_html(@$wpaicg_field['type'])?>" type="<?php echo esc_html(@$wpaicg_field['type'])?>" data-min="<?php echo isset($wpaicg_field['min']) ? esc_html($wpaicg_field['min']) : ''?>" data-max="<?php echo isset($wpaicg_field['max']) ? esc_html($wpaicg_field['max']) : ''?>"></textarea>
+                                                <textarea<?php echo isset($wpaicg_field['rows']) && !empty($wpaicg_field['rows']) ? ' rows="'.esc_html($wpaicg_field['rows']).'"': '';?><?php echo isset($wpaicg_field['cols']) && !empty($wpaicg_field['cols']) ? ' rows="'.esc_html($wpaicg_field['cols']).'"': '';?> required id="wpaicg-form-field-<?php echo esc_html($key)?>" class="wpaicg-form-field-<?php echo esc_html($key)?>" name="<?php echo esc_html($wpaicg_field['id'])?>" data-label="<?php echo esc_html(@$wpaicg_field['label'])?>" data-type="<?php echo esc_html(@$wpaicg_field['type'])?>" type="<?php echo esc_html(@$wpaicg_field['type'])?>" data-min="<?php echo isset($wpaicg_field['min']) ? esc_html($wpaicg_field['min']) : ''?>" data-max="<?php echo isset($wpaicg_field['max']) ? esc_html($wpaicg_field['max']) : ''?>"></textarea>
                                                 <?php
                                             }
                                             else{
                                                 ?>
-                                                <input required id="wpaicg-form-field-<?php echo esc_html($key)?>" name="<?php echo esc_html($wpaicg_field['id'])?>" data-label="<?php echo esc_html(@$wpaicg_field['label'])?>" data-type="<?php echo esc_html(@$wpaicg_field['type'])?>" type="<?php echo esc_html(@$wpaicg_field['type'])?>" data-min="<?php echo isset($wpaicg_field['min']) ? esc_html($wpaicg_field['min']) : ''?>" data-max="<?php echo isset($wpaicg_field['max']) ? esc_html($wpaicg_field['max']) : ''?>">
+                                                <input required id="wpaicg-form-field-<?php echo esc_html($key)?>" class="wpaicg-form-field-<?php echo esc_html($key)?>" name="<?php echo esc_html($wpaicg_field['id'])?>" data-label="<?php echo esc_html(@$wpaicg_field['label'])?>" data-type="<?php echo esc_html(@$wpaicg_field['type'])?>" type="<?php echo esc_html(@$wpaicg_field['type'])?>" data-min="<?php echo isset($wpaicg_field['min']) ? esc_html($wpaicg_field['min']) : ''?>" data-max="<?php echo isset($wpaicg_field['max']) ? esc_html($wpaicg_field['max']) : ''?>">
                                                 <?php
                                             }
                                             ?>
@@ -444,18 +446,18 @@ if(isset($atts) && is_array($atts) && isset($atts['id']) && !empty($atts['id']))
                                         </select>
                                     </div>
                                     <button style="<?php echo isset($wpaicg_item['dans']) && $wpaicg_item['dans'] == 'no' ? 'margin-left:0':''?>" class="wpaicg-button wpaicg-generate-button" id="wpaicg-generate-button"><?php echo esc_html($wpaicg_generate_text);?></button>
-                                    &nbsp;<button type="button" class="wpaicg-button wpaicg-prompt-stop-generate" id="wpaicg-prompt-stop-generate" style="display: none"><?php echo esc_html($wpaicg_stop_text);?></button>
+                                    &nbsp;<button data-id="<?php echo esc_html($randomFormID)?>" type="button" class="wpaicg-button wpaicg-prompt-stop-generate" id="wpaicg-prompt-stop-generate" style="display: none"><?php echo esc_html($wpaicg_stop_text);?></button>
                                 </div>
                             </div>
                             <div class="mb-5">
                                 <?php
                                 if($wpaicg_response_type == 'textarea'):
                                     if(is_user_logged_in()){
-                                        wp_editor('','wpaicg-prompt-result', array('media_buttons' => true, 'textarea_name' => 'wpaicg-prompt-result'));
+                                        wp_editor('','wpaicg-prompt-result-'.$randomFormID, array('media_buttons' => true, 'textarea_name' => 'wpaicg-prompt-result-'.$randomFormID));
                                     }
                                     else{
                                         ?>
-                                        <textarea class="wpaicg-prompt-result" id="wpaicg-prompt-result" rows="12"></textarea>
+                                        <textarea class="wpaicg-prompt-result-<?php echo esc_html($randomFormID)?>" id="wpaicg-prompt-result-<?php echo esc_html($randomFormID)?>" rows="12"></textarea>
                                         <?php
                                         if(isset($wpaicg_item['dnotice']) && $wpaicg_item['dnotice'] == 'no'):
                                         else:
@@ -467,7 +469,7 @@ if(isset($atts) && is_array($atts) && isset($atts['id']) && !empty($atts['id']))
                                     <?php
                                     }
                                 else:
-                                    echo '<div id="wpaicg-prompt-result"></div>';
+                                    echo '<div id="wpaicg-prompt-result-'.esc_html($randomFormID).'"></div>';
                                     if(!is_user_logged_in()){
                                         if(isset($wpaicg_item['dnotice']) && $wpaicg_item['dnotice'] == 'no'){
 
@@ -487,14 +489,22 @@ if(isset($atts) && is_array($atts) && isset($atts['id']) && !empty($atts['id']))
                                 if(isset($wpaicg_item['ddraft']) && $wpaicg_item['ddraft'] == 'no'):
                                 else:
                                 ?>
-                                <button type="button" class="wpaicg-button wpaicg-prompt-save-draft" id="wpaicg-prompt-save-draft"><?php echo esc_html($wpaicg_draft_text);?></button>
+                                <button data-id="<?php echo esc_html($randomFormID)?>" type="button" class="wpaicg-button wpaicg-prompt-save-draft" id="wpaicg-prompt-save-draft"><?php echo esc_html($wpaicg_draft_text);?></button>
                                 <?php
                                     endif;
                                 endif;
                                 if(isset($wpaicg_item['dclear']) && $wpaicg_item['dclear'] == 'no'):
                                 else:
                                 ?>
-                                <button type="button" class="wpaicg-button wpaicg-prompt-clear" id="wpaicg-prompt-clear"><?php echo esc_html($wpaicg_clear_text);?></button>
+                                <button data-id="<?php echo esc_html($randomFormID)?>" type="button" class="wpaicg-button wpaicg-prompt-clear" id="wpaicg-prompt-clear"><?php echo esc_html($wpaicg_clear_text);?></button>
+                                <?php
+                                endif;
+                                ?>
+                                <?php
+                                if(isset($wpaicg_item['ddownload']) && $wpaicg_item['ddownload'] == 'no'):
+                                else:
+                                ?>
+                                <button data-id="<?php echo esc_html($randomFormID)?>" type="button" class="wpaicg-button wpaicg-prompt-download"><?php echo esc_html($wpaicg_download_text);?></button>
                                 <?php
                                 endif;
                                 ?>
@@ -522,14 +532,14 @@ if(isset($atts) && is_array($atts) && isset($atts['id']) && !empty($atts['id']))
                                         <option<?php echo $wpaicg_engine == 'gpt-4-32k' ? ' selected':''?> value="gpt-4-32k">gpt-4-32k</option>
                                     </select>
                                 </div>
-                                <div class="wpaicg-prompt-field"><strong><?php echo esc_html__('Token','gpt3-ai-content-generator')?>: </strong><input id="wpaicg-prompt-max_tokens" name="max_tokens" type="text" value="<?php echo esc_html($wpaicg_max_tokens);?>"></div>
-                                <div class="wpaicg-prompt-field"><strong><?php echo esc_html__('Temp','gpt3-ai-content-generator')?>: </strong><input id="wpaicg-prompt-temperature" name="temperature" type="text" value="<?php echo esc_html($wpaicg_temperature)?>"></div>
-                                <div class="wpaicg-prompt-field"><strong><?php echo esc_html__('TP','gpt3-ai-content-generator')?>: </strong><input id="wpaicg-prompt-top_p" type="text" name="top_p" value="<?php echo esc_html($wpaicg_top_p)?>"></div>
-                                <div class="wpaicg-prompt-field"><strong><?php echo esc_html__('BO','gpt3-ai-content-generator')?>: </strong><input id="wpaicg-prompt-best_of" name="best_of" type="text" value="<?php echo esc_html($wpaicg_best_of)?>"></div>
-                                <div class="wpaicg-prompt-field"><strong><?php echo esc_html__('FP','gpt3-ai-content-generator')?>: </strong><input id="wpaicg-prompt-frequency_penalty" name="frequency_penalty" type="text" value="<?php echo esc_html($wpaicg_frequency_penalty)?>"></div>
-                                <div class="wpaicg-prompt-field"><strong><?php echo esc_html__('PP','gpt3-ai-content-generator')?>: </strong><input id="wpaicg-prompt-presence_penalty" name="presence_penalty" type="text" value="<?php echo esc_html($wpaicg_presence_penalty)?>"></div>
-                                <div class="wpaicg-prompt-field"><strong><?php echo esc_html__('Stop','gpt3-ai-content-generator')?>:<small><?php echo esc_html__('separate by commas','gpt3-ai-content-generator')?></small></strong><input id="wpaicg-prompt-stop" type="text" name="stop" type="text" value="<?php echo esc_html($wpaicg_stop_lists)?>"></div>
-                                <div class="wpaicg-prompt-field"><input id="wpaicg-prompt-post_title" type="hidden" name="post_title" value="<?php echo esc_html($wpaicg_item['title'])?>"></div>
+                                <div class="wpaicg-prompt-field"><strong><?php echo esc_html__('Token','gpt3-ai-content-generator')?>: </strong><input id="wpaicg-prompt-max_tokens" class="wpaicg-prompt-max_tokens" name="max_tokens" type="text" value="<?php echo esc_html($wpaicg_max_tokens);?>"></div>
+                                <div class="wpaicg-prompt-field"><strong><?php echo esc_html__('Temp','gpt3-ai-content-generator')?>: </strong><input id="wpaicg-prompt-temperature" class="wpaicg-prompt-temperature" name="temperature" type="text" value="<?php echo esc_html($wpaicg_temperature)?>"></div>
+                                <div class="wpaicg-prompt-field"><strong><?php echo esc_html__('TP','gpt3-ai-content-generator')?>: </strong><input id="wpaicg-prompt-top_p" class="wpaicg-prompt-top_p" type="text" name="top_p" value="<?php echo esc_html($wpaicg_top_p)?>"></div>
+                                <div class="wpaicg-prompt-field"><strong><?php echo esc_html__('BO','gpt3-ai-content-generator')?>: </strong><input id="wpaicg-prompt-best_of" class="wpaicg-prompt-best_of" name="best_of" type="text" value="<?php echo esc_html($wpaicg_best_of)?>"></div>
+                                <div class="wpaicg-prompt-field"><strong><?php echo esc_html__('FP','gpt3-ai-content-generator')?>: </strong><input id="wpaicg-prompt-frequency_penalty" class="wpaicg-prompt-frequency_penalty" name="frequency_penalty" type="text" value="<?php echo esc_html($wpaicg_frequency_penalty)?>"></div>
+                                <div class="wpaicg-prompt-field"><strong><?php echo esc_html__('PP','gpt3-ai-content-generator')?>: </strong><input id="wpaicg-prompt-presence_penalty" class="wpaicg-prompt-presence_penalty" name="presence_penalty" type="text" value="<?php echo esc_html($wpaicg_presence_penalty)?>"></div>
+                                <div class="wpaicg-prompt-field"><strong><?php echo esc_html__('Stop','gpt3-ai-content-generator')?>:<small><?php echo esc_html__('separate by commas','gpt3-ai-content-generator')?></small></strong><input class="wpaicg-prompt-stop" id="wpaicg-prompt-stop" type="text" name="stop" type="text" value="<?php echo esc_html($wpaicg_stop_lists)?>"></div>
+                                <div class="wpaicg-prompt-field"><input id="wpaicg-prompt-post_title" class="wpaicg-prompt-post_title" type="hidden" name="post_title" value="<?php echo esc_html($wpaicg_item['title'])?>"></div>
                                 <div class="wpaicg-prompt-field wpaicg-prompt-sample"><?php echo esc_html__('Sample Response','gpt3-ai-content-generator')?><div class="wpaicg-prompt-response"><?php echo esc_html(@$wpaicg_item['response'])?></div></div>
                             </div>
                             <?php
@@ -545,39 +555,20 @@ if(isset($atts) && is_array($atts) && isset($atts['id']) && !empty($atts['id']))
         </div>
         <script>
             var wpaicg_prompt_logged = <?php echo is_user_logged_in() ? 'true' : 'false'?>;
-            var wpaicgForm = document.getElementById('wpaicg-prompt-form');
-            var wpaicgMaxToken = document.getElementById('wpaicg-prompt-max_tokens');
-            var wpaicgTemperature = document.getElementById('wpaicg-prompt-temperature');
-            var wpaicgTopP = document.getElementById('wpaicg-prompt-top_p');
-            var wpaicgBestOf = document.getElementById('wpaicg-prompt-best_of');
-            var wpaicgFP = document.getElementById('wpaicg-prompt-frequency_penalty');
-            var wpaicgPP = document.getElementById('wpaicg-prompt-presence_penalty');
-            var wpaicgStop = document.getElementById('wpaicg-prompt-stop-generate');
-            var wpaicgMaxLines = document.getElementById('wpaicg-prompt-max-lines');
-            var wpaicgPromptTitle = document.getElementById('wpaicg-prompt-title');
-            var wpaicgPromptTitleFilled = document.getElementById('wpaicg-prompt-title-filled');
-            var wpaicgGenerateBtn = document.getElementById('wpaicg-generate-button');
-            var wpaicgFormFields = <?php echo json_encode($wpaicg_fields,JSON_UNESCAPED_UNICODE)?>;
-            var wpaicgItemType = '<?php echo esc_html($wpaicg_item['type'])?>';
-            var wpaicgResponseType = '<?php echo esc_html($wpaicg_response_type)?>';
-            var wpaicgUserLoggedIn = <?php echo is_user_logged_in() ? 'true': 'false'?>;
-            var wpaicgEventURL = '<?php echo esc_html(add_query_arg('wpaicg_stream','yes',site_url().'/index.php'));?>';
-            var wpaicgAjaxUrl = '<?php echo admin_url('admin-ajax.php')?>';
-            var wpaicgAdminPost = '<?php echo admin_url('post.php')?>';
-            <?php
-            if(is_user_logged_in()):
-            ?>
-            var wpaicgSaveDraftBtn = document.getElementById('wpaicg-prompt-save-draft');
-            <?php
-            endif;
-            ?>
-            var wpaicgClearBtn = document.getElementById('wpaicg-prompt-clear');
-            var wpaicgSaveResult = document.getElementById('wpaicg-prompt-save-result');
-            var wpaicgFormSourceID = '<?php echo esc_html(get_the_ID())?>';
-            var wpaicgFormNonce = '<?php echo esc_html(wp_create_nonce( 'wpaicg-formlog' ))?>';
-            var wpaicgAjaxNonce = '<?php echo esc_html(wp_create_nonce( 'wpaicg-ajax-nonce' ))?>';
-            var wpaicgFormId = <?php echo esc_html($wpaicg_item_id)?>;
-            var wpaicgFormName = '<?php echo isset($wpaicg_item['title']) && !empty($wpaicg_item['title']) ? esc_html($wpaicg_item['title']) : ''?>';
+            window['wpaicgForm<?php echo esc_html($randomFormID)?>'] = {
+                fields: <?php echo json_encode($wpaicg_fields,JSON_UNESCAPED_UNICODE)?>,
+                type: '<?php echo esc_html($wpaicg_item['type'])?>',
+                response: '<?php echo esc_html($wpaicg_response_type)?>',
+                logged_in: <?php echo is_user_logged_in() ? 'true': 'false'?>,
+                event: '<?php echo esc_html(add_query_arg('wpaicg_stream','yes',site_url().'/index.php'));?>',
+                ajax: '<?php echo admin_url('admin-ajax.php')?>',
+                post: '<?php echo admin_url('post.php')?>',
+                sourceID: '<?php echo esc_html(get_the_ID())?>',
+                nonce: '<?php echo esc_html(wp_create_nonce( 'wpaicg-formlog' ))?>',
+                ajax_nonce: '<?php echo esc_html(wp_create_nonce( 'wpaicg-ajax-nonce' ))?>',
+                id: <?php echo esc_html($wpaicg_item_id)?>,
+                name: '<?php echo isset($wpaicg_item['title']) && !empty($wpaicg_item['title']) ? esc_html($wpaicg_item['title']) : ''?>'
+            };
         </script>
         <?php
     }

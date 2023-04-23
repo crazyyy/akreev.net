@@ -74,7 +74,7 @@ if(isset($atts) && is_array($atts) && isset($atts['id']) && !empty($atts['id']))
     }
     if($wpaicg_custom){
         $sql = "SELECT p.ID as id,p.post_title as title, p.post_content as description";
-        $wpaicg_meta_keys = array('prompt','editor','response','category','engine','max_tokens','temperature','top_p','best_of','frequency_penalty','presence_penalty','stop','color','icon','bgcolor','header','dans','ddraft','dclear','dnotice','generate_text','noanswer_text','draft_text','clear_text','stop_text','cnotice_text');
+        $wpaicg_meta_keys = array('prompt','editor','response','category','engine','max_tokens','temperature','top_p','best_of','frequency_penalty','presence_penalty','stop','color','icon','bgcolor','header','dans','ddraft','dclear','dnotice','generate_text','noanswer_text','draft_text','clear_text','stop_text','cnotice_text','download_text','ddownload');
         foreach($wpaicg_meta_keys as $wpaicg_meta_key){
 //            $sql .= ",(SELECT ".$wpaicg_meta_key.".meta_value FROM ".$wpdb->postmeta." ".$wpaicg_meta_key." WHERE ".$wpaicg_meta_key.".meta_key='wpaicg_prompt_".$wpaicg_meta_key."' AND p.ID=".$wpaicg_meta_key.".post_id LIMIT 1) as ".$wpaicg_meta_key;
             $sql .= ", (".$wpdb->prepare("SELECT %i.%i FROM %i %i WHERE %i.%i = %s AND p.ID=%i.%i LIMIT 1",
@@ -122,6 +122,7 @@ if(isset($atts) && is_array($atts) && isset($atts['id']) && !empty($atts['id']))
         $wpaicg_clear_text = isset($wpaicg_item['clear_text']) && !empty($wpaicg_item['clear_text']) ? $wpaicg_item['clear_text'] : esc_html__('Clear','gpt3-ai-content-generator');
         $wpaicg_stop_text = isset($wpaicg_item['stop_text']) && !empty($wpaicg_item['stop_text']) ? $wpaicg_item['stop_text'] : esc_html__('Stop','gpt3-ai-content-generator');
         $wpaicg_cnotice_text = isset($wpaicg_item['cnotice_text']) && !empty($wpaicg_item['cnotice_text']) ? $wpaicg_item['cnotice_text'] : esc_html__('Please register to save your result','gpt3-ai-content-generator');
+        $wpaicg_download_text = isset($wpaicg_item['download_text']) && !empty($wpaicg_item['download_text']) ? $wpaicg_item['download_text'] : __('Download','gpt3-ai-content-generator');
         $wpaicg_stop_lists = '';
         if(is_array($wpaicg_stop) && count($wpaicg_stop)){
             foreach($wpaicg_stop as $item_stop){
@@ -339,8 +340,9 @@ if(isset($atts) && is_array($atts) && isset($atts['id']) && !empty($atts['id']))
         </style>
         <?php
         $wpaicg_response_type = isset($wpaicg_item['editor']) && $wpaicg_item['editor'] == 'div' ? 'div' : 'textarea';
+        $randomFormID = rand(100000,999999);
         ?>
-        <div class="wpaicg-prompt-item" style="<?php echo isset($wpaicg_item['bgcolor']) && !empty($wpaicg_item['bgcolor']) ? 'background-color:'.esc_html($wpaicg_item['bgcolor']):'';?>">
+        <div class="wpaicg-prompt-item wpaicg-playground-shortcode" style="<?php echo isset($wpaicg_item['bgcolor']) && !empty($wpaicg_item['bgcolor']) ? 'background-color:'.esc_html($wpaicg_item['bgcolor']):'';?>">
             <div class="wpaicg-prompt-head" style="<?php echo isset($wpaicg_item['header']) && $wpaicg_item['header'] == 'no' ? 'display: none;':'';?>">
                 <div class="wpaicg-prompt-icon" style="background: <?php echo esc_html($wpaicg_icon_color)?>"><?php echo wp_kses($wpaicg_icon,$allowed_tags)?></div>
                 <div class="">
@@ -353,7 +355,7 @@ if(isset($atts) && is_array($atts) && isset($atts['id']) && !empty($atts['id']))
                 </div>
             </div>
             <div class="wpaicg-prompt-content">
-                <form method="post" action="" class="wpaicg-prompt-form" id="wpaicg-prompt-form">
+                <form data-source="promptbase" data-id="<?php echo esc_html($randomFormID)?>" method="post" action="" class="wpaicg-prompt-form" id="wpaicg-prompt-form">
                     <?php
                     if($wpaicg_show_setting):
                     ?>
@@ -377,18 +379,18 @@ if(isset($atts) && is_array($atts) && isset($atts['id']) && !empty($atts['id']))
                                         </select>
                                     </div>
                                     <button style="<?php echo isset($wpaicg_item['dans']) && $wpaicg_item['dans'] == 'no' ? 'margin-left:0':''?>" class="wpaicg-button wpaicg-generate-button" id="wpaicg-generate-button"><?php echo esc_html($wpaicg_generate_text);?></button>
-                                    &nbsp;<button type="button" class="wpaicg-button wpaicg-prompt-stop-generate" id="wpaicg-prompt-stop-generate" style="display: none"><?php echo esc_html($wpaicg_stop_text);?></button>
+                                    &nbsp;<button data-id="<?php echo esc_html($randomFormID)?>" type="button" class="wpaicg-button wpaicg-prompt-stop-generate" id="wpaicg-prompt-stop-generate" style="display: none"><?php echo esc_html($wpaicg_stop_text);?></button>
                                 </div>
                             </div>
                             <div class="mb-5">
                                 <?php
                                 if($wpaicg_response_type == 'textarea'):
                                     if(is_user_logged_in()){
-                                        wp_editor('','wpaicg-prompt-result', array('media_buttons' => true, 'textarea_name' => 'wpaicg-prompt-result'));
+                                        wp_editor('','wpaicg-prompt-result-'.$randomFormID, array('media_buttons' => true, 'textarea_name' => 'wpaicg-prompt-result-'.$randomFormID));
                                     }
                                     else{
                                         ?>
-                                        <textarea class="wpaicg-prompt-result" id="wpaicg-prompt-result" rows="12"></textarea>
+                                        <textarea class="wpaicg-prompt-result-<?php echo esc_html($randomFormID)?>" id="wpaicg-prompt-result-<?php echo esc_html($randomFormID)?>" rows="12"></textarea>
                                         <?php
                                         if(isset($wpaicg_item['dnotice']) && $wpaicg_item['dnotice'] == 'no'):
                                         else:
@@ -400,7 +402,7 @@ if(isset($atts) && is_array($atts) && isset($atts['id']) && !empty($atts['id']))
                                     <?php
                                     }
                                 else:
-                                    echo '<div id="wpaicg-prompt-result"></div>';
+                                    echo '<div id="wpaicg-prompt-result-'.$randomFormID.'"></div>';
                                     if(!is_user_logged_in()){
                                         if(isset($wpaicg_item['dnotice']) && $wpaicg_item['dnotice'] == 'no'){
 
@@ -420,14 +422,22 @@ if(isset($atts) && is_array($atts) && isset($atts['id']) && !empty($atts['id']))
                                     if(isset($wpaicg_item['ddraft']) && $wpaicg_item['ddraft'] == 'no'):
                                     else:
                                 ?>
-                                <button type="button" class="wpaicg-button wpaicg-prompt-save-draft" id="wpaicg-prompt-save-draft"><?php echo esc_html($wpaicg_draft_text);?></button>
+                                <button data-id="<?php echo esc_html($randomFormID)?>" type="button" class="wpaicg-button wpaicg-prompt-save-draft" id="wpaicg-prompt-save-draft"><?php echo esc_html($wpaicg_draft_text);?></button>
                                 <?php
                                     endif;
                                 endif;
                                 if(isset($wpaicg_item['dclear']) && $wpaicg_item['dclear'] == 'no'):
                                 else:
                                 ?>
-                                <button type="button" class="wpaicg-button wpaicg-prompt-clear" id="wpaicg-prompt-clear"><?php echo esc_html($wpaicg_clear_text);?></button>
+                                <button data-id="<?php echo esc_html($randomFormID)?>" type="button" class="wpaicg-button wpaicg-prompt-clear" id="wpaicg-prompt-clear"><?php echo esc_html($wpaicg_clear_text);?></button>
+                                <?php
+                                endif;
+                                ?>
+                                <?php
+                                if(isset($wpaicg_item['ddownload']) && $wpaicg_item['ddownload'] == 'no'):
+                                else:
+                                ?>
+                                    <button data-id="<?php echo esc_html($randomFormID)?>" type="button" class="wpaicg-button wpaicg-prompt-download"><?php echo esc_html($wpaicg_download_text);?></button>
                                 <?php
                                 endif;
                                 ?>
@@ -455,14 +465,14 @@ if(isset($atts) && is_array($atts) && isset($atts['id']) && !empty($atts['id']))
                                         <option<?php echo $wpaicg_engine == 'gpt-4-32k' ? ' selected':''?> value="gpt-4-32k">gpt-4-32k</option>
                                     </select>
                                 </div>
-                                <div class="wpaicg-prompt-field"><strong><?php echo esc_html__('Token','gpt3-ai-content-generator')?>: </strong><input id="wpaicg-prompt-max_tokens" name="max_tokens" type="text" value="<?php echo esc_html($wpaicg_max_tokens);?>"></div>
-                                <div class="wpaicg-prompt-field"><strong><?php echo esc_html__('Temp','gpt3-ai-content-generator')?>: </strong><input id="wpaicg-prompt-temperature" name="temperature" type="text" value="<?php echo esc_html($wpaicg_temperature)?>"></div>
-                                <div class="wpaicg-prompt-field"><strong><?php echo esc_html__('TP','gpt3-ai-content-generator')?>: </strong><input id="wpaicg-prompt-top_p" type="text" name="top_p" value="<?php echo esc_html($wpaicg_top_p)?>"></div>
-                                <div class="wpaicg-prompt-field"><strong><?php echo esc_html__('BO','gpt3-ai-content-generator')?>: </strong><input id="wpaicg-prompt-best_of" name="best_of" type="text" value="<?php echo esc_html($wpaicg_best_of)?>"></div>
-                                <div class="wpaicg-prompt-field"><strong><?php echo esc_html__('FP','gpt3-ai-content-generator')?>: </strong><input id="wpaicg-prompt-frequency_penalty" name="frequency_penalty" type="text" value="<?php echo esc_html($wpaicg_frequency_penalty)?>"></div>
-                                <div class="wpaicg-prompt-field"><strong><?php echo esc_html__('PP','gpt3-ai-content-generator')?>: </strong><input id="wpaicg-prompt-presence_penalty" name="presence_penalty" type="text" value="<?php echo esc_html($wpaicg_presence_penalty)?>"></div>
-                                <div class="wpaicg-prompt-field"><strong><?php echo esc_html__('Stop','gpt3-ai-content-generator')?>:<small><?php echo esc_html__('separate by commas','gpt3-ai-content-generator')?></small></strong><input id="wpaicg-prompt-stop" type="text" name="stop" type="text" value="<?php echo esc_html($wpaicg_stop_lists)?>"></div>
-                                <div class="wpaicg-prompt-field"><input id="wpaicg-prompt-post_title" type="hidden" name="post_title" value="<?php echo esc_html($wpaicg_item['title'])?>"></div>
+                                <div class="wpaicg-prompt-field"><strong><?php echo esc_html__('Token','gpt3-ai-content-generator')?>: </strong><input class="wpaicg-prompt-max_tokens" id="wpaicg-prompt-max_tokens" name="max_tokens" type="text" value="<?php echo esc_html($wpaicg_max_tokens);?>"></div>
+                                <div class="wpaicg-prompt-field"><strong><?php echo esc_html__('Temp','gpt3-ai-content-generator')?>: </strong><input class="wpaicg-prompt-temperature" id="wpaicg-prompt-temperature" name="temperature" type="text" value="<?php echo esc_html($wpaicg_temperature)?>"></div>
+                                <div class="wpaicg-prompt-field"><strong><?php echo esc_html__('TP','gpt3-ai-content-generator')?>: </strong><input class="wpaicg-prompt-top_p" id="wpaicg-prompt-top_p" type="text" name="top_p" value="<?php echo esc_html($wpaicg_top_p)?>"></div>
+                                <div class="wpaicg-prompt-field"><strong><?php echo esc_html__('BO','gpt3-ai-content-generator')?>: </strong><input class="wpaicg-prompt-best_of" id="wpaicg-prompt-best_of" name="best_of" type="text" value="<?php echo esc_html($wpaicg_best_of)?>"></div>
+                                <div class="wpaicg-prompt-field"><strong><?php echo esc_html__('FP','gpt3-ai-content-generator')?>: </strong><input class="wpaicg-prompt-frequency_penalty" id="wpaicg-prompt-frequency_penalty" name="frequency_penalty" type="text" value="<?php echo esc_html($wpaicg_frequency_penalty)?>"></div>
+                                <div class="wpaicg-prompt-field"><strong><?php echo esc_html__('PP','gpt3-ai-content-generator')?>: </strong><input class="wpaicg-prompt-presence_penalty" id="wpaicg-prompt-presence_penalty" name="presence_penalty" type="text" value="<?php echo esc_html($wpaicg_presence_penalty)?>"></div>
+                                <div class="wpaicg-prompt-field"><strong><?php echo esc_html__('Stop','gpt3-ai-content-generator')?>:<small><?php echo esc_html__('separate by commas','gpt3-ai-content-generator')?></small></strong><input class="wpaicg-prompt-stop" id="wpaicg-prompt-stop" type="text" name="stop" type="text" value="<?php echo esc_html($wpaicg_stop_lists)?>"></div>
+                                <div class="wpaicg-prompt-field"><input class="wpaicg-prompt-post_title" id="wpaicg-prompt-post_title" type="hidden" name="post_title" value="<?php echo esc_html($wpaicg_item['title'])?>"></div>
                                 <div class="wpaicg-prompt-field wpaicg-prompt-sample"><?php echo esc_html__('Sample Response','gpt3-ai-content-generator')?><div class="wpaicg-prompt-response"><?php echo esc_html(@$wpaicg_item['response'])?></div></div>
                             </div>
                             <?php
@@ -477,266 +487,20 @@ if(isset($atts) && is_array($atts) && isset($atts['id']) && !empty($atts['id']))
             </div>
         </div>
         <script>
-            let prompt_id = <?php echo esc_html($wpaicg_item_id)?>;
-            let prompt_name = '<?php echo isset($wpaicg_item['title']) && !empty($wpaicg_item['title']) ? esc_html($wpaicg_item['title']) : ''?>';
-            let prompt_response = '';
-            let wp_nonce = '<?php echo esc_html(wp_create_nonce( 'wpaicg-promptbase' ))?>'
-            let wp_ajax_nonce = '<?php echo esc_html(wp_create_nonce( 'wpaicg-ajax-nonce' ))?>'
             var wpaicg_prompt_logged = <?php echo is_user_logged_in() ? 'true' : 'false'?>;
-            var wpaicgForm = document.getElementById('wpaicg-prompt-form');
-            var wpaicgMaxToken = document.getElementById('wpaicg-prompt-max_tokens');
-            var wpaicgTemperature = document.getElementById('wpaicg-prompt-temperature');
-            var wpaicgTopP = document.getElementById('wpaicg-prompt-top_p');
-            var wpaicgBestOf = document.getElementById('wpaicg-prompt-best_of');
-            var wpaicgFP = document.getElementById('wpaicg-prompt-frequency_penalty');
-            var wpaicgPP = document.getElementById('wpaicg-prompt-presence_penalty');
-            var wpaicgStop = document.getElementById('wpaicg-prompt-stop-generate');
-            var wpaicgMaxLines = document.getElementById('wpaicg-prompt-max-lines');
-            var wpaicgPromptTitle = document.getElementById('wpaicg-prompt-title');
-            var wpaicgGenerateBtn = document.getElementById('wpaicg-generate-button');
-            var wpaicgResponseType = '<?php echo esc_html($wpaicg_response_type)?>';
-            var wpaicg_limited_token = false;
-            <?php
-            if(is_user_logged_in()):
-            ?>
-            var wpaicgSaveDraftBtn = document.getElementById('wpaicg-prompt-save-draft');
-            <?php
-            endif;
-            ?>
-            var wpaicgClearBtn = document.getElementById('wpaicg-prompt-clear');
-            var wpaicgSaveResult = document.getElementById('wpaicg-prompt-save-result');
-            var eventGenerator = false;
-            function wpaicgBasicEditor(){
-                var basicEditor = true;
-                if(wpaicg_prompt_logged){
-                    var editor = tinyMCE.get('wpaicg-prompt-result');
-                    if ( document.getElementById('wp-wpaicg-prompt-result-wrap').classList.contains('tmce-active') && editor ) {
-                        basicEditor = false;
-                    }
-                }
-                return basicEditor;
-            }
-            function wpaicgSetContent(value){
-                if(wpaicgResponseType === 'textarea') {
-                    if (wpaicgBasicEditor()) {
-                        document.getElementById('wpaicg-prompt-result').value = value;
-                    } else {
-                        var editor = tinyMCE.get('wpaicg-prompt-result');
-                        editor.setContent(value);
-                    }
-                }
-                else{
-                    document.getElementById('wpaicg-prompt-result').innerHTML = value;
-                }
-            }
-            function wpaicgGetContent(){
-                if(wpaicgResponseType === 'textarea') {
-                    if (wpaicgBasicEditor()) {
-                        return document.getElementById('wpaicg-prompt-result').value
-                    } else {
-                        var editor = tinyMCE.get('wpaicg-prompt-result');
-                        var content = editor.getContent();
-                        content = content.replace(/<\/?p(>|$)/g, "");
-                        return content;
-                    }
-                }
-                else return document.getElementById('wpaicg-prompt-result').innerHTML;
-            }
-            function wpaicgLoadingBtn(btn){
-                btn.setAttribute('disabled','disabled');
-                btn.innerHTML += '<span class="wpaicg-loader"></span>';
-            }
-            function wpaicgRmLoading(btn){
-                btn.removeAttribute('disabled');
-                btn.removeChild(btn.getElementsByTagName('span')[0]);
-            }
-            function wpaicgEventClose(){
-                wpaicgStop.style.display = 'none';
-                if(!wpaicg_limited_token) {
-                    wpaicgSaveResult.style.display = 'block';
-                }
-                wpaicgRmLoading(wpaicgGenerateBtn);
-                eventGenerator.close();
-            }
-            var wpaicg_break_newline = "<?php echo is_user_logged_in() ? '<br/><br />': '\n\n'?>";
-            wpaicgForm.addEventListener('submit', function(e){
-                e.preventDefault();
-                var max_tokens = wpaicgMaxToken.value;
-                var temperature = wpaicgTemperature.value;
-                var top_p = wpaicgTopP.value;
-                var best_of = wpaicgBestOf.value;
-                var frequency_penalty = wpaicgFP.value;
-                var presence_penalty = wpaicgPP.value;
-                var error_message = false;
-                var title = wpaicgPromptTitle.value;
-                if(title === ''){
-                    error_message = '<?php echo esc_html__('Please insert prompt','gpt3-ai-content-generator')?>';
-                }
-                else if(max_tokens === ''){
-                    error_message = '<?php echo esc_html__('Please enter max tokens','gpt3-ai-content-generator')?>';
-                }
-                else if(parseFloat(max_tokens) < 1 || parseFloat(max_tokens) > 8000){
-                    error_message = '<?php echo sprintf(esc_html__('Please enter a valid max token value between %d and %d.','gpt3-ai-content-generator'),1,8000)?>';
-                }
-                else if(temperature === ''){
-                    error_message = '<?php echo esc_html__('Please enter temperature','gpt3-ai-content-generator')?>';
-                }
-                else if(parseFloat(temperature) < 0 || parseFloat(temperature) > 1){
-                    error_message = '<?php echo sprintf(esc_html__('Please enter a valid temperature value between %d and %d.','gpt3-ai-content-generator'),0,1)?>';
-                }
-                else if(top_p === ''){
-                    error_message = '<?php echo esc_html__('Please enter Top P','gpt3-ai-content-generator')?>';
-                }
-                else if(parseFloat(top_p) < 0 || parseFloat(top_p) > 1){
-                    error_message = '<?php echo sprintf(esc_html__('Please enter a valid top p value between %d and %d.','gpt3-ai-content-generator'),0,1)?>';
-                }
-                else if(best_of === ''){
-                    error_message = '<?php echo esc_html__('Please enter best of','gpt3-ai-content-generator')?>';
-                }
-                else if(parseFloat(best_of) < 1 || parseFloat(best_of) > 20){
-                    error_message = '<?php echo sprintf(esc_html__('Please enter a valid best of value between %d and %d.','gpt3-ai-content-generator'),1,20)?>';
-                }
-                else if(frequency_penalty === ''){
-                    error_message = '<?php echo esc_html__('Please enter frequency penalty','gpt3-ai-content-generator')?>';
-                }
-                else if(parseFloat(frequency_penalty) < 0 || parseFloat(frequency_penalty) > 2){
-                    error_message = '<?php echo sprintf(esc_html__('Please enter a valid frequency penalty value between %d and %d.','gpt3-ai-content-generator'),0,2)?>';
-                }
-                else if(presence_penalty === ''){
-                    error_message = '<?php echo esc_html__('Please enter presence penalty','gpt3-ai-content-generator')?>';
-                }
-                else if(parseFloat(presence_penalty) < 0 || parseFloat(presence_penalty) > 2){
-                    error_message = '<?php sprintf(esc_html__('Please enter a valid presence penalty value between %d and %d.','gpt3-ai-content-generator'),0,2)?>';
-                }
-                if(error_message){
-                    alert(error_message);
-                }
-                else{
-                    prompt_response = '';
-                    let startTime = new Date();
-                    let queryString = new URLSearchParams(new FormData(wpaicgForm)).toString();
-                    wpaicgLoadingBtn(wpaicgGenerateBtn);
-                    wpaicgSaveResult.style.display = 'none';
-                    wpaicgStop.style.display = 'inline';
-                    wpaicgSetContent('');
-                    var wpaicg_limitLines = parseFloat(wpaicgMaxLines.value);
-                    var count_line = 0;
-                    var currentContent = '';
-                    queryString += '&source_stream=promptbase';
-                    queryString += '&nonce='+wp_ajax_nonce;
-                    eventGenerator = new EventSource('<?php echo esc_html(add_query_arg('wpaicg_stream','yes',site_url().'/index.php'));?>&' + queryString);
-                    var wpaicg_response_events = 0;
-                    var wpaicg_newline_before = false;
-                    wpaicg_limited_token = false;
-                    eventGenerator.onmessage = function (e) {
-                        currentContent = wpaicgGetContent();
-                        if(e.data === "[DONE]"){
-                            count_line += 1;
-                            wpaicgSetContent(currentContent+wpaicg_break_newline);
-                            wpaicg_response_events = 0;
-                        }
-                        else if(e.data === "[LIMITED]"){
-                            wpaicg_limited_token = true;
-                            count_line += 1;
-                            wpaicgSetContent(currentContent+wpaicg_break_newline);
-                            wpaicg_response_events = 0;
-                        }
-                        else{
-                            var result = JSON.parse(e.data);
-                            var content_generated= '';
-                            if (result.error !== undefined) {
-                                content_generated = result.error.message;
-                            } else {
-                                content_generated = result.choices[0].delta !== undefined ? (result.choices[0].delta.content !== undefined ? result.choices[0].delta.content : '') : result.choices[0].text;
-                            }
-                            prompt_response += content_generated;
-                            if((content_generated === '\n' || content_generated === ' \n' || content_generated === '.\n' || content_generated === '\n\n' || content_generated === '.\n\n') && wpaicg_response_events > 0 && currentContent !== ''){
-                                if(!wpaicg_newline_before) {
-                                    wpaicg_newline_before = true;
-                                    wpaicgSetContent(currentContent + wpaicg_break_newline);
-                                }
-                            }
-                            else if(content_generated === '\n' && wpaicg_response_events === 0 && currentContent === ''){
-
-                            }
-                            else {
-                                wpaicg_newline_before = false;
-                                wpaicg_response_events += 1;
-                                wpaicgSetContent(currentContent + content_generated);
-                            }
-                        }
-                        if (count_line === wpaicg_limitLines) {
-                            if(!wpaicg_limited_token) {
-                                let endTime = new Date();
-                                let timeDiff = endTime - startTime;
-                                timeDiff = timeDiff / 1000;
-                                queryString += '&action=wpaicg_prompt_log&prompt_id=' + prompt_id + '&prompt_name=' + prompt_name + '&prompt_response=' + prompt_response + '&duration=' + timeDiff + '&_wpnonce=' + wp_nonce + '&source_id=<?php echo get_the_ID()?>';
-                                const xhttp = new XMLHttpRequest();
-                                xhttp.open('POST', '<?php echo admin_url('admin-ajax.php')?>');
-                                xhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
-                                xhttp.send(queryString);
-                                xhttp.onreadystatechange = function (oEvent) {
-                                    if (xhttp.readyState === 4) {
-
-                                    }
-                                }
-                            }
-                            wpaicgEventClose();
-                        }
-                    }
-                }
-                return false;
-            });
-            wpaicgStop.addEventListener('click', function (e){
-                e.preventDefault();
-                wpaicgEventClose();
-            });
-            if(wpaicgClearBtn) {
-                wpaicgClearBtn.addEventListener('click', function (e) {
-                    e.preventDefault();
-                    wpaicgSetContent('');
-                });
-            }
-            <?php
-            if(is_user_logged_in()):
-            ?>
-            if(wpaicgSaveDraftBtn) {
-                wpaicgSaveDraftBtn.addEventListener('click', function (e) {
-                    e.preventDefault();
-                    var title = document.getElementById('wpaicg-prompt-post_title').value;
-                    var content = wpaicgGetContent();
-                    if (title === '') {
-                        alert('<?php echo esc_html__('Please enter title','gpt3-ai-content-generator')?>');
-                    } else if (content === '') {
-                        alert('<?php echo esc_html__('Please wait generate content','gpt3-ai-content-generator')?>')
-                    } else {
-                        const xhttp = new XMLHttpRequest();
-                        xhttp.open('POST', '<?php echo admin_url('admin-ajax.php')?>');
-                        xhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
-                        xhttp.send('action=wpaicg_save_draft_post_extra&title=' + title + '&content=' + content+'&save_source=promptbase&nonce='+wp_ajax_nonce);
-                        wpaicgLoadingBtn(wpaicgSaveDraftBtn);
-                        xhttp.onreadystatechange = function (oEvent) {
-                            if (xhttp.readyState === 4) {
-                                wpaicgRmLoading(wpaicgSaveDraftBtn);
-                                if (xhttp.status === 200) {
-                                    var wpaicg_response = this.responseText;
-                                    wpaicg_response = JSON.parse(wpaicg_response);
-                                    if (wpaicg_response.status === 'success') {
-                                        window.location.href = '<?php echo admin_url('post.php')?>?post=' + wpaicg_response.id + '&action=edit';
-                                    } else {
-                                        alert(wpaicg_response.msg);
-                                    }
-                                } else {
-                                    alert('<?php echo esc_html__('Something went wrong','gpt3-ai-content-generator')?>');
-                                }
-                            }
-                        }
-                    }
-                })
-            }
-            <?php
-            endif;
-            ?>
+            window['wpaicgForm<?php echo esc_html($randomFormID)?>'] = {
+                type: '<?php echo esc_html($wpaicg_item['type'])?>',
+                response: '<?php echo esc_html($wpaicg_response_type)?>',
+                logged_in: <?php echo is_user_logged_in() ? 'true': 'false'?>,
+                event: '<?php echo esc_html(add_query_arg('wpaicg_stream','yes',site_url().'/index.php'));?>',
+                ajax: '<?php echo admin_url('admin-ajax.php')?>',
+                post: '<?php echo admin_url('post.php')?>',
+                sourceID: '<?php echo esc_html(get_the_ID())?>',
+                nonce: '<?php echo esc_html(wp_create_nonce( 'wpaicg-promptbase' ))?>',
+                ajax_nonce: '<?php echo esc_html(wp_create_nonce( 'wpaicg-ajax-nonce' ))?>',
+                id: <?php echo esc_html($wpaicg_item_id)?>,
+                name: '<?php echo isset($wpaicg_item['title']) && !empty($wpaicg_item['title']) ? esc_html($wpaicg_item['title']) : ''?>'
+            };
         </script>
         <?php
     }

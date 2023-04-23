@@ -66,6 +66,9 @@ $wpaicg_reset_limit = 0;
 $wpaicg_limited_message = __('You have reached your token limit.','gpt3-ai-content-generator');
 $wpaicg_include_footer = 0;
 $wpaicg_roles = wp_roles()->get_names();
+$wpaicg_chat_close_btn = false;
+$wpaicg_chat_download_btn = false;
+$wpaicg_chat_fullscreen = false;
 ?>
 <style>
     .wpaicg-bot-wizard{}
@@ -302,6 +305,7 @@ $wpaicg_roles = wp_roles()->get_names();
                             <option value="lt">Lithuanian</option>
                             <option value="ms">Malay</option>
                             <option value="no">Norwegian</option>
+                            <option value="fa">Persian</option>
                             <option value="pl">Polish</option>
                             <option value="pt">Portuguese</option>
                             <option value="ro">Romanian</option>
@@ -406,41 +410,41 @@ $wpaicg_roles = wp_roles()->get_names();
                             ?>
                         </select>
                     </div>
-                    <div class="wpaicg-mb-10">
+                    <div class="wpaicg-mb-10" style="position: relative">
                         <label class="wpaicg-form-label"><?php echo esc_html__('Font Color','gpt3-ai-content-generator')?>:</label>
                         <input value="<?php echo esc_html($wpaicg_chat_fontcolor)?>" type="text" class="wpaicgchat_color wpaicg_chatbot_fontcolor" name="bot[fontcolor]">
                     </div>
-                    <div class="wpaicg-mb-10">
+                    <div class="wpaicg-mb-10" style="position: relative">
                         <label class="wpaicg-form-label"><?php echo esc_html__('Background Color','gpt3-ai-content-generator')?>:</label>
                         <input value="<?php echo esc_html($wpaicg_chat_bgcolor)?>" type="text" class="wpaicgchat_color wpaicg_chatbot_bgcolor" name="bot[bgcolor]">
                     </div>
-                    <div class="wpaicg-mb-10">
+                    <div class="wpaicg-mb-10" style="position: relative">
                         <label class="wpaicg-form-label"><?php echo esc_html__('Text Field Background','gpt3-ai-content-generator')?>:</label>
                         <input value="<?php echo esc_html($wpaicg_bg_text_field)?>" type="text" class="wpaicgchat_color wpaicg_chatbot_bg_text_field" name="bot[bg_text_field]">
                     </div>
-                    <div class="wpaicg-mb-10">
+                    <div class="wpaicg-mb-10" style="position: relative">
                         <label class="wpaicg-form-label"><?php echo esc_html__('Text Field Border','gpt3-ai-content-generator')?>:</label>
                         <input value="<?php echo esc_html($wpaicg_border_text_field)?>" type="text" class="wpaicgchat_color wpaicg_chatbot_border_text_field" name="bot[border_text_field]">
                     </div>
-                    <div class="wpaicg-mb-10">
+                    <div class="wpaicg-mb-10" style="position: relative">
                         <label class="wpaicg-form-label"><?php echo esc_html__('Button Color','gpt3-ai-content-generator')?>:</label>
                         <input value="<?php echo esc_html($wpaicg_send_color)?>" type="text" class="wpaicgchat_color wpaicg_chatbot_send_color" name="bot[send_color]">
                     </div>
-                    <div class="wpaicg-mb-10">
+                    <div class="wpaicg-mb-10" style="position: relative">
                         <label class="wpaicg-form-label"><?php echo esc_html__('User Background Color','gpt3-ai-content-generator')?>:</label>
                         <input value="<?php echo esc_html($wpaicg_user_bg_color)?>" type="text" class="wpaicgchat_color wpaicg_chatbot_user_bg_color" name="bot[user_bg_color]">
                     </div>
-                    <div class="wpaicg-mb-10">
+                    <div class="wpaicg-mb-10" style="position: relative">
                         <label class="wpaicg-form-label"><?php echo esc_html__('AI Background Color','gpt3-ai-content-generator')?>:</label>
                         <input value="<?php echo esc_html($wpaicg_ai_bg_color)?>" type="text" class="wpaicgchat_color wpaicg_chatbot_ai_bg_color" name="bot[ai_bg_color]">
                     </div>
                     <div class="wpaicg-mb-10">
                         <label class="wpaicg-form-label"><?php echo esc_html__('Width','gpt3-ai-content-generator')?>:</label>
-                        <input value="<?php echo esc_html($wpaicg_chat_width)?>" style="width: 100px;" class="wpaicg_chatbot_width" min="100" type="number" name="bot[width]">&nbsp;px
+                        <input value="<?php echo esc_html($wpaicg_chat_width)?>" style="width: 100px;" class="wpaicg_chatbot_width" min="100" type="text" name="bot[width]">
                     </div>
                     <div class="wpaicg-mb-10">
                         <label class="wpaicg-form-label"><?php echo esc_html__('Height','gpt3-ai-content-generator')?>:</label>
-                        <input value="<?php echo esc_html($wpaicg_chat_height)?>" style="width: 100px;" class="wpaicg_chatbot_height" min="100" type="number" name="bot[height]">&nbsp;px
+                        <input value="<?php echo esc_html($wpaicg_chat_height)?>" style="width: 100px;" class="wpaicg_chatbot_height" min="100" type="text" name="bot[height]">
                     </div>
                     <div class="wpaicg-widget-icon" style="display: none">
                         <div class="wpaicg-mb-10">
@@ -483,6 +487,30 @@ $wpaicg_roles = wp_roles()->get_names();
                                 <strong><?php echo esc_html__('Custom','gpt3-ai-content-generator');?></strong>
                             </div>
                         </div>
+                    </div>
+                    <div class="mb-5">
+                        <label class="wpaicg-form-label"><?php echo esc_html__('Fullscreen Button','gpt3-ai-content-generator')?>:</label>
+                        <input<?php echo $wpaicg_chat_fullscreen ? ' checked':''?> value="1" type="checkbox" class="wpaicg_chatbot_fullscreen" name="bot[fullscreen]">
+                    </div>
+                    <div class="mb-5">
+                        <label class="wpaicg-form-label"><?php echo esc_html__('Close Button','gpt3-ai-content-generator')?>:</label>
+                        <input<?php echo $wpaicg_chat_close_btn ? ' checked':''?> value="1" type="checkbox" class="wpaicg_chatbot_close_btn" name="bot[close_btn]">
+                    </div>
+                    <div class="mb-5">
+                        <label class="wpaicg-form-label"><?php echo esc_html__('Download Button','gpt3-ai-content-generator')?>:</label>
+                        <input<?php echo $wpaicg_chat_download_btn ? ' checked':''?> value="1" type="checkbox" class="wpaicg_chatbot_download_btn" name="bot[download_btn]">
+                    </div>
+                    <div class="mb-5" style="position: relative">
+                        <label class="wpaicg-form-label"><?php echo esc_html__('Bar Icons Color','gpt3-ai-content-generator')?>:</label>
+                        <input value="#fff" type="text" class="wpaicgchat_color wpaicg_chatbot_bar_color" name="bot[bar_color]">
+                    </div>
+                    <div class="mb-5" style="position: relative">
+                        <label class="wpaicg-form-label"><?php echo esc_html__('AI Thinking Text Color','gpt3-ai-content-generator')?>:</label>
+                        <input value="#fff" type="text" class="wpaicgchat_color wpaicg_chatbot_thinking_color" name="bot[thinking_color]">
+                    </div>
+                    <div class="mb-5">
+                        <label class="wpaicg-form-label"><?php echo esc_html__('Delay time','gpt3-ai-content-generator')?>:</label>
+                        <input placeholder="<?php echo esc_html__('in seconds. eg. 5','gpt3-ai-content-generator')?>" value="" type="text" class="wpaicg_chatbot_delay_time" name="bot[delay_time]">
                     </div>
                     <div class="wpaicg-bot-footer">
                         <div>
@@ -1062,6 +1090,33 @@ $wpaicg_bots = new WP_Query($args);
             if(chatheight === ''){
                 chatheight = 400;
             }
+            var wpaicgWindowWidth = window.innerWidth;
+            var wpaicgWindowHeight = window.innerHeight;
+            if(chatwidth.indexOf('%') < 0){
+                if(chatwidth.indexOf('px') < 0){
+                    chatwidth = parseFloat(chatwidth);
+                }
+                else{
+                    chatwidth = parseFloat(chatwidth.replace(/px/g,''));
+                }
+            }
+            else{
+                chatwidth = parseFloat(chatwidth.replace(/%/g,''));
+                chatwidth = chatwidth*wpaicgWindowWidth/100;
+            }
+            if(chatheight.indexOf('%') < 0){
+                if(chatheight.indexOf('px') < 0){
+                    chatheight = parseFloat(chatheight);
+                }
+                else{
+                    chatheight = parseFloat(chatheight.replace(/px/g,''));
+                }
+            }
+            else{
+                chatheight = parseFloat(chatheight.replace(/%/g,''));
+                chatheight = chatheight*wpaicgWindowHeight/100;
+            }
+
             if(parseInt(chatwidth) > previewWidth){
                 chatwidth = previewWidth;
             }
@@ -1336,7 +1391,7 @@ $wpaicg_bots = new WP_Query($args);
                     modalContent.find('.wpaicg_chatbot_position_right').prop('checked',false);
                     modalContent.find('.wpaicg_chatbot_position_'+field).prop('checked',true);
                 }
-                else if((key === 'log_request' || key === 'audio_enable' || key === 'moderation' || key === 'use_avatar' || key === 'chat_addition' || key === 'save_logs' || key === 'log_notice') && field === '1'){
+                else if((key === 'fullscreen' || key === 'close_btn' || key === 'download_btn' || key === 'log_request' || key === 'audio_enable' || key === 'moderation' || key === 'use_avatar' || key === 'chat_addition' || key === 'save_logs' || key === 'log_notice') && field === '1'){
                     if(key === 'save_logs'){
                         wpaicg_save_log = true;
                     }

@@ -4,7 +4,7 @@ Tags: chatgpt, gpt, openai, ai, gpt4, chatbot, speech, whisper, image generator,
 Requires at least: 5.0.0
 Tested up to: 6.2
 Requires PHP: 7.4
-Stable tag: 1.6.61
+Stable tag: 1.6.68
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
  
@@ -169,6 +169,7 @@ https://www.youtube.com/watch?v=hetYOlR-ms4
 * Lithuanian
 * Malay
 * Norwegian
+* Persian
 * Polish
 * Portuguese
 * Romanian
@@ -233,6 +234,48 @@ The PHP max execution time setting determines the maximum amount of time a PHP s
 This message is coming from OpenAI, not from our plugin. It means that you have reached the limit of your OpenAI API quota, which is determined by your plan and billing details. Our plugin works on a "bring your own API key" model, serving as a bridge between WordPress and OpenAI, so the issue is not related to the plugin itself. To resolve this issue, you'll need to check your OpenAI account and ensure that you have enough quota for your needs, or upgrade your plan if necessary.
 
 == Changelog ==
+
+= 1.6.68 =
+
+This update introduces several improvements to the Auto Content Writer.
+
+* Search in Queue: I've added a search function to the queue section of the Auto Content Writer, allowing to easily locate specific tasks in the queue.
+* Category and Author Dropdown for CSV and Copy-Paste Module: Now you have the option to select categories and authors from dropdown menus when using the CSV and Copy-Paste modules.
+* Added Persian language support in chat bot.
+
+= 1.6.67 =
+
+* Multiple AI Forms and Promptbases on One Page: You can now create multiple AI forms and prompts on a single page.
+* Download Button for AI Forms and Promptbases: A new optional download button has been added to the frontend tab, allowing to download AI form and promptbase responses as .txt files. You can enable or disable this feature as desired.
+* Duplicate Button in Custom AI Forms/Promptbase: I've added a duplicate button in the custom AI forms and promptbase section to make it easier for you to create copies of existing forms or promptbases.
+
+* Note: Remember to clear your browser cache for the changes to take effect. If you experience continuous page refreshes when clicking "generate," it indicates that you need to clear your cache.
+
+= 1.6.66 =
+
+* Added Persian language support in Express Mode. 
+* Fixed an issue in content settings where the heading tag for the table of contents was not being saved.
+
+= 1.6.65 =
+
+Fixed an issue in the chat widget where the text field was too near to the bottom.
+
+= 1.6.64 =
+
+Fixed couple of CSS issues related to the chat widget.
+
+= 1.6.63 =
+
+Fixed an issue where the chat widget was in some cases unresponsive to clicks.
+
+= 1.6.62 =
+
+* Added compatibility for percentage-based width and height for chat bot. You can now set chat bot dimensions using % values, allowing for better responsiveness and adaptability to different screen sizes.
+* Enhanced chat bot UI with new optional buttons. Close (X), Fullscreen, and Download buttons can be added to the top right side of chat bots. Applies to both shortcode and widget implementations. Button display can be toggled on or off in the Style tab.
+* Improved customization for "AI thinking" text. Users can now change the font color for the "AI thinking" text in the Style tab.
+* Introduced delay popup feature for widget. Added a new text field called "Delay time" under Style in ChatGPT. If left empty, the widget will not automatically pop up. If a number (e.g., 5) is entered, the widget will automatically pop up after that number of seconds (e.g., 5 seconds).
+* Fixed an issue causing an additional colon to appear in the chat bot when the avatar feature is enabled.
+* Fixed an issue in chatlog.
 
 = 1.6.61 =
 New: Added support for multisite network level integration, allowing super-admins to execute network level actions such as network wide opt-in/skip and network wide license key activation. This feature is still in beta but you're welcome to give it a try.
