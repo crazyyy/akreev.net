@@ -89,3 +89,4 @@ __pycache__
 wp-content/ewww/gifsicle.exe
 wp-content/ewww/jpegtran.exe
 wp-content/ewww/optipng.exe
+/wp-content/plugins/freepik-scraper/python/.env

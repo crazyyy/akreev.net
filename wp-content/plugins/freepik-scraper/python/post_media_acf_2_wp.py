@@ -2,23 +2,23 @@ import json
 import os
 import datetime
 import requests
+from dotenv import load_dotenv
 from requests.packages.urllib3.exceptions import InsecureRequestWarning
 from urllib3.exceptions import SSLError
 requests.packages.urllib3.disable_warnings(InsecureRequestWarning)
 
+# Load environment variables from .env file
+load_dotenv()
+
 # set up variables for authentication and site URL
-username = 'aparserok'
-password = 'xxx'
+username = os.getenv("WP_USERNAME")
+password = os.getenv("WP_PASSWORD")
 auth = (username, password)
 
-site_url = 'https://akreev.local'
+site_url = os.getenv("SITE_URL")
 
 # set up headers and authentication
 headers = {'Content-Type': 'application/json'}
-# headers = {'Content-Type': 'multipart/form-data'}
-# headers = {
-#   'Authorization': 'Basic xxxxxx'
-# }
 
 # disable SSL verification
 verify_ssl = False
@@ -56,7 +56,6 @@ for json_filename in os.listdir(jsons_directory):
                 }
 
                 response_thumb = requests.post(site_url + '/wp-json/wp/v2/media', auth=auth, data=thumb_image_payload, files=thumb_image_file, verify=verify_ssl)
-                # response = requests.post(site_url + '/wp-json/wp/v2/media', headers=headers, auth=auth, data=image_payload, files=image_files, verify=verify_ssl)
 
                 response_thumb_id = response_thumb.json()['id']
                 print('Thumb published: ' + str(response_thumb_id))
@@ -154,7 +153,7 @@ for json_filename in os.listdir(jsons_directory):
                     'status': 'publish'
                 }
 
-                post_collection_url = "https://akreev.local/wp-json/wp/v2/collection"
+                post_collection_url = site_url + '/wp-json/wp/v2/collection'
                 headers = {
                   'Content-Type': 'application/x-www-form-urlencoded'
                 }
@@ -174,12 +173,6 @@ for json_filename in os.listdir(jsons_directory):
 
                 else:
                     print('Error posting article:', response_post_collection.content)
-                    print('>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>')
-                    print('Error posting article:', response_post_collection.json())
-                    print('=============================================================')
-                    print('Error posting article:', response_post_collection.text)
-                    print('<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<')
-
 
                 collection_object['updated_at'] = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
                 collection_object['published'] = True

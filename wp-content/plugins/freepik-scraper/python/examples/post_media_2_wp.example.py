@@ -4,7 +4,7 @@ import base64
 
 # Set the API endpoint and authentication details
 api_url = 'https://akreev.local/wp-json/wp/v2/'
-username = 'aparserok'
+username = 'your_username'
 password = 'your_password'
 
 # Set the image file path and metadata

@@ -20,21 +20,21 @@ def get_browser_options(browser="chrome"):
     """
     browser_options = webdriver.ChromeOptions()
     if browser == "firefox":
-          browser_options = webdriver.FirefoxOptions()
-    browser_options.add_argument('--headless')
-    browser_options.add_argument('--window-size=1920x1080')
-    browser_options.add_argument('--ignore-certificate-errors')
-    browser_options.add_argument('--no-sandbox')
-    browser_options.add_argument('--disable-dev-shm-usage')
-    browser_options.add_argument(
-        '--host-resolver-rules=MAP www.google-analytics.com 127.0.0.1')
-    browser_options.add_argument(
-        '--user-agent=Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/66.0.3359.181 Safari/537.36')
-    # browser_options.add_argument('no-default-browser-check')
-    # browser_options.add_argument('no-first-run')
-    # browser_options.add_argument("[path to the profile]")
-    # browser_options.add_argument("disable-gpu")
-    # browser_options.binary_location = "D:\apps\apps\chromedriver\current"
+        browser_options = webdriver.FirefoxOptions()
+        browser_options.add_argument('--headless')
+        browser_options.add_argument('--window-size=1920x1080')
+        browser_options.add_argument('--ignore-certificate-errors')
+        browser_options.add_argument('--no-sandbox')
+        browser_options.add_argument('--disable-dev-shm-usage')
+        browser_options.add_argument(
+            '--host-resolver-rules=MAP www.google-analytics.com 127.0.0.1')
+        browser_options.add_argument(
+            '--user-agent=Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/66.0.3359.181 Safari/537.36')
+        # browser_options.add_argument('no-default-browser-check')
+        # browser_options.add_argument('no-first-run')
+        # browser_options.add_argument("[path to the profile]")
+        # browser_options.add_argument("disable-gpu")
+        # browser_options.binary_location = "D:\apps\apps\chromedriver\current"
     return browser_options
 # end get_browser_options()
 
