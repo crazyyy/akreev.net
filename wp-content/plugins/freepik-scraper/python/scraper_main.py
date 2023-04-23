@@ -2,11 +2,19 @@ import os
 import re
 import json
 import time
-# from PIL import Image
-from scraper import save_to_json, get_collection_data
+from dotenv import load_dotenv
+from scraper_helper import save_to_json, get_collection_data
 from selenium import webdriver
 from selenium.webdriver.common.by import By
 
+# Load environment variables from .env file
+load_dotenv()
+
+collections_url = os.getenv("COLLECTIONS_URL")
+
+data_directory = './data'
+jsons_directory = data_directory + '/json'
+imgs_directory = data_directory + '/images'
 
 def get_browser_options(browser="chrome"):
     """
@@ -44,7 +52,7 @@ driver = webdriver.Firefox(
 )
 # Open gallery page
 # ToDo: move argument to variable. Make variable load from DB
-driver.get("https://www.freepik.com/author/dmitryakreev/collections")
+driver.get(collections_url)
 
 # Loop over pages of collections
 collection_data_list = []
@@ -61,7 +69,8 @@ while next_page_button:
         collection_data["collection_size"] = collection_size
 
         # Search for previous scraped files and check size of collection
-        file_path = f"data\json\{collection_id}.json"
+        # file_path = f"data\json\{collection_id}.json"
+        file_path = jsons_directory + '/' + collection_id + '.json'
         if os.path.isfile(file_path):
             with open(file_path, "r") as fp:
                 data = json.load(fp)
@@ -78,7 +87,7 @@ while next_page_button:
                                     links[i].style.borderRadius = '0';
                                   }""")
         image_wrapper = block.find_element(By.CSS_SELECTOR, ".image-wrapper")
-        screenshot_filename = f"data\images\{collection_id}-preview.png"
+        screenshot_filename = imgs_directory + '/' + collection_id + '-preview.png'
         image_wrapper.screenshot(screenshot_filename)
         collection_data["collection_preview"] = screenshot_filename
 

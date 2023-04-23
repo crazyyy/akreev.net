@@ -17,6 +17,10 @@ auth = (username, password)
 
 site_url = os.getenv("SITE_URL")
 
+data_directory = './data'
+jsons_directory = data_directory + '/json'
+imgs_directory = data_directory + '/images'
+
 # set up headers and authentication
 headers = {'Content-Type': 'application/json'}
 
@@ -26,8 +30,6 @@ verify_ssl = False
 # define function to truncate text to a specified length
 def truncate_text(text, length):
     return text[:length] + (text[length:] and '...')
-
-jsons_directory = './data/json'
 
 # loop through JSON files in data/json folder
 for json_filename in os.listdir(jsons_directory):
@@ -97,7 +99,6 @@ for json_filename in os.listdir(jsons_directory):
                     }
 
                     response_collection_image = requests.post(site_url + '/wp-json/wp/v2/media', auth=auth, data=collection_image_payload, files=collection_image_file, verify=verify_ssl)
-                    # response = requests.post(site_url + '/wp-json/wp/v2/media', headers=headers, auth=auth, data=image_payload, files=image_files, verify=verify_ssl)
 
                     response_image_id = response_collection_image.json()['id']
                     response_image_source_url = response_collection_image.json()['source_url']

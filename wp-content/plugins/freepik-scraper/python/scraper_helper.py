@@ -8,6 +8,9 @@ from datetime import datetime
 from selenium import webdriver
 from selenium.webdriver.common.by import By
 
+data_directory = './data'
+jsons_directory = data_directory + '/json'
+imgs_directory = data_directory + '/images'
 
 def get_browser_options(browser="chrome"):
     """
@@ -21,32 +24,32 @@ def get_browser_options(browser="chrome"):
     """
     browser_options = webdriver.ChromeOptions()
     if browser == "firefox":
-          browser_options = webdriver.FirefoxOptions()
-    browser_options.add_argument('--headless')
-    browser_options.add_argument('--window-size=1920x1080')
-    browser_options.add_argument('--ignore-certificate-errors')
-    browser_options.add_argument('--no-sandbox')
-    browser_options.add_argument('--disable-dev-shm-usage')
-    browser_options.add_argument(
-        '--host-resolver-rules=MAP www.google-analytics.com 127.0.0.1')
-    browser_options.add_argument(
-        '--user-agent=Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/66.0.3359.181 Safari/537.36')
-    # browser_options.add_argument('no-default-browser-check')
-    # browser_options.add_argument('no-first-run')
-    # browser_options.add_argument("[path to the profile]")
-    # browser_options.add_argument("disable-gpu")
-    # browser_options.binary_location = "D:\apps\apps\chromedriver\current"
+        browser_options = webdriver.FirefoxOptions()
+        browser_options.add_argument('--headless')
+        browser_options.add_argument('--window-size=1920x1080')
+        browser_options.add_argument('--ignore-certificate-errors')
+        browser_options.add_argument('--no-sandbox')
+        browser_options.add_argument('--disable-dev-shm-usage')
+        browser_options.add_argument(
+            '--host-resolver-rules=MAP www.google-analytics.com 127.0.0.1')
+        browser_options.add_argument(
+            '--user-agent=Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/66.0.3359.181 Safari/537.36')
+        # browser_options.add_argument('no-default-browser-check')
+        # browser_options.add_argument('no-first-run')
+        # browser_options.add_argument("[path to the profile]")
+        # browser_options.add_argument("disable-gpu")
+        # browser_options.binary_location = "D:\apps\apps\chromedriver\current"
     return browser_options
 # end get_browser_options()
 
 def download_image(image_url, image_name, collection_id):
     """
-    Downloads the given image from the specified url and saves it in the 'data\images\{collection_id}' folder with the given name.
+    Downloads the given image from the specified url and saves it in the '.data/images/{collection_id}' folder with the given name.
     Returns the local path of the downloaded image.
     """
     try:
         response = requests.get(image_url)
-        folder_path = f'./data/images/{collection_id}'
+        folder_path = imgs_directory + '/' + collection_id
         if not os.path.exists(folder_path):
             os.makedirs(folder_path)
         image_path = os.path.join(folder_path, image_name)
@@ -176,12 +179,12 @@ def get_collection_data(collection_url, collection_data={}):
 
 def save_to_json(data, file_name):
     """
-    Saves the given dictionary as a JSON file in the 'data\json' folder with the given name.
+    Saves the given dictionary as a JSON file in the './data/json' folder with the given name.
     """
     try:
-        if not os.path.exists('./data/json'):
-            os.makedirs('./data/json')
-        file_path = f'./data/json/{file_name}'
+        if not os.path.exists(jsons_directory):
+            os.makedirs(jsons_directory)
+        file_path = jsons_directory + '/' + file_name
         with open(file_path, 'w') as f:
             json.dump(data, f, indent=4)
         print(f"The data has been saved to {file_path}")
