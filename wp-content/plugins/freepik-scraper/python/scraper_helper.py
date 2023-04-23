@@ -52,7 +52,8 @@ def download_image(image_url, image_name, collection_id):
         folder_path = imgs_directory + '/' + collection_id
         if not os.path.exists(folder_path):
             os.makedirs(folder_path)
-        image_path = os.path.join(folder_path, image_name)
+        image_path = folder_path + '/' + image_name
+        # image_path = os.path.join(folder_path, image_name)
         with open(image_path, 'wb') as f:
             f.write(response.content)
         return image_path
@@ -81,7 +82,7 @@ def get_collection_data(collection_url, collection_data={}):
     # Setting up Selenium driver
     # driver = webdriver.Firefox()
     driver = webdriver.Firefox(
-      options=get_browser_options('firefox')
+        options=get_browser_options('firefox')
     )
     driver.get(collection_url)
     time.sleep(3)

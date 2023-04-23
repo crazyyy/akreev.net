@@ -48,7 +48,7 @@ def get_browser_options(browser="chrome"):
 
 # Initialize WebDriver
 driver = webdriver.Firefox(
-  options=get_browser_options('firefox')
+    options=get_browser_options('firefox')
 )
 # Open gallery page
 # ToDo: move argument to variable. Make variable load from DB
@@ -59,10 +59,12 @@ collection_data_list = []
 next_page_button = True
 while next_page_button:
     # Find all collection items and extract data
+    print('Find all collection items and extract data')
     collection_blocks = driver.find_elements(By.CSS_SELECTOR, ".collections article.collection__item")
     for block in collection_blocks:
         collection_data = {}
         collection_id = block.get_attribute("data-id")
+        print(collection_id)
         collection_data["collection_id"] = collection_id
         collection_size_str = block.find_element(By.CSS_SELECTOR, "span.count").text
         collection_size = int(re.sub("[^0-9]", "", collection_size_str))
@@ -71,6 +73,7 @@ while next_page_button:
         # Search for previous scraped files and check size of collection
         # file_path = f"data\json\{collection_id}.json"
         file_path = jsons_directory + '/' + collection_id + '.json'
+        print(file_path)
         if os.path.isfile(file_path):
             with open(file_path, "r") as fp:
                 data = json.load(fp)
