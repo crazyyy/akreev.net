@@ -45,12 +45,12 @@ for json_filename in os.listdir(jsons_directory):
                 print('thumb_image_path')
                 print(thumb_image_path)
 
-                thumb_image_file_name = os.path.basename(thumb_image_path)
-                print('thumb_image_path')
-                print(thumb_image_path)
-
                 current_dir = os.getcwd()
                 print("Current directory:", current_dir)
+
+                thumb_image_file_name = os.path.basename(current_dir + '/' + thumb_image_path)
+                print('thumb_image_file_name')
+                print(thumb_image_file_name)
 
                 print('Try to publish thumb: ' + thumb_image_file_name)
                 thumb_image_alt = data['collection_title']
