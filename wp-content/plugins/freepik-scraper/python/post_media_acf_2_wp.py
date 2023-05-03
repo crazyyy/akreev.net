@@ -52,7 +52,11 @@ for json_filename in os.listdir(jsons_directory):
                 print('thumb_image_file_name_path:')
                 print(thumb_image_file_name_path)
 
-                normalized_path = os.path.normpath(thumb_image_file_name_path)
+                modified_path = thumb_image_file_name_path.replace("\\", "/")
+                print('modified_path:')
+                print(modified_path)
+
+                normalized_path = os.path.normpath(modified_path)
                 print('normalized_path:')
                 print(normalized_path)
 
