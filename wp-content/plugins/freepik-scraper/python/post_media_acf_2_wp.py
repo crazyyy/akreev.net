@@ -21,6 +21,8 @@ data_directory = './data'
 jsons_directory = data_directory + '/json'
 imgs_directory = data_directory + '/images'
 
+current_dir = os.getcwd()
+
 # set up headers and authentication
 headers = {'Content-Type': 'application/json'}
 
@@ -42,30 +44,16 @@ for json_filename in os.listdir(jsons_directory):
             if 'published' not in data or data['published'] == False:
                 # upload collection preview image and get ID
                 thumb_image_path = data['collection_preview']
-                print('thumb_image_path')
-                print(thumb_image_path)
 
-                current_dir = os.getcwd()
-                print("Current directory:", current_dir)
+                json_thumb_image_file_name_path = current_dir + '/' + thumb_image_path
+                thumb_image_file_path = json_thumb_image_file_name_path.replace("\\", "/")
+                thumb_image_file_path = os.path.normpath(thumb_image_file_path)
 
-                thumb_image_file_name_path = current_dir + '/' + thumb_image_path
-                print('thumb_image_file_name_path:')
-                print(thumb_image_file_name_path)
-
-                modified_path = thumb_image_file_name_path.replace("\\", "/")
-                print('modified_path:')
-                print(modified_path)
-
-                normalized_path = os.path.normpath(modified_path)
-                print('normalized_path:')
-                print(normalized_path)
-
-                thumb_image_file_name = os.path.basename(normalized_path)
-                # thumb_image_file_name = os.path.basename(thumb_image_path)
-                print('thumb_image_file_name 2:')
-                print(thumb_image_file_name)
+                thumb_image_file_name = os.path.basename(thumb_image_file_path)
 
                 print('Try to publish thumb: ' + thumb_image_file_name)
+                print('Get image from path: ' + thumb_image_file_path)
+
                 thumb_image_alt = data['collection_title']
                 thumb_image_title = truncate_text(data['collection_description'], 150)
                 thumb_image_description = data['collection_description']
@@ -76,7 +64,7 @@ for json_filename in os.listdir(jsons_directory):
                   'caption': thumb_image_description
                 }
                 thumb_image_file={
-                  'file': (thumb_image_file_name, open(normalized_path, 'rb'), 'image/png', {'Content-Disposition': 'attachment; filename="' + thumb_image_file_name + '"'})
+                  'file': (thumb_image_file_name, open(thumb_image_file_path, 'rb'), 'image/png', {'Content-Disposition': 'attachment; filename="' + thumb_image_file_name + '"'})
                 }
 
                 response_thumb = requests.post(site_url + '/wp-json/wp/v2/media', auth=auth, data=thumb_image_payload, files=thumb_image_file, verify=verify_ssl)
