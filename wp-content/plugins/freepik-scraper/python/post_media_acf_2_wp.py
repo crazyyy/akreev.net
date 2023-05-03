@@ -49,7 +49,7 @@ for json_filename in os.listdir(jsons_directory):
                 print("Current directory:", current_dir)
 
                 thumb_image_file_name = os.path.basename(current_dir + '/' + thumb_image_path)
-                print('thumb_image_file_name')
+                print('thumb_image_file_name 2:')
                 print(thumb_image_file_name)
 
                 print('Try to publish thumb: ' + thumb_image_file_name)
