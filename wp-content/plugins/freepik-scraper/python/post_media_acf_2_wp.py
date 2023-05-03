@@ -42,7 +42,16 @@ for json_filename in os.listdir(jsons_directory):
             if 'published' not in data or data['published'] == False:
                 # upload collection preview image and get ID
                 thumb_image_path = data['collection_preview']
+                print('thumb_image_path')
+                print(thumb_image_path)
+
                 thumb_image_file_name = os.path.basename(thumb_image_path)
+                print('thumb_image_path')
+                print(thumb_image_path)
+
+                current_dir = os.getcwd()
+                print("Current directory:", current_dir)
+
                 print('Try to publish thumb: ' + thumb_image_file_name)
                 thumb_image_alt = data['collection_title']
                 thumb_image_title = truncate_text(data['collection_description'], 150)
