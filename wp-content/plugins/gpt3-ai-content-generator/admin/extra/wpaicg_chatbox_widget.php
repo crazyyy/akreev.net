@@ -68,6 +68,22 @@ $wpaicg_delay_time = isset($wpaicg_chat_widget['delay_time']) && !empty($wpaicg_
 if($wpaicg_chat_fullscreen || $wpaicg_chat_download_btn || $wpaicg_chat_close_btn){
     $wpaicg_has_action_bar = true;
 }
+$wpaicg_text_height = isset($wpaicg_chat_widget['text_height']) && !empty($wpaicg_chat_widget['text_height']) ? $wpaicg_chat_widget['text_height'] : 60;
+$wpaicg_text_rounded = isset($wpaicg_chat_widget['text_rounded']) && !empty($wpaicg_chat_widget['text_height']) ? $wpaicg_chat_widget['text_rounded'] : 20;
+$wpaicg_chat_rounded = isset($wpaicg_chat_widget['chat_rounded']) && !empty($wpaicg_chat_widget['text_height']) ? $wpaicg_chat_widget['chat_rounded'] : 20;
+$wpaicg_chat_to_speech = isset($wpaicg_chat_widget['chat_to_speech']) ? $wpaicg_chat_widget['chat_to_speech'] : false;
+$wpaicg_elevenlabs_voice = isset($wpaicg_chat_widget['elevenlabs_voice']) ? $wpaicg_chat_widget['elevenlabs_voice'] : '';
+$wpaicg_elevenlabs_api = get_option('wpaicg_elevenlabs_api', '');
+$wpaicg_elevenlabs_hide_error = get_option('wpaicg_elevenlabs_hide_error', false);
+if(empty($wpaicg_elevenlabs_api) && empty($wpaicg_google_api_key)){
+    $wpaicg_chat_to_speech = false;
+}
+$wpaicg_chat_voice_service = isset($wpaicg_chat_widget['voice_service']) && !empty($wpaicg_chat_widget['voice_service']) ? $wpaicg_chat_widget['voice_service'] : 'en-US';
+$wpaicg_voice_language = isset($wpaicg_chat_widget['voice_language']) && !empty($wpaicg_chat_widget['voice_language']) ? $wpaicg_chat_widget['voice_language'] : 'en-US';
+$wpaicg_voice_name = isset($wpaicg_chat_widget['voice_name']) && !empty($wpaicg_chat_widget['voice_name']) ? $wpaicg_chat_widget['voice_name'] : 'en-US-Studio-M';
+$wpaicg_voice_device = isset($wpaicg_chat_widget['voice_device']) && !empty($wpaicg_chat_widget['voice_device']) ? $wpaicg_chat_widget['voice_device'] : '';
+$wpaicg_voice_speed = isset($wpaicg_chat_widget['voice_speed']) && !empty($wpaicg_chat_widget['voice_speed']) ? $wpaicg_chat_widget['voice_speed'] : 1;
+$wpaicg_voice_pitch = isset($wpaicg_chat_widget['voice_pitch']) && !empty($wpaicg_chat_widget['voice_pitch']) ? $wpaicg_chat_widget['voice_pitch'] : 0;
 ?>
 <style>
     .wpaicg_chat_widget,.wpaicg_chat_widget_content{
@@ -198,7 +214,7 @@ if($wpaicg_chat_fullscreen || $wpaicg_chat_download_btn || $wpaicg_chat_close_bt
             right: auto;
         }
         .wpaicg_widget_right .wpaicg_chat_widget_content{
-            right: -15px!important;
+            right: -5px!important;
             left: auto;
         }
     }
@@ -319,6 +335,7 @@ if($wpaicg_chat_fullscreen || $wpaicg_chat_download_btn || $wpaicg_chat_close_bt
     }
     .wpaicg-chatbox .wpaicg-chatbox-footer{
         margin: 0px;
+        padding: 0 20px;
     }
     .wpaicg-chat-widget-has-footer .wpaicg-chatbox-type{
         border-bottom-left-radius: 0;
@@ -342,6 +359,18 @@ if($wpaicg_chat_fullscreen || $wpaicg_chat_download_btn || $wpaicg_chat_close_bt
      data-width="<?php echo esc_html($wpaicg_chat_widget_width)?>"
      data-height="<?php echo esc_html($wpaicg_chat_widget_height)?>"
      data-footer="<?php echo isset($wpaicg_chat_widget['footer_text']) && !empty($wpaicg_chat_widget['footer_text']) ? 'true' : 'false'?>"
+     data-speech="<?php echo esc_html($wpaicg_chat_to_speech)?>"
+     data-voice="<?php echo esc_html($wpaicg_elevenlabs_voice)?>"
+     data-voice-error="<?php echo esc_html($wpaicg_elevenlabs_hide_error)?>"
+     data-text_height="<?php echo esc_html($wpaicg_text_height)?>"
+     data-text_rounded="<?php echo esc_html($wpaicg_text_rounded)?>"
+     data-chat_rounded="<?php echo esc_html($wpaicg_chat_rounded)?>"
+     data-voice_service="<?php echo esc_html($wpaicg_chat_voice_service)?>"
+     data-voice_language="<?php echo esc_html($wpaicg_voice_language)?>"
+     data-voice_name="<?php echo esc_html($wpaicg_voice_name)?>"
+     data-voice_device="<?php echo esc_html($wpaicg_voice_device)?>"
+     data-voice_speed="<?php echo esc_html($wpaicg_voice_speed)?>"
+     data-voice_pitch="<?php echo esc_html($wpaicg_voice_pitch)?>"
 >
     <?php
     if($wpaicg_has_action_bar):

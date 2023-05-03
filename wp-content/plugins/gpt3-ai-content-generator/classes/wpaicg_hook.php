@@ -31,9 +31,34 @@ if(!class_exists('\\WPAICG\\WPAICG_Hook')) {
         public function wpaicg_enqueue_scripts()
         {
             wp_enqueue_script('wpaicg-jquery-datepicker',WPAICG_PLUGIN_URL.'admin/js/jquery.datetimepicker.full.min.js',array(),null);
+            wp_enqueue_script('wpaicg-init',WPAICG_PLUGIN_URL.'public/js/wpaicg-init.js',array(),null,true);
+            wp_localize_script( 'wpaicg-init', 'wpaicgParams', array(
+                'ajax_url' => admin_url('admin-ajax.php'),
+                'search_nonce' => wp_create_nonce( 'wpaicg-chatbox' ),
+                'logged_in' => is_user_logged_in() ? 1 : 0,
+                'languages' => array(
+                    'source' => esc_html__('Sources','gpt3-ai-content-generator'),
+                    'no_result' => esc_html__('No result found','gpt3-ai-content-generator'),
+                    'wrong' => esc_html__('Something went wrong','gpt3-ai-content-generator'),
+                    'prompt_strength' => sprintf(esc_html__('Please enter a valid prompt strength value between %d and %d.', 'gpt3-ai-content-generator'), 0, 1),
+                    'num_inference_steps' => sprintf(esc_html__('Please enter a valid number of inference steps value between %d and %d.', 'gpt3-ai-content-generator'), 1, 500),
+                    'guidance_scale' => sprintf(esc_html__('Please enter a valid guidance scale value between %d and %d.', 'gpt3-ai-content-generator'), 1, 20),
+                    'error_image' => esc_html__('Please select least one image for generate', 'gpt3-ai-content-generator'),
+                    'save_image_success' => esc_html__('Save images to media successfully','gpt3-ai-content-generator'),
+                    'select_all' => esc_html__('Select All', 'gpt3-ai-content-generator'),
+                    'unselect' => esc_html__('Unselect', 'gpt3-ai-content-generator'),
+                    'select_save_error' => esc_html__('Please select least one image to save', 'gpt3-ai-content-generator'),
+                    'alternative' => esc_html__('Alternative Text','gpt3-ai-content-generator'),
+                    'title' => esc_html__('Title','gpt3-ai-content-generator'),
+                    'caption' => esc_html__('Caption','gpt3-ai-content-generator'),
+                    'description' => esc_html__('Description','gpt3-ai-content-generator'),
+                    'save' => esc_html__('Save','gpt3-ai-content-generator')
+                )
+            ));
             wp_enqueue_script('wpaicg-chat-shortcode',WPAICG_PLUGIN_URL.'public/js/wpaicg-chat.js',array(),null,true);
             wp_enqueue_style('wpaicg-extra-css',WPAICG_PLUGIN_URL.'admin/css/wpaicg_extra.css',array(),null);
             wp_enqueue_style('wpaicg-jquery-datepicker-css',WPAICG_PLUGIN_URL.'admin/css/jquery.datetimepicker.min.css',array(),null);
+            wp_enqueue_style('wpaicg-rtl-css',WPAICG_PLUGIN_URL.'public/css/wpaicg-rtl.css',array(),null);
         }
 
         public function wpaicg_admin_footer()
@@ -70,6 +95,31 @@ if(!class_exists('\\WPAICG\\WPAICG_Hook')) {
 
         public function wp_enqueue_scripts_hook()
         {
+            wp_enqueue_script('wpaicg-init',WPAICG_PLUGIN_URL.'public/js/wpaicg-init.js',array(),null,true);
+            wp_localize_script( 'wpaicg-init', 'wpaicgParams', array(
+                'ajax_url' => admin_url('admin-ajax.php'),
+                'search_nonce' => wp_create_nonce( 'wpaicg-chatbox' ),
+                'logged_in' => is_user_logged_in() ? 1 : 0,
+                'languages' => array(
+                    'source' => esc_html__('Sources','gpt3-ai-content-generator'),
+                    'no_result' => esc_html__('No result found','gpt3-ai-content-generator'),
+                    'wrong' => esc_html__('Something went wrong','gpt3-ai-content-generator'),
+                    'prompt_strength' => sprintf(esc_html__('Please enter a valid prompt strength value between %d and %d.', 'gpt3-ai-content-generator'), 0, 1),
+                    'num_inference_steps' => sprintf(esc_html__('Please enter a valid number of inference steps value between %d and %d.', 'gpt3-ai-content-generator'), 1, 500),
+                    'guidance_scale' => sprintf(esc_html__('Please enter a valid guidance scale value between %d and %d.', 'gpt3-ai-content-generator'), 1, 20),
+                    'error_image' => esc_html__('Please select least one image for generate', 'gpt3-ai-content-generator'),
+                    'save_image_success' => esc_html__('Save images to media successfully','gpt3-ai-content-generator'),
+                    'select_all' => esc_html__('Select All', 'gpt3-ai-content-generator'),
+                    'unselect' => esc_html__('Unselect', 'gpt3-ai-content-generator'),
+                    'select_save_error' => esc_html__('Please select least one image to save', 'gpt3-ai-content-generator'),
+                    'alternative' => esc_html__('Alternative Text','gpt3-ai-content-generator'),
+                    'title' => esc_html__('Title','gpt3-ai-content-generator'),
+                    'caption' => esc_html__('Caption','gpt3-ai-content-generator'),
+                    'description' => esc_html__('Description','gpt3-ai-content-generator'),
+                    'edit_image' => esc_html__('Edit Image','gpt3-ai-content-generator'),
+                    'save' => esc_html__('Save','gpt3-ai-content-generator')
+                )
+            ));
             wp_enqueue_script('wpaicg-chat-script',WPAICG_PLUGIN_URL.'public/js/wpaicg-chat.js',null,null,true);
         }
 
@@ -249,11 +299,18 @@ if(!class_exists('\\WPAICG\\WPAICG_Hook')) {
                     border-radius: 4px;
                     white-space: pre-wrap;
                 }
+                input.wpaicg-chat-shortcode-typing,input.wpaicg-chatbox-typing{
+                    height: 30px;
+                }
+                .wpaicg_chat_widget_content .wpaicg-chatbox-content,.wpaicg-chat-shortcode-content{
+                    overflow: hidden;
+                }
             </style>
             <script>
                 var wpaicg_ajax_url = '<?php echo admin_url('admin-ajax.php')?>';
                 var wpaicgUserLoggedIn = <?php echo is_user_logged_in() ? 'true' : 'false';?>;
             </script>
+            <link href="<?php echo esc_html(WPAICG_PLUGIN_URL)?>public/css/wpaicg-rtl.css" type="text/css" rel="stylesheet" />
             <?php
             if(is_single()){
                 $wpaicg_meta_description = get_post_meta(get_the_ID(),'_wpaicg_meta_description',true);
@@ -265,7 +322,7 @@ if(!class_exists('\\WPAICG\\WPAICG_Hook')) {
                 }
                 if(!empty($wpaicg_meta_description) && $_wpaicg_seo_meta_tag && !$wpaicg_seo_option){
                     ?>
-                    <!--- This meta description generated by GPT AI Power Plugin --->
+                    <!--- This meta description generated by AI Power Plugin --->
                     <meta name="description" content="<?php echo esc_html($wpaicg_meta_description)?>">
                     <meta name="og:description" content="<?php echo esc_html($wpaicg_meta_description)?>">
                     <?php
@@ -427,6 +484,9 @@ if(!class_exists('\\WPAICG\\WPAICG_Hook')) {
                     margin: 5px 0px;
                     border-radius: 4px;
                     white-space: pre-wrap;
+                }
+                .wpaicg_chat_widget_content .wpaicg-chatbox-content,.wpaicg-chat-shortcode-content{
+                    overflow: hidden;
                 }
             </style>
             <?php

@@ -6,6 +6,9 @@ if ( !defined( 'ABSPATH' ) ) {
 ?>
 <div id="tabs-2">
     <div class="wpcgai_form_row">
+        <p><?php 
+echo  esc_html__( 'This tab allows you to set and save default values for both Express Mode and Auto Content Writer. Changes made here will be applied to both modules.', 'gpt3-ai-content-generator' ) ;
+?></p>
         <p><b><?php 
 echo  esc_html__( 'Language, Style and Tone', 'gpt3-ai-content-generator' ) ;
 ?></b></p>
@@ -761,6 +764,18 @@ echo  ( esc_html( $wpaicg_intro_title_tag ) == 'h6' ? 'selected' : '' ) ;
 ?>>h6</option>
         </select>
     </div>
+    <?php 
+$wpaicg_hide_conclusion = get_option( 'wpaicg_hide_conclusion', false );
+$wpaicg_hide_introduction = get_option( 'wpaicg_hide_introduction', false );
+?>
+    <div class="wpcgai_form_row">
+        <label class="wpcgai_label"><?php 
+echo  esc_html__( 'Hide Introduction Title', 'gpt3-ai-content-generator' ) ;
+?>:</label>
+        <input type="checkbox" name="wpaicg_hide_introduction" value="1"<?php 
+echo  ( $wpaicg_hide_introduction ? " checked" : "" ) ;
+?>/>
+    </div>
     <hr>
     <p><strong><?php 
 echo  esc_html__( 'Conclusion', 'gpt3-ai-content-generator' ) ;
@@ -807,6 +822,15 @@ echo  ( esc_html( $wpaicg_conclusion_title_tag ) == 'h5' ? 'selected' : '' ) ;
 echo  ( esc_html( $wpaicg_conclusion_title_tag ) == 'h6' ? 'selected' : '' ) ;
 ?>>h6</option>
         </select>
+    </div>
+
+    <div class="wpcgai_form_row">
+        <label class="wpcgai_label"><?php 
+echo  esc_html__( 'Hide Conclusion Title', 'gpt3-ai-content-generator' ) ;
+?>:</label>
+        <input type="checkbox" name="wpaicg_hide_conclusion" value="1"<?php 
+echo  ( $wpaicg_hide_conclusion ? " checked" : "" ) ;
+?>/>
     </div>
     <hr>
     <p><strong><?php 

@@ -1060,6 +1060,10 @@ echo  ( esc_html( $_wporg_add_intro ) == 1 ? "checked" : "" ) ;
 echo  ( esc_html( $_wporg_add_intro ) == 1 ? "1" : "0" ) ;
 ?>" />
                 </div>
+                <?php 
+$wpaicg_hide_conclusion = get_option( 'wpaicg_hide_conclusion', false );
+$wpaicg_hide_introduction = get_option( 'wpaicg_hide_introduction', false );
+?>
                 <!-- wpaicg_intro_title_tag -->
                 <div class="mb-5">
                     <?php 
@@ -1088,6 +1092,14 @@ echo  ( esc_html( $wpaicg_intro_title_tag ) == 'h5' ? 'selected' : '' ) ;
 echo  ( esc_html( $wpaicg_intro_title_tag ) == 'h6' ? 'selected' : '' ) ;
 ?>>h6</option>
                     </select>
+                </div>
+                <div class="mb-5">
+                    <label class="wpaicg-form-label"><?php 
+echo  esc_html__( 'Hide Introduction Title', 'gpt3-ai-content-generator' ) ;
+?></label>
+                    <input type="checkbox" id="wpaicg_hide_introduction" name="wpaicg_hide_introduction" value="1"<?php 
+echo  ( $wpaicg_hide_introduction ? " checked" : "" ) ;
+?>/>
                 </div>
                 <div class="mb-5">
                     <label class="wpaicg-form-label" for="wpai_add_conclusion2"><?php 
@@ -1131,6 +1143,14 @@ echo  ( esc_html( $wpaicg_conclusion_title_tag ) == 'h5' ? 'selected' : '' ) ;
 echo  ( esc_html( $wpaicg_conclusion_title_tag ) == 'h6' ? 'selected' : '' ) ;
 ?>>h6</option>
                     </select>
+                </div>
+                <div class="mb-5">
+                    <label class="wpaicg-form-label"><?php 
+echo  esc_html__( 'Hide Conclusion Title', 'gpt3-ai-content-generator' ) ;
+?></label>
+                    <input type="checkbox" id="wpaicg_hide_conclusion" name="wpaicg_hide_conclusion" value="1"<?php 
+echo  ( $wpaicg_hide_conclusion ? " checked" : "" ) ;
+?>/>
                 </div>
                 <div class="mb-5">
                     <label class="wpaicg-form-label" for="label_faq"><?php 

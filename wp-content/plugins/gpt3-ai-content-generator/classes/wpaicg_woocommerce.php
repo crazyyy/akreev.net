@@ -25,7 +25,7 @@ if ( !class_exists( '\\WPAICG\\WPAICG_WooCommerce' ) ) {
         public function wpaicg_register_meta_box()
         {
             if(current_user_can('wpaicg_woocommerce')) {
-                add_meta_box('wpaicg-woocommerce-generator', esc_html__('GPT AI Power Product Writer','gpt3-ai-content-generator'), [$this, 'wpaicg_meta_box']);
+                add_meta_box('wpaicg-woocommerce-generator', esc_html__('AI Power Product Writer','gpt3-ai-content-generator'), [$this, 'wpaicg_meta_box']);
             }
         }
 

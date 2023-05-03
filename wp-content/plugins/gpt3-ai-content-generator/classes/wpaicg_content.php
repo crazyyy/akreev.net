@@ -343,7 +343,8 @@ if ( !class_exists( '\\WPAICG\\WPAICG_Content' ) ) {
                         'post_title' => $waicg_track_title,
                         'post_status' => 'pending',
                         'post_mime_type' => $wpaicg_source,
-                    ));
+                        'post_content' => ' '
+                    ),true);
                     if ( !is_wp_error( $wpaicg_track_id ) ) {
                         foreach ($bulks as $bulk) {
                             if (isset($bulk['title']) && !empty($bulk['title'])) {
@@ -354,6 +355,7 @@ if ( !class_exists( '\\WPAICG\\WPAICG_Content' ) ) {
                                     'post_parent'    => $wpaicg_track_id,
                                     'post_password'  => $post_status,
                                     'post_mime_type' => $wpaicg_source,
+                                    'post_content' => ' '
                                 );
                                 if(isset($bulk['schedule']) && !empty($bulk['schedule'])){
                                     $wpaicg_item_schedule = $bulk['schedule'] . ':00';
@@ -390,6 +392,9 @@ if ( !class_exists( '\\WPAICG\\WPAICG_Content' ) ) {
                         }
                         $wpaicg_result['id'] = $wpaicg_track_id;
                         $wpaicg_result['status'] = 'success';
+                    }
+                    else{
+                        $wpaicg_result['msg'] = $wpaicg_track_id->get_error_message();
                     }
                 }
             }

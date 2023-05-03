@@ -37,7 +37,7 @@
             }
         }
         editor.addButton( 'wpaicgeditor', {
-            title: 'GPT AI Power',
+            title: 'AI Power',
             image: wpaicg_plugin_url+'public/images/logo.png',
             icon: false,
             type: 'menubutton',

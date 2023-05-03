@@ -93,6 +93,9 @@ if ( ! defined( 'ABSPATH' ) ) exit;
                     <option value="digital_marketing"><?php echo esc_html__('Digital Marketing','gpt3-ai-content-generator')?></option>
                     <option value="woocommerce"><?php echo esc_html__('WooCommerce','gpt3-ai-content-generator')?></option>
                     <option value="content_strategy"><?php echo esc_html__('Content Strategy','gpt3-ai-content-generator')?></option>
+                    <option value="keyword_research"><?php echo esc_html__('Keyword Research','gpt3-ai-content-generator')?></option>
+                    <option value="product_listing"><?php echo esc_html__('Product Listing','gpt3-ai-content-generator')?></option>
+                    <option value="customer_relationship_management"><?php echo esc_html__('Customer Relationship Management','gpt3-ai-content-generator')?></option>
                 </select>
             </td>
         </tr>
@@ -250,7 +253,36 @@ if ( ! defined( 'ABSPATH' ) ) exit;
             {category: 'content_strategy', prompt: 'Write an in-depth guide on leveraging content analytics to improve content strategy, discussing key metrics to track, data-driven decision-making, and using insights to optimize content performance and audience engagement.'},
             {category: 'content_strategy', prompt: 'Create a detailed blog post about the role of content curation in a content strategy, with tips on sourcing high-quality content, adding value through commentary, and sharing curated pieces to supplement original content.'},
             {category: 'content_strategy', prompt: 'Craft an informative article on incorporating different content formats and types into a content strategy, such as blog posts, case studies, whitepapers, videos, and podcasts, to cater to diverse audience preferences.'},
-            {category: 'content_strategy', prompt: 'Write a comprehensive guide on effective content promotion techniques to boost visibility and engagement, covering strategies such as influencer outreach, social media advertising, and search engine optimization.'}
+            {category: 'content_strategy', prompt: 'Write a comprehensive guide on effective content promotion techniques to boost visibility and engagement, covering strategies such as influencer outreach, social media advertising, and search engine optimization.'},
+            {category: 'keyword_research', prompt: 'Write a comprehensive guide on the basics of keyword research, explaining its importance in SEO, the tools used, and how it influences content creation and website ranking.'},
+            {category: 'keyword_research', prompt: 'Craft an in-depth blog post about long-tail keywords, discussing their role in modern SEO strategies, how to identify them, and techniques for effectively incorporating them into content.'},
+            {category: 'keyword_research', prompt: 'Develop a detailed tutorial on using Google Keyword Planner for keyword research, including step-by-step instructions and tips for interpreting and applying the data.'},
+            {category: 'keyword_research', prompt: 'Create an informative article on the relationship between keyword research and user intent, explaining how understanding the latter can guide the former to produce more targeted, effective content.'},
+            {category: 'keyword_research', prompt: 'Compose a comprehensive guide on the role of competitor analysis in keyword research, detailing how to identify and evaluate the keyword strategies of successful competitors.'},
+            {category: 'keyword_research', prompt: 'Write an in-depth article on the integration of keyword research into content strategy, explaining how to seamlessly embed keywords into various types of content for maximum SEO impact.'},
+            {category: 'keyword_research', prompt: 'Craft an informative piece on the importance of keyword relevancy and search volume in keyword research, and discuss how to balance these factors for optimal results.'},
+            {category: 'keyword_research', prompt: 'Develop a detailed tutorial on tracking and refining keyword performance over time, including the tools and metrics that can be used to measure success.'},
+            {category: 'keyword_research', prompt: 'Create an insightful blog post about the pitfalls to avoid in keyword research, discussing common mistakes and misconceptions that can hinder SEO efforts.'},
+            {category: 'product_listing', prompt: 'Create an exhaustive guide on designing a product listing page that maximizes conversion rates, focusing on product descriptions, images, customer reviews, and pricing.'},
+            {category: 'product_listing', prompt: 'Develop a detailed article on optimizing product listings for search engines, considering keyword research, SEO-friendly URLs, and meta descriptions.'},
+            {category: 'product_listing', prompt: 'Craft a webinar series that provides insights into A/B testing for product listings, teaching businesses how to refine their listings based on customer behavior.'},
+            {category: 'product_listing', prompt: 'Write a case study on a successful online retailer that significantly increased sales through effective product listing strategies, outlining the steps they took and the results they achieved.'},
+            {category: 'product_listing', prompt: 'Develop a list of best practices for managing product listings on multiple e-commerce platforms, focusing on maintaining consistency, updating inventory, and handling customer queries.'},
+            {category: 'product_listing', prompt: 'Create a comprehensive guide on how to write persuasive product descriptions that effectively showcase the benefits and features of products, leading to increased sales.'},
+            {category: 'product_listing', prompt: 'Develop a blog post discussing the role of high-quality imagery and video content in product listings, including tips on product photography and videography.'},
+            {category: 'product_listing', prompt: 'Design a tutorial on using data analytics to improve product listings, focusing on understanding customer behavior, product performance, and sales trends.'},
+            {category: 'product_listing', prompt: 'Write a case study on a business that used cross-selling and up-selling techniques within their product listings to increase average order value, discussing the strategy and the results.'},
+            {category: 'product_listing', prompt: 'Outline a strategy for managing product listings during peak sales periods, such as holidays or sales events, considering inventory management, pricing adjustments, and customer service.'},
+            {category: 'customer_relationship_management', prompt: 'Compose an in-depth guide explaining how a CRM system can transform customer service operations, detailing the features and tools that can streamline customer interactions and enhance customer satisfaction.'},
+            {category: 'customer_relationship_management', prompt: 'Write a comprehensive article on the role of analytics in CRM, explaining how businesses can leverage data to understand customer behavior, predict future trends, and personalize customer interactions.'},
+            {category: 'customer_relationship_management', prompt: 'Develop a detailed tutorial on integrating a CRM system into a companys sales and marketing strategies, including practical steps and potential challenges to anticipate.'},
+            {category: 'customer_relationship_management', prompt: 'Create an insightful blog post about the importance of CRM in retaining customers and building long-term relationships, discussing strategies for using CRM to increase customer loyalty and lifetime value.'},
+            {category: 'customer_relationship_management', prompt: 'Craft a case study showcasing a successful implementation of a CRM system in a business, highlighting the benefits it brought in terms of sales growth, customer satisfaction, and improved internal processes.'},
+            {category: 'customer_relationship_management', prompt: 'Write an exhaustive guide on choosing the right CRM system for a small business, taking into account factors such as scalability, usability, and integration with existing systems.'},
+            {category: 'customer_relationship_management', prompt: 'Develop an in-depth article discussing the impact of AI and machine learning on CRM systems, and how these technologies can enhance customer interactions and provide deeper insights.'},
+            {category: 'customer_relationship_management', prompt: 'Create a detailed tutorial on how to train employees to effectively use a CRM system, including tips for overcoming resistance to new technology.'},
+            {category: 'customer_relationship_management', prompt: 'Craft an insightful blog post about the role of CRM in e-commerce, discussing how it can help online businesses better understand their customers and personalize their shopping experience.'},
+            {category: 'customer_relationship_management', prompt: 'Compose a case study analyzing the transformation of a companys customer service operations before and after implementing a CRM system, detailing the challenges faced and the results achieved.'}
         ];
         // Function to handle category selection
         $('#category_select').on('change', function() {

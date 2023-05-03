@@ -127,9 +127,9 @@ if ( ! defined( 'ABSPATH' ) ) exit;
             var wpai_heading_tag = $("#wpai_heading_tag").val();
             var wpai_words_to_avoid = $("#wpai_words_to_avoid").val();
             var wpai_add_tagline = $("#wpai_add_tagline").val();
-            var wpai_add_faq = $("#wpai_add_faq:checked").val();
+            var wpai_add_faq = $("#wpai_add_faq2:checked").length;
             /*Fix auto add FAQ*/
-            wpai_add_faq = wpai_add_faq ? wpai_add_faq : 0;
+            wpai_add_faq = wpai_add_faq ? 1 : 0;
             var wpai_target_url = $("#wpai_target_url").val();
             var wpai_anchor_text = $("#wpai_anchor_text").val();
             var wpai_target_url_cta = $("#wpai_target_url_cta").val();
@@ -198,6 +198,8 @@ if ( ! defined( 'ABSPATH' ) ) exit;
                 'wpaicg_toc': wpaicg_toc,
                 'wpaicg_toc_title': wpaicg_toc_title,
                 'wpaicg_toc_title_tag': wpaicg_toc_title_tag,
+                'wpaicg_hide_introduction': $('#wpaicg_hide_introduction:checked').length ? 1 : 0,
+                'wpaicg_hide_conclusion': $('#wpaicg_hide_conclusion:checked').length ? 1 : 0,
                 'wpaicg_intro_title_tag': wpaicg_intro_title_tag,
                 'wpaicg_conclusion_title_tag': wpaicg_conclusion_title_tag,
                 'wpaicg_toc_list': '',
@@ -311,7 +313,8 @@ if ( ! defined( 'ABSPATH' ) ) exit;
             var wpai_heading_tag = $("#wpai_heading_tag").val();
             var wpai_words_to_avoid = $("#wpai_words_to_avoid").val();
             var wpai_add_tagline = $("#wpai_add_tagline").val();
-            var wpai_add_faq = $("#wpai_add_faq:checked").val();
+            var wpai_add_faq = $("#wpai_add_faq2:checked").length;
+            wpai_add_faq = wpai_add_faq ? 1 : 0;
             var wpai_target_url = $("#wpai_target_url").val();
             var wpai_anchor_text = $("#wpai_anchor_text").val();
             var wpai_target_url_cta = $("#wpai_target_url_cta").val();

@@ -6,7 +6,7 @@ Requires at least: 5.7
 License: GPL2
 Tested up to: 6.2
 Requires PHP: 7.2
-Stable tag: 6.2.4
+Stable tag: 6.2.5
 
 The easiest way to improve security! Leverage your SSL certificate and protect your website visitors.
 
@@ -96,6 +96,10 @@ The plugin checks your certificate before enabling, but if, for example, you mig
 If you can't deactivate, do not just remove the plugin folder to uninstall! Follow these [instructions](https://really-simple-ssl.com/knowledge-base/uninstall-websitebackend-not-accessible/) instead.
 
 == Changelog ==
+= 6.2.5 =
+* Improvement: add warning alert option
+* Fix: capability mismatch in multisite. props @verkkovaraani
+
 = 6.2.4 =
 * Improvement: optionally enable notification emails in onboarding wizard
 * Improvement: onboarding styling

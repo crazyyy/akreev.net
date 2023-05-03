@@ -5,7 +5,7 @@ $wpaicg_categories = array();
 $wpaicg_items = array();
 $wpaicg_icons = array();
 $wpaicg_models = array();
-$wpaicg_authors = array('default' => array('name' => 'GPT AI Power','count' => 0));
+$wpaicg_authors = array('default' => array('name' => 'AI Power','count' => 0));
 if(file_exists(WPAICG_PLUGIN_DIR.'admin/data/categories.json')){
     $wpaicg_file_content = file_get_contents(WPAICG_PLUGIN_DIR.'admin/data/categories.json');
     $wpaicg_file_content = json_decode($wpaicg_file_content, true);
@@ -49,20 +49,12 @@ $sql = "SELECT p.ID as id,p.post_title as title,p.post_author as author, p.post_
 $wpaicg_meta_keys = array('prompt','editor','response','category','engine','max_tokens','temperature','top_p','best_of','frequency_penalty','presence_penalty','stop','color','icon','bgcolor','header','dans','ddraft','dclear','dnotice','generate_text','noanswer_text','draft_text','clear_text','stop_text','cnotice_text','download_text','ddownload');
 foreach($wpaicg_meta_keys as $wpaicg_meta_key){
 //    $sql .= ",(SELECT ".$wpaicg_meta_key.".meta_value FROM ".$wpdb->postmeta." ".$wpaicg_meta_key." WHERE ".$wpaicg_meta_key.".meta_key='wpaicg_prompt_".$wpaicg_meta_key."' AND p.ID=".$wpaicg_meta_key.".post_id LIMIT 1) as ".$wpaicg_meta_key;
-    $sql .= ", (".$wpdb->prepare("SELECT %i.%i FROM %i %i WHERE %i.%i=%s AND p.ID=%i.%i LIMIT 1",
-            $wpaicg_meta_key,
-            'meta_value',
-            $wpdb->postmeta,
-            $wpaicg_meta_key,
-            $wpaicg_meta_key,
-            'meta_key',
-            'wpaicg_prompt_'.$wpaicg_meta_key,
-            $wpaicg_meta_key,
-            'post_id'
+    $sql .= ", (".$wpdb->prepare("SELECT ".$wpaicg_meta_key.".meta_value FROM ".$wpdb->postmeta." ".$wpaicg_meta_key." WHERE ".$wpaicg_meta_key.".meta_key=%s AND p.ID=".$wpaicg_meta_key.".post_id LIMIT 1",
+            'wpaicg_prompt_'.$wpaicg_meta_key
         ).") as  ".$wpaicg_meta_key;
 }
 //$sql .= " FROM ".$wpdb->posts." p WHERE p.post_type = 'wpaicg_prompt' AND p.post_status='publish' ORDER BY p.post_date DESC";
-$sql .= $wpdb->prepare(" FROM %i p WHERE p.post_type = 'wpaicg_prompt' AND p.post_status='publish' ORDER BY p.post_date DESC",$wpdb->posts);
+$sql .= $wpdb->prepare(" FROM ".$wpdb->posts." p WHERE p.post_type = 'wpaicg_prompt' AND p.post_status='publish' ORDER BY p.post_date DESC");
 $wpaicg_custom_prompts = $wpdb->get_results($sql,ARRAY_A);
 if($wpaicg_custom_prompts && is_array($wpaicg_custom_prompts) && count($wpaicg_custom_prompts)){
     foreach ($wpaicg_custom_prompts as $wpaicg_custom_prompt){
@@ -305,6 +297,9 @@ $allowed_tags = array_merge( $kses_defaults, $svg_args );
     padding: 10px;
     text-align: left;
     margin-bottom: 12px;
+    }
+    .wpaicg-prompt-item:before{
+        display:none;
     }
 </style>
 <div class="wpaicg-create-prompt-content" style="display: none">
@@ -829,6 +824,11 @@ endif;
             for(var i = 0; i < wpaicg_prompt_keys.length;i++){
                 var wpaicg_prompt_key = wpaicg_prompt_keys[i];
                 var wpaicg_prompt_key_value = item.attr('data-'+wpaicg_prompt_key);
+                if(wpaicg_prompt_key === 'category' && wpaicg_prompt_key_value !== ''){
+                    if(wpaicg_prompt_key_value.indexOf(',') > -1){
+                        wpaicg_prompt_key_value = wpaicg_prompt_key_value.split(',')[0];
+                    }
+                }
                 form.find('.wpaicg-create-prompt-'+wpaicg_prompt_key).val(wpaicg_prompt_key_value);
                 if(wpaicg_prompt_key === 'icon'){
                     $('.wpaicg-create-prompt-form .wpaicg-prompt-icons span[data-key='+wpaicg_prompt_key_value+']').addClass('icon_selected');

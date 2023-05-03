@@ -5,7 +5,7 @@ $wpaicg_categories = array();
 $wpaicg_items = array();
 $wpaicg_icons = array();
 $wpaicg_models = array();
-$wpaicg_authors = array('default' => array('name' => 'GPT AI Power','count' => 0));
+$wpaicg_authors = array('default' => array('name' => 'AI Power','count' => 0));
 if(file_exists(WPAICG_PLUGIN_DIR.'admin/data/gptcategories.json')){
     $wpaicg_file_content = file_get_contents(WPAICG_PLUGIN_DIR.'admin/data/gptcategories.json');
     $wpaicg_file_content = json_decode($wpaicg_file_content, true);
@@ -326,6 +326,9 @@ $allowed_tags = array_merge( $kses_defaults, $svg_args );
     }
     .wpaicg-modal-tab{
         padding: 10px;
+    }
+    .wpaicg-template-item:before{
+        display:none
     }
 </style>
 <div class="wpaicg-template-form-field-default" style="display: none">
@@ -970,6 +973,11 @@ endif;
             for(var i = 0; i < wpaicg_template_keys.length;i++){
                 var wpaicg_template_key = wpaicg_template_keys[i];
                 var wpaicg_template_key_value = item.attr('data-'+wpaicg_template_key);
+                if(wpaicg_template_key === 'category' && wpaicg_template_key_value !== ''){
+                    if(wpaicg_template_key_value.indexOf(',') > -1){
+                        wpaicg_template_key_value = wpaicg_template_key_value.split(',')[0];
+                    }
+                }
                 form.find('.wpaicg-create-template-'+wpaicg_template_key).val(wpaicg_template_key_value);
                 if(wpaicg_template_key === 'icon'){
                     if(wpaicg_template_key_value === ''){

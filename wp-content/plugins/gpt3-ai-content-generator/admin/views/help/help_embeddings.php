@@ -39,7 +39,7 @@ if ( ! defined( 'ABSPATH' ) ) exit;
           <p>Our plugin is the first and only WordPress plugin to offer this feature together with Pinecone integration.</p>
           <p><b>Steps to integrate Pinecone:</b></p>
           <ol>
-            <li>First watch this video tutorial <a href="https://www.youtube.com/watch?v=NPMLGwFQYrY" target="_blank">here</a>.</li>
+            <li>First watch this video tutorial <a href="https://www.youtube.com/watch?v=t3UQQ5-oNso" target="_blank">here</a>.</li>
             <li>Then create an account with Pinecone <a href="https://www.pinecone.io/" target="_blank">here</a>.</li>
             <li>Copy your Pinecone API key and paste it in the Pinecone API Key field under the Settings tab.</li>
             <li>Create an index on Pinecone.</li>
@@ -115,7 +115,7 @@ if ( ! defined( 'ABSPATH' ) ) exit;
         </div>
   <h3>Instant Embedding</h3>
         <div>
-          <p>In addition to the Index Builder, the GPT AI Power plugin also includes an “Instant Embeddings” feature.</p>
+          <p>In addition to the Index Builder, the AI Power plugin also includes an “Instant Embeddings” feature.</p>
           <p>This allows users to create embeddings for individual posts, pages, or products without needing to set up a Cron Job or wait for the Index Builder to run.</p>
           <p>To use Instant Embeddings, simply go to the post, page, or product you want to create embeddings for and select the checkbox next to “Instant Embedding”.</p>
           <p>The plugin will create embeddings for the selected content.</p>

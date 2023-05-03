@@ -29,7 +29,7 @@ if ( ! defined( 'ABSPATH' ) ) exit;
         </div>
     <h3>Language, Style and Tone</h3>
         <div>
-          <p>GPT AI Power supports following languages:</p>
+          <p>AI Power supports following languages:</p>
           <p>Afrikaans, Arabic, Armenian, Bosnian, Bulgarian, Chinese (Simplified), Chinese (Traditional), Croatian, Czech, Danish, Dutch, English, Estonian, Filipino, Finnish, French, German, Greek, Hebrew, Hindi, Hungarian, Indonesian, Italian, Japanese,
             Korean, Latvian, Lithuanian, Malay, Norwegian, Persian, Polish, Portuguese, Romanian, Russian, Serbian, Slovak, Slovenian, Spanish, Swedish, Thai, Turkish, Ukrainian and Vietnamese.
           </p>
@@ -102,7 +102,7 @@ if ( ! defined( 'ABSPATH' ) ) exit;
           <p><b>Example:</b></p>
           <p>Let say you are generating a content about "GPT Models" and your target call to action URL is: https://gptaipower.com.</p>
           <p>The plugin will send a request to the AI engine to get a call to action for the URL. The response may look like this:</p>
-          <p>"Are you interested in exploring the power and potential of GPT models? Look no further than GPT AI Power! Visit our website at <a href="https://gptaipower.com">https://gptaipower.com</a> to learn more and get started today!"</p>
+          <p>"Are you interested in exploring the power and potential of GPT models? Look no further than AI Power! Visit our website at <a href="https://gptaipower.com">https://gptaipower.com</a> to learn more and get started today!"</p>
         </div>
     <h3>Image</h3>
         <div>

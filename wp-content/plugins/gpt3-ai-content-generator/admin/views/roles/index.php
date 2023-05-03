@@ -90,7 +90,7 @@ if(isset($_POST['wpaicg_role_save'])){
     }
 </style>
 <h3><?php echo esc_html__('Role Manager','gpt3-ai-content-generator')?></h3>
-<p><?php echo esc_html__('Control which user has access to which options of GPT AI Power','gpt3-ai-content-generator')?></p>
+<p><?php echo esc_html__('Control which user has access to which options of AI Power','gpt3-ai-content-generator')?></p>
 <?php
 if($success){
     ?>

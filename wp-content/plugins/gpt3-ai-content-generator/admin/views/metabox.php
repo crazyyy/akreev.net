@@ -48,6 +48,8 @@ if ( strstr( $_SERVER['REQUEST_URI'], 'wp-admin/post-new.php' ) ) {
     $wpaicg_custom_image_settings = get_option( 'wpaicg_custom_image_settings', [] );
     $wpaicg_custom_prompt_enable = get_option( 'wpaicg_content_custom_prompt_enable', false );
     $wpaicg_custom_prompt = get_option( 'wpaicg_content_custom_prompt', '' );
+    $wpaicg_hide_conclusion = get_option( 'wpaicg_hide_conclusion', false );
+    $wpaicg_hide_introduction = get_option( 'wpaicg_hide_introduction', false );
     if ( empty($wpaicg_custom_prompt) ) {
         $wpaicg_custom_prompt = \WPAICG\WPAICG_Custom_Prompt::get_instance()->wpaicg_default_custom_prompt;
     }
@@ -93,6 +95,8 @@ if ( strstr( $_SERVER['REQUEST_URI'], 'wp-admin/post-new.php' ) ) {
         $wpaicg_custom_image_settings = get_post_meta( $post->ID, 'wpaicg_custom_image_settings', true );
         $wpaicg_custom_prompt_enable = get_post_meta( $post->ID, 'wpaicg_custom_prompt_enable', true );
         $wpaicg_custom_prompt = get_post_meta( $post->ID, 'wpaicg_custom_prompt', true );
+        $wpaicg_hide_conclusion = get_post_meta( $post->ID, 'wpaicg_hide_conclusion', true );
+        $wpaicg_hide_introduction = get_post_meta( $post->ID, 'wpaicg_hide_introduction', true );
         if ( empty($wpaicg_custom_prompt) ) {
             $wpaicg_custom_prompt = \WPAICG\WPAICG_Custom_Prompt::get_instance()->wpaicg_default_custom_prompt;
         }
@@ -1186,8 +1190,17 @@ echo  ( $wpaicg_intro_title_tag == 'h6' ? 'selected' : '' ) ;
 ?>>H6</option>
             </select>
         </td>
-        <?php 
-?>
+    </tr>
+    <tr>
+        <td><label class="wpaicg-form-label"><?php 
+echo  esc_html( __( "Hide Introduction Title", "gpt3-ai-content-generator" ) ) ;
+?></label></td>
+    </tr>
+    <tr>
+        <td><input id="wpaicg_hide_introduction" type="checkbox" name="wpaicg_hide_introduction" value="1"<?php 
+echo  ( $wpaicg_hide_introduction ? " checked" : "" ) ;
+?>/></td>
+    </tr>
     <tr> <!-- add text PREMIUM FEATURES -->
         <td><label style="font-weight: bold;" for="label_faq"><?php 
 echo  esc_html( __( "Add Q&A?", "gpt3-ai-content-generator" ) ) ;
@@ -1257,6 +1270,16 @@ echo  ( $wpaicg_conclusion_title_tag == 'h6' ? 'selected' : '' ) ;
 ?>>H6</option>
             </select>
         </td>
+    </tr>
+    <tr>
+        <td><label class="wpaicg-form-label"><?php 
+echo  esc_html( __( "Hide Conclusion Title", "gpt3-ai-content-generator" ) ) ;
+?></label></td>
+    </tr>
+    <tr>
+        <td><input type="checkbox" id="wpaicg_hide_conclusion" name="wpaicg_hide_conclusion" value="1"<?php 
+echo  ( $wpaicg_hide_conclusion ? " checked" : "" ) ;
+?>/></td>
     </tr>
     <tr>
         <td><label style="font-weight: bold;" for="label_anchor_text"><?php 

@@ -817,7 +817,7 @@ if(!class_exists('\\WPAICG\\WPAICG_Embeddings')) {
 
                     $response_code = $response['response']['code'];
                     if($response_code !== 200){
-                        $wpaicg_result['msg'] = $response['body'];
+                        $wpaicg_result['msg'] = $response['response']['message'];
                         return $wpaicg_result;
                     }
                     $response = $openai->embeddings(array(

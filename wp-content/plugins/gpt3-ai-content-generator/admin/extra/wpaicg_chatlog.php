@@ -194,6 +194,7 @@ if($totalPage > 1){
                         html += '<strong><?php echo esc_html__('User','gpt3-ai-content-generator')?>:</strong>&nbsp;';
                     }
                     let html_Entities = htmlEntities(item.message);
+                    html_Entities = html_Entities.replace(/\\/g,'');
                     html += html_Entities.replace(/```([\s\S]*?)```/g,'<code>$1</code>');
                     if(typeof item.flag !== "undefined" && item.flag !== '' && item.flag !== false){
                         html += '<span style="display: inline-block;font-size: 12px;font-weight: bold;background: #b71a1a;padding: 1px 5px;border-radius: 3px;color: #fff;margin-left: 5px;"><?php echo esc_html__('Flagged as','gpt3-ai-content-generator')?> '+item.flag+'<span>';
