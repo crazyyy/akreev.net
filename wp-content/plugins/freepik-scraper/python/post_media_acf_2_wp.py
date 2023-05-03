@@ -48,7 +48,12 @@ for json_filename in os.listdir(jsons_directory):
                 current_dir = os.getcwd()
                 print("Current directory:", current_dir)
 
-                thumb_image_file_name = os.path.basename(current_dir + '/' + thumb_image_path)
+                thumb_image_file_name_path = current_dir + '/' + thumb_image_path
+                print('thumb_image_file_name_path:')
+                print(thumb_image_file_name_path)
+
+                thumb_image_file_name = os.path.basename(thumb_image_file_name_path)
+                # thumb_image_file_name = os.path.basename(thumb_image_path)
                 print('thumb_image_file_name 2:')
                 print(thumb_image_file_name)
 
@@ -63,7 +68,7 @@ for json_filename in os.listdir(jsons_directory):
                   'caption': thumb_image_description
                 }
                 thumb_image_file={
-                  'file': (thumb_image_file_name, open(thumb_image_path, 'rb'), 'image/png', {'Content-Disposition': 'attachment; filename="' + thumb_image_file_name + '"'})
+                  'file': (thumb_image_file_name, open(thumb_image_file_name_path, 'rb'), 'image/png', {'Content-Disposition': 'attachment; filename="' + thumb_image_file_name + '"'})
                 }
 
                 response_thumb = requests.post(site_url + '/wp-json/wp/v2/media', auth=auth, data=thumb_image_payload, files=thumb_image_file, verify=verify_ssl)
