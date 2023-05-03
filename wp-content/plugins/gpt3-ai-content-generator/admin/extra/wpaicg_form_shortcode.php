@@ -56,17 +56,11 @@ if(isset($atts) && is_array($atts) && isset($atts['id']) && !empty($atts['id']))
         $sql = "SELECT p.ID as id,p.post_title as title, p.post_content as description";
         $wpaicg_meta_keys = array('prompt','editor','fields','response','category','engine','max_tokens','temperature','top_p','best_of','frequency_penalty','presence_penalty','stop','color','icon','bgcolor','header','dans','ddraft','dclear','dnotice','generate_text','noanswer_text','draft_text','clear_text','stop_text','cnotice_text','download_text','ddownload');
         foreach($wpaicg_meta_keys as $wpaicg_meta_key){
-            $sql .= ", (".$wpdb->prepare("SELECT %i.%i FROM %i %i WHERE %i.%i=%s AND p.ID=%i.%i LIMIT 1",$wpaicg_meta_key,'meta_value',
-                    $wpdb->postmeta,
-                    $wpaicg_meta_key,
-                    $wpaicg_meta_key,
-                    'meta_key',
-                    'wpaicg_form_'.$wpaicg_meta_key,
-                    $wpaicg_meta_key,
-                    'post_id'
+            $sql .= ", (".$wpdb->prepare("SELECT ".$wpaicg_meta_key.".meta_value FROM ".$wpdb->postmeta." ".$wpaicg_meta_key." WHERE ".$wpaicg_meta_key.".meta_key=%s AND p.ID=".$wpaicg_meta_key.".post_id LIMIT 1",
+                    'wpaicg_form_'.$wpaicg_meta_key
                 ).") as ".$wpaicg_meta_key;
         }
-        $sql .= $wpdb->prepare(" FROM %i p WHERE p.post_type = 'wpaicg_form' AND p.post_status='publish' AND p.ID=%d ORDER BY p.post_date DESC",$wpdb->posts,$wpaicg_item_id);
+        $sql .= $wpdb->prepare(" FROM ".$wpdb->posts." p WHERE p.post_type = 'wpaicg_form' AND p.post_status='publish' AND p.ID=%d ORDER BY p.post_date DESC", $wpaicg_item_id);
         $wpaicg_item = $wpdb->get_row($sql, ARRAY_A);
         if($wpaicg_item){
             $wpaicg_item['type'] = 'custom';

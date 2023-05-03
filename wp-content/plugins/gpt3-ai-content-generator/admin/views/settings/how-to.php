@@ -15,9 +15,9 @@ if ( ! defined( 'ABSPATH' ) ) exit;
         $chatgpt_widget_page_url = admin_url( 'admin.php?page=wpaicg_chatgpt&action=widget' );
         $chatgpt_bots_page_url = admin_url( 'admin.php?page=wpaicg_chatgpt&action=bots' );
         ?>
-        <h2>What is GPT AI Power</h2>
-        <p>GPT AI Power is a WordPress plugin that allows you to generate content, images, audio, and more using the power of AI.</p>
-        <p>It is a complete AI pack that includes ChatGPT, Content Writer, Auto Content Writer, AI Assistant, AI Forms, Image Generator, Audio Converter, WooCommerce Product Writer, SEO optimizer, AI Training, Embeddings, Title Suggester and more.</p>
+        <h2>What is AI Power</h2>
+        <p>AI Power is a WordPress plugin that allows you to generate content, images, audio, and more using the power of AI.</p>
+        <p>It is a complete AI pack that includes Custom ChatGPT, Content Writer, Auto Content Writer, AI Assistant, AI Forms, Image Generator, Audio Converter, WooCommerce Product Writer, SEO optimizer, AI Training, Embeddings, Title Suggester and more that are powered by GPT-3.5 and GPT-4.</p>
         <hr>
         <h2>How It Works</h2>
         <p>Our plugin works with the OpenAI API. To use it, you need to create an account on OpenAI and <a href="https://beta.openai.com/account/api-keys" target="_blank">obtain your API key</a>. OpenAI provides $5 in free credit for new users. If you encounter the message <b>"You exceeded your current quota, please check your plan and billing details."</b> it indicates that you have exhausted your OpenAI quota and need to purchase additional credit from OpenAI.</p>
@@ -33,7 +33,7 @@ if ( ! defined( 'ABSPATH' ) ) exit;
         <hr>
         <h2>How to Add ChatGPT to Your Website</h2>
         <p>You can create unlimited chatGPT bots that your know content.</p>
-        <p>Learn how you can teach your content to the chat bot: <u><b><a href="https://youtu.be/NPMLGwFQYrY" target="_blank">https://youtu.be/NPMLGwFQYrY</a></u></b></p>
+        <p>Learn how you can teach your content to the chat bot: <u><b><a href="https://www.youtube.com/watch?v=t3UQQ5-oNso" target="_blank">https://www.youtube.com/watch?v=t3UQQ5-oNso</a></u></b></p>
         <p>There are 3 different ways to add a chatbox in your website.</p>
         <b>1. Using the ShortCode</b>
         <p>Go to <u><b><a href="<?php
@@ -76,7 +76,7 @@ if ( ! defined( 'ABSPATH' ) ) exit;
         <p>GPT powered AI can write your WooCommerce product title, description, short description and tags.</p>
         <p>Please note: the WooCommerce settings will only be visible <u>if the WooCommerce plugin is installed</u> on your site.</p>
         <p>1. Go to WooCommerce > Add New Product</p>
-        <p>2. Scroll down to the "GPT AI Power Product Writer" section.</p>
+        <p>2. Scroll down to the "AI Power Product Writer" section.</p>
         <p>3. Select all checkboxes.</p>
         <p>4. Click on the "Generate" button.</p>
         <p>5. Click on the "Save Draft" button.</p>
@@ -89,7 +89,7 @@ if ( ! defined( 'ABSPATH' ) ) exit;
                     ?>">Train Your AI</a></u></b> page to learn more about it.</p>
         <hr>
         <h2>How to use Embeddings for Chat bot.</h2>
-        <p>1. First watch this video tutorial <u><b><a href="https://www.youtube.com/watch?v=NPMLGwFQYrY" target="_blank">here</a></u></b>.</p>
+        <p>1. First watch this video tutorial <u><b><a href="https://www.youtube.com/watch?v=t3UQQ5-oNso" target="_blank">here</a></u></b>.</p>
         <p>2. Get your API key from <a href="https://www.pinecone.io/" target="_blank">Pinecone</a>.</p>
         <p>3. Create an Index on Pinecone.</p>
         <p>4. Make sure to set your dimension to <b>1536</b>.</p>
@@ -98,6 +98,7 @@ if ( ! defined( 'ABSPATH' ) ) exit;
         <p>7. Go to Settings - ChatGPT tab and select Embeddings method.</p>
         <hr>
         <h2>How to Use Image Generator</h2>
+        <p>1. First watch this video tutorial <u><b><a href="https://www.youtube.com/watch?v=KYArfalJBbE" target="_blank">here</a></u></b>.</p>
         <p>1. Go to <u><b><a href="<?php
                     echo  esc_html( $image_generator_page_url ) ;
                     ?>">Image Generator</a></u></b>.</p>

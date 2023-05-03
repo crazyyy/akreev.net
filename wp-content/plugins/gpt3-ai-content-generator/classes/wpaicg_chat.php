@@ -745,6 +745,7 @@ if(!class_exists('\\WPAICG\\WPAICG_Chat')) {
                         $wpaicg_result['status'] = 'error';
                         //$wpaicg_result['data_request'] = $wpaicg_data_request;
                         $wpaicg_result['msg'] = esc_html(trim($complete->error->message));
+                        $wpaicg_result['log'] = $wpaicg_chat_log_id;
                         //$wpaicg_result['messages'] = $wpaicg_chatgpt_messages;
                         //$wpaicg_result['prompt'] = $prompt;
                         //$wpaicg_result['chat_embedding'] = $wpaicg_chat_embedding;
@@ -766,6 +767,7 @@ if(!class_exists('\\WPAICG\\WPAICG_Chat')) {
                         }
 //                        $wpaicg_result['prompt'] = $prompt;
                         $wpaicg_result['status'] = 'success';
+                        $wpaicg_result['log'] = $wpaicg_chat_log_id;
                         //$wpaicg_result['data_request'] = $wpaicg_data_request;
                         //$wpaicg_result['chat_embedding'] = $wpaicg_chat_embedding;
 //                        $wpaicg_result['messages'] = $wpaicg_chatgpt_messages;

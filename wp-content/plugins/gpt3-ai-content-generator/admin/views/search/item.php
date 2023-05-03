@@ -24,7 +24,7 @@ if(!empty($post_parent)){
         <?php
         if(!$source_data){
             ?>
-        <a href="javascript:void(0)" onclick="wpaicgExpand(this)">
+        <a href="javascript:void(0)" onclick="wpaicgInit.searchExpand(this)">
             <?php
         }
         else{
@@ -59,7 +59,7 @@ if(!empty($post_parent)){
                 echo substr(esc_html($post_content),0,400).'..';
                 if(!$source_data){
                     ?>
-                    <a href="javascript:void(0)" onclick="wpaicgExpand(this)"><?php echo esc_html__('[Read more]','gpt3-ai-content-generator')?></a>
+                    <a href="javascript:void(0)" onclick="wpaicgInit.searchExpand(this)"><?php echo esc_html__('[Read more]','gpt3-ai-content-generator')?></a>
                     <?php
                 }
                 else{

@@ -142,7 +142,7 @@ if(!class_exists('\\WPAICG\\WPAICG_Account')) {
             $this->image_sale = get_option('wpaicg_image_enable_sale', false);
             $this->chat_sale = get_option('wpaicg_chat_enable_sale', false);
             if((!$this->promptbase_sale || $this->image_sale || $this->chat_sale || $this->form_sale) && current_user_can('wpaicg_woocommerce_meta_box')){
-                add_meta_box('wpaicg-sale-tokens', esc_html__('GPT AI Power Token Sale','gpt3-ai-content-generator'), [$this, 'wpaicg_meta_box']);
+                add_meta_box('wpaicg-sale-tokens', esc_html__('AI Power Token Sale','gpt3-ai-content-generator'), [$this, 'wpaicg_meta_box']);
             }
         }
 

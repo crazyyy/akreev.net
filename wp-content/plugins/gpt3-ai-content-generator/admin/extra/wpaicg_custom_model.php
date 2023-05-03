@@ -347,7 +347,7 @@ if ( ! defined( 'ABSPATH' ) ) exit;
                         $('.wpaicg_modal_content').empty();
                         $('.wpaicg-overlay').show();
                         $('.wpaicg_modal').show();
-                        $('.wpaicg_modal_title').html('GPT AI Power - <?php echo esc_html__('Title Suggestion Tool','gpt3-ai-content-generator')?>');
+                        $('.wpaicg_modal_title').html('AI Power - <?php echo esc_html__('Title Suggestion Tool','gpt3-ai-content-generator')?>');
                         $('.wpaicg_modal_content').html('<p style="font-style: italic;margin-top: 5px;text-align: center;"><?php echo esc_html__('Preparing title suggestions...','gpt3-ai-content-generator')?></p>');
                     },
                     success: function (res){

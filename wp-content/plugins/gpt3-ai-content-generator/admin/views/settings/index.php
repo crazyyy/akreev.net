@@ -182,7 +182,9 @@ if ( isset( $_POST['wpaicg_submit'] ) ) {
             'wpaicg_order_status_token',
             'wpaicg_content_custom_prompt',
             'wpaicg_comment_prompt',
-            'wpaicg_toc_title_tag'
+            'wpaicg_toc_title_tag',
+            'wpaicg_hide_introduction',
+            'wpaicg_hide_conclusion'
         );
         foreach($wpaicg_keys as $wpaicg_key){
             if(isset($_POST[$wpaicg_key]) && !empty($_POST[$wpaicg_key])){

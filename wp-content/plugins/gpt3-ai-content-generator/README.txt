@@ -1,10 +1,10 @@
-===GPT AI Power: Complete AI Pack===
+===AI Power: Complete AI Pack===
 Contributors: senols
 Tags: chatgpt, gpt, openai, ai, gpt4, chatbot, speech, whisper, image generator, ai training
 Requires at least: 5.0.0
 Tested up to: 6.2
 Requires PHP: 7.4
-Stable tag: 1.6.68
+Stable tag: 1.6.86
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
  
@@ -12,7 +12,7 @@ ChatGPT, Content Writer, Auto Content Writer, AutoGPT, Chatbot, Image Generator,
  
 == Description ==
 
-GPT AI Power is a complete AI package for WordPress. It is the most popular, WordPress-based open-source AI solution. It utilizes GPT-3.5, GPT-4, DaVinci and more to generate content, images, and forms with customizable options. It includes AI training, Chat widget, WooCommerce integration, Embeddings and more.
+AI Power is a complete AI package for WordPress powered by GPT-3.5 and GPT-4. It is the most popular, WordPress-based open-source AI solution. It utilizes GPT-3.5, GPT-4, DaVinci and more to generate content, images, and forms with customizable options. It includes AI training, Chat widget, WooCommerce integration, Embeddings and more.
 
 Please read documentation here: <a href="https://gptaipower.com/">https://gptaipower.com/</a>
 
@@ -38,7 +38,9 @@ Please read documentation here: <a href="https://gptaipower.com/">https://gptaip
 * GPT powered semantic search with Embeddings
 * Pexels integration
 * Scheduled Posts
-* Speech-to-Post
+* Speech-to-Post (Whisper)
+* Text-to-Speech (ElevenLabs)
+* Text-to-Speech (Google)
 * Model Comparison Tool
 * Role Manager
 * Token Sale
@@ -53,17 +55,17 @@ https://www.youtube.com/watch?v=d0GSPU4P7FI
 
 https://www.youtube.com/watch?v=ZBJyhr_DlxE
 
-GPT AI Power is a comprehensive WordPress plugin that leverages the power of OpenAI's GPT language model to generate high-quality content, images, and forms for your website. 
+AI Power is a comprehensive WordPress plugin that leverages the power of OpenAI's GPT language model to generate high-quality content, images, and forms for your website. 
 
 It features a Content Writer, Auto Content Writer, Image Generator (DALL-E and Stable Diffusion), WooCommerce Product Writer, Audio Converter, hundreds of ready to use prompts and forms and AI Training capabilities. 
 
-With 38 language support and customizable options for writing style, tone, and image generation, the plugin offers a wide range of possibilities to enhance your website content. 
+With 43 language support and customizable options for writing style, tone, and image generation, the plugin offers a wide range of possibilities to enhance your website content. 
 
 The plugin is integrated in Posts and includes a Playground for testing.
 
 Train your chat bot with your content and products.
 
-https://www.youtube.com/watch?v=NPMLGwFQYrY
+https://www.youtube.com/watch?v=t3UQQ5-oNso
 
 Design GPT based forms and prompts for your website.
 
@@ -86,6 +88,8 @@ https://www.youtube.com/watch?v=hetYOlR-ms4
 * WooCommerce for product writing.
 * Google Sheets.
 * RSS Feeds.
+* ElevenLabs - Text to Speech
+* Google - Text to Speech
 
 == Features ==
 
@@ -131,6 +135,8 @@ https://www.youtube.com/watch?v=hetYOlR-ms4
 * Role Manager
 * Token Sale
 * Comment Replier
+* ElevenLabs Text to Speech
+* Google Text to Speech
 * [PREMIUM] Moderation for chat bot.
 * [PREMIUM] Ability to add keywords
 * [PREMIUM] Ability to avoid certain keywords
@@ -205,17 +211,17 @@ https://www.youtube.com/watch?v=hetYOlR-ms4
  
 == Frequently Asked Questions ==
  
-= What is GPT AI Power? =
-GPT AI Power is a complete AI package for WordPress that generates high-quality content, images, and forms using OpenAI's GPT-3 technology.
+= What is AI Power? =
+AI Power is a complete AI package for WordPress that generates high-quality content, images, and forms using OpenAI's GPT-3 technology.
 
-= What are the core features of GPT AI Power? =
+= What are the core features of AI Power? =
 The core features include a Content Writer, Auto Content Writer, Image Generator, ChatGPT, WooCommerce Product Writer, AI Training, Fine-Tuner, Dataset Converter, PromptBase, GPT Forms and SEO Optimizer with support for 38 languages.  
 
 = Can I customize the generated content? =
 Yes, you can customize the generated content with options for writing style, tone, temperature, maximum tokens, and more.
 
-= Does GPT AI Power support WooCommerce integration? =
-Yes, GPT AI Power has WooCommerce integration, allowing you to optimize your product titles, descriptions, and short descriptions.
+= Does AI Power support WooCommerce integration? =
+Yes, AI Power has WooCommerce integration, allowing you to optimize your product titles, descriptions, and short descriptions.
 
 =Can I train the AI with my own data?=
 Yes, you can train the AI using your own data with the Fine-Tuner and Dataset Converter. You can also create your own model and use it in the plugin.
@@ -234,6 +240,117 @@ The PHP max execution time setting determines the maximum amount of time a PHP s
 This message is coming from OpenAI, not from our plugin. It means that you have reached the limit of your OpenAI API quota, which is determined by your plan and billing details. Our plugin works on a "bring your own API key" model, serving as a bridge between WordPress and OpenAI, so the issue is not related to the plugin itself. To resolve this issue, you'll need to check your OpenAI account and ensure that you have enough quota for your needs, or upgrade your plan if necessary.
 
 == Changelog ==
+
+= 1.6.86 =
+* Improvement: Optimized image generator for mobile use.
+
+= 1.6.85 =
+* Improvement: 10 more very powerful, ready to use Customer Relationship Management prompts have been added for Playground. Navigate to the Playground and select Customer Relationship Management from prompt list.
+* Note: Changed our plugin's name from GPT AI Power to AI Power for a simpler and broader representation, encompassing all AI engines, not just GPT models.
+
+
+= 1.6.84 =
+* Improvement: 10 more very powerful, ready to use Product Listing prompts have been added for Playground. Navigate to the Playground and select Product Listing from prompt list.
+
+= 1.6.83 =
+
+* Fixed an issue in RSS module.
+* Fixed an issue in Google and ElevenLabs modules.
+
+= 1.6.82 =
+
+Introducing an exciting new feature: Google Text to Speech Integration!
+
+Ever considered giving your chatbot a voice? Integration with Google Text to Speech has now arrived! Your bot can speak, and you can even clone your own voice or famous voices like Steve Jobs! Pair it with additional context to make your bot behave and sound like Steve Jobs! Explore this unique functionality by visiting the VoiceChat tab in your bot settings and enabling the integration. Give it a try!
+
+Read blog announcement here: [Make Your Chatbot Speak Like Steve Jobs!](https://gptaipower.com/make-your-chatbot-speak-like-steve-jobs/)
+
+Note: Don't forget to clear your browser cache or, if you're using a caching plugin, flush the cache for the changes to take effect.
+
+= 1.6.81 =
+
+* Improvement: Added several style customization options for the chat bot. You can now adjust the radius of the chat window and text field, as well as the height of the text field.
+
+= 1.6.80 =
+
+* Improvement: Made several improvements to the VoiceChat tab for the chat bot.
+* Improvement: Added an additional 10 pre-built prompts on the topic of Keyword Research in the Playground section.
+* Note: Added new video tutorials for ChatGPT, Embeddings and Image Generators.
+
+= 1.6.79 =
+
+* Fix: Fix category issue with forms and promptbase.
+
+= 1.6.78 =
+
+* Improvement: Better error handling in auto content module.
+* Improvement: Added Schedule option for Google Sheets (Pro Only).
+
+= 1.6.77 =
+
+* Improvement: Better error handling for Pinecone API issues.
+* Improvement: Better response parsing in AI forms.
+* Fix: Fixed an issue where FAQ not remained at its default value in Express Mode even when enabled in Content Settings.
+* Fix: Addressed a compatibility issue with another plugin that caused improper display of shortcode for semantic search and images.
+* Fix: Fixed an issue in the bulk editor.
+
+Note: Please don't forget to clear your browser cache or, if you're using a caching plugin, flush the cache for the changes to take effect.
+
+= 1.6.76 =
+
+Fixed an issue with the chatbot's responsiveness on mobile devices.
+
+= 1.6.75 =
+
+Fixed some issues with voice chat.
+
+= 1.6.74 =
+
+Introducing an exciting new feature!
+
+Ever considered giving your chatbot a voice? Integration with Elevenlabs has now arrived! Your bot can speak, and you can even clone your own voice or famous voices like Steve Jobs! Pair it with additional context to make your bot behave and sound like Steve Jobs! Explore this unique functionality by visiting the VoiceChat tab in your bot settings and enabling the integration. Give it a try! Note: Although ElevenLabs currently does not offer native support for languages other than English, it performs well with the English language. Additional language support may be available in the future.
+
+Read blog announcement here: [Make Your Chatbot Speak Like Steve Jobs!](https://gptaipower.com/make-your-chatbot-speak-like-steve-jobs/)
+
+Note: Don't forget to clear your browser cache or, if you're using a caching plugin, flush the cache for the changes to take effect.
+
+Note: This release fixes an issue with the voice feature that released in previous version.
+
+= 1.6.73 =
+
+Introducing an exciting new feature!
+
+Ever considered giving your chatbot a voice? Integration with Elevenlabs has now arrived! Your bot can speak, and you can even clone your own voice or famous voices like Steve Jobs! Pair it with additional context to make your bot behave and sound like Steve Jobs! Explore this unique functionality by visiting the VoiceChat tab in your bot settings and enabling the integration. Give it a try! Note: Although ElevenLabs currently does not offer native support for languages other than English, it performs well with the English language. Additional language support may be available in the future.
+
+Read blog announcement here: [Make Your Chatbot Speak Like Steve Jobs!](https://gptaipower.com/make-your-chatbot-speak-like-steve-jobs/)
+
+Note: Don't forget to clear your browser cache or, if you're using a caching plugin, flush the cache for the changes to take effect.
+
+Note: This release fixes an issue with the voice feature that released in previous version.
+
+= 1.6.72 =
+
+Introducing an exciting new feature!
+
+Ever considered giving your chatbot a voice? Integration with Elevenlabs has now arrived! Your bot can speak, and you can even clone your own voice or famous voices like Steve Jobs! Pair it with additional context to make your bot behave and sound like Steve Jobs! Explore this unique functionality by visiting the VoiceChat tab in your bot settings and enabling the integration. Give it a try! Note: Although ElevenLabs currently does not offer native support for languages other than English, it performs well with the English language. Additional language support may be available in the future.
+
+Read blog announcement here: [Make Your Chatbot Speak Like Steve Jobs!](https://gptaipower.com/make-your-chatbot-speak-like-steve-jobs/)
+
+Note: Don't forget to clear your browser cache or, if you're using a caching plugin, flush the cache for the changes to take effect.
+
+= 1.6.71 =
+
+Fixed an issue with Q&A in Express mode.
+
+= 1.6.70 =
+
+Improvement: RTL support added for Arabic, Persian and Hebrew.
+
+= 1.6.69 =
+Improvement: You can now hide the Introduction or Conclusion title in your posts. To do so, navigate to Settings > Content tab and select either "Hide Introduction Title" or "Hide Conclusion Title."
+Fix: Fix translation files bug causing blank strings in the Opt-In UI in Freemius SDK.
+Note: Your feedback motivates me a lot ❤️😊. Please show your support and [leave a review](https://wordpress.org/support/plugin/gpt3-ai-content-generator/reviews/#new-post).
+Note: Have any suggestion? Connect with me at [Twitter](https://twitter.com/sengpt).
 
 = 1.6.68 =
 

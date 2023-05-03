@@ -94,6 +94,8 @@ if(!class_exists('\\WPAICG\\WPAICG_Generator')) {
         );
         public $openai;
         public $wpaicg_sleep = 8;
+        public $hide_introduction = false;
+        public $hide_conclusion = false;
 
         public static function get_instance()
         {
@@ -178,6 +180,8 @@ if(!class_exists('\\WPAICG\\WPAICG_Generator')) {
                 $this->wpaicg_result['content'] = '';
                 $wpaicg_custom_image_settings = get_option('wpaicg_custom_image_settings',[]);
                 $this->wpaicg_custom_image_settings = wp_parse_args($wpaicg_custom_image_settings, $this->wpaicg_custom_image_settings);
+                $this->hide_introduction = get_option('wpaicg_hide_introduction',false);
+                $this->hide_conclusion = get_option('wpaicg_hide_conclusion',false);
             }
             else{
                 $this->wpaicg_number_of_heading = sanitize_text_field( $_REQUEST["wpai_number_of_heading"] );
@@ -231,6 +235,8 @@ if(!class_exists('\\WPAICG\\WPAICG_Generator')) {
                     $wpaicg_custom_image_settings = get_option('wpaicg_custom_image_settings',[]);
                 }
                 $this->wpaicg_custom_image_settings = wp_parse_args($wpaicg_custom_image_settings, $this->wpaicg_custom_image_settings);
+                $this->hide_introduction = (int)sanitize_text_field($_REQUEST['wpaicg_hide_introduction']);
+                $this->hide_conclusion = (int)sanitize_text_field($_REQUEST['wpaicg_hide_conclusion']);
             }
             $this->wpaicg_opts = [
                 'model'             => $this->wpaicg_engine,
@@ -365,6 +371,8 @@ if(!class_exists('\\WPAICG\\WPAICG_Generator')) {
             /*Generate Heading*/
             if($step == 'heading'){
                 $this->sleep_request();
+                $this->wpaicg_result['hide_introduction'] = $this->hide_introduction;
+                $this->wpaicg_result['hide_conclusion'] = $this->hide_conclusion;
                 if($this->wpaicg_modify_headings && $this->generate_continue){
                     $this->wpaicg_headings = sanitize_text_field( $_REQUEST["hfHeadings"] );
                     $this->wpaicg_result['next_step'] = 'content';
@@ -476,13 +484,15 @@ if(!class_exists('\\WPAICG\\WPAICG_Generator')) {
                     }
                     else{
                         $wpaicg_response = $wpaicg_request['data'];
-                        $wpaicg_toc_list_new = array($this->introduction);
-                        foreach($this->wpaicg_toc_list as $wpaicg_toc_item){
-                            $wpaicg_toc_list_new[] = $wpaicg_toc_item;
+                        if(!$this->hide_introduction) {
+                            $wpaicg_toc_list_new = array($this->introduction);
+                            foreach ($this->wpaicg_toc_list as $wpaicg_toc_item) {
+                                $wpaicg_toc_list_new[] = $wpaicg_toc_item;
+                            }
+                            $this->wpaicg_toc_list = $wpaicg_toc_list_new;
+                            $wpaicg_introduction_id = 'wpaicg-' . sanitize_title($this->introduction);
+                            $wpaicg_response = '<' . $this->wpaicg_intro_title_tag . ' id="' . $wpaicg_introduction_id . '">' . $this->introduction . '</' . $this->wpaicg_intro_title_tag . '>' . $wpaicg_response;
                         }
-                        $this->wpaicg_toc_list = $wpaicg_toc_list_new;
-                        $wpaicg_introduction_id = 'wpaicg-'.sanitize_title($this->introduction);
-                        $wpaicg_response = '<'.$this->wpaicg_intro_title_tag.' id="'.$wpaicg_introduction_id.'">'.$this->introduction.'</'.$this->wpaicg_intro_title_tag.'>'.$wpaicg_response;
                         $this->wpaicg_result['content'] = $wpaicg_response . $this->wpaicg_result['content'];
                         $this->wpaicg_result['status'] = 'success';
                         $this->wpaicg_result['next_step'] = 'faq';
@@ -546,9 +556,11 @@ if(!class_exists('\\WPAICG\\WPAICG_Generator')) {
                     }
                     else{
                         $wpaicg_response = $wpaicg_request['data'];
-                        $this->wpaicg_toc_list[] = $this->conclusion;
-                        $wpaicg_conclusion_id = 'wpaicg-'.sanitize_title($this->conclusion);
-                        $wpaicg_response = '<'.$this->wpaicg_conclusion_title_tag.' id="'.$wpaicg_conclusion_id.'">'.$this->conclusion.'</'.$this->wpaicg_conclusion_title_tag.'>'.$wpaicg_response;
+                        if(!$this->hide_conclusion) {
+                            $this->wpaicg_toc_list[] = $this->conclusion;
+                            $wpaicg_conclusion_id = 'wpaicg-' . sanitize_title($this->conclusion);
+                            $wpaicg_response = '<' . $this->wpaicg_conclusion_title_tag . ' id="' . $wpaicg_conclusion_id . '">' . $this->conclusion . '</' . $this->wpaicg_conclusion_title_tag . '>' . $wpaicg_response;
+                        }
                         $this->wpaicg_result['content'] = $this->wpaicg_result['content'].$wpaicg_response;
                         $this->wpaicg_result['status'] = 'success';
                         $this->wpaicg_result['next_step'] = 'tagline';

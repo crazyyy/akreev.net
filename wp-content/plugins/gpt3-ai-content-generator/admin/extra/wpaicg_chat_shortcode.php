@@ -75,6 +75,17 @@ $default_setting = array(
     'download_btn' => false,
     'bar_color' => '#fff',
     'thinking_color' => '#fff',
+    'chat_to_speech' => false,
+    'elevenlabs_voice' => '',
+    'text_height' => 60,
+    'text_rounded' => 20,
+    'chat_rounded' => 20,
+    'voice_language' => 'en-US',
+    'voice_name' => 'en-US-Studio-M',
+    'voice_device' => '',
+    'voice_speed' => 1,
+    'voice_pitch' => 0,
+    'voice_service' => ''
 );
 $wpaicg_pinecone_api = get_option('wpaicg_pinecone_api','');
 $wpaicg_pinecone_environment = get_option('wpaicg_pinecone_environment','');
@@ -95,6 +106,12 @@ $wpaicg_chat_fullscreen = isset($wpaicg_settings['fullscreen']) && !empty($wpaic
 $wpaicg_chat_download_btn = isset($wpaicg_settings['download_btn']) && !empty($wpaicg_settings['download_btn']) ? $wpaicg_settings['download_btn'] : false;
 $wpaicg_bar_color = isset($wpaicg_settings['bar_color']) && !empty($wpaicg_settings['bar_color']) ? $wpaicg_settings['bar_color'] : '#fff';
 $wpaicg_thinking_color = isset($wpaicg_settings['thinking_color']) && !empty($wpaicg_settings['thinking_color']) ? $wpaicg_settings['thinking_color'] : '#fff';
+$wpaicg_chat_to_speech = isset($wpaicg_settings['chat_to_speech']) ? $wpaicg_settings['chat_to_speech'] : false;
+$wpaicg_elevenlabs_voice = isset($wpaicg_settings['elevenlabs_voice']) ? $wpaicg_settings['elevenlabs_voice'] : '';
+$wpaicg_elevenlabs_api = get_option('wpaicg_elevenlabs_api', '');
+$wpaicg_chat_voice_service = isset($wpaicg_settings['voice_service']) ? $wpaicg_settings['voice_service'] : '';
+$wpaicg_google_voices = get_option('wpaicg_google_voices',[]);
+$wpaicg_google_api_key = get_option('wpaicg_google_api_key', '');
 $wpaicg_roles = wp_roles()->get_names();
 ?>
 <style>
@@ -138,8 +155,7 @@ if($wpaicg_save_setting_success):
 endif;
 ?>
 <div class="wpaicg-alert mb-5">
-    <p><?php echo sprintf(esc_html__('To add the chat bot to your website, please include the shortcode %s in the desired location on your site.','gpt3-ai-content-generator'),'<code>[wpaicg_chatgpt]</code>')?></p>
-    <p><?php echo sprintf(esc_html__('If you prefer to use widget instead of shortcode, go to %s tab and configure it. Learn how you can train the chat bot with your content','gpt3-ai-content-generator'),'<b>Widget</b>')?> <u><b><a href="https://youtu.be/NPMLGwFQYrY" target="_blank"><?php echo esc_html__('here','gpt3-ai-content-generator')?></a></u></b>.</p>
+    <p><?php echo sprintf(esc_html__('Include the shortcode %s in the desired location on your site.','gpt3-ai-content-generator'),'<code>[wpaicg_chatgpt]</code>')?><?php echo sprintf(esc_html__('Learn how you can train the chat bot with your content','gpt3-ai-content-generator'),'<b>Widget</b>')?> <u><b><a href="https://www.youtube.com/watch?v=t3UQQ5-oNso" target="_blank"><?php echo esc_html__('here','gpt3-ai-content-generator')?></a></u></b>.</p>
 </div>
 <div class="wpaicg-grid-three">
     <div class="wpaicg-grid-2 wpaicg-chat-shortcode-preview">
@@ -388,6 +404,18 @@ endif;
                         <input value="<?php echo esc_html($wpaicg_settings['fontcolor'])?>" type="text" class="wpaicgchat_color wpaicg_font_color" name="wpaicg_chat_shortcode_options[fontcolor]">
                     </div>
                     <div class="mb-5">
+                        <label class="wpaicg-form-label"><?php echo esc_html__('Border Radius - Window','gpt3-ai-content-generator')?>:</label>
+                        <input style="width: 80px" value="<?php echo esc_html($wpaicg_settings['chat_rounded'])?>" type="number" min="0" class="wpaicg_chat_rounded" name="wpaicg_chat_shortcode_options[chat_rounded]">px
+                    </div>
+                    <div class="mb-5">
+                        <label class="wpaicg-form-label"><?php echo esc_html__('Text Field Height','gpt3-ai-content-generator')?>:</label>
+                        <input style="width: 80px" value="<?php echo esc_html($wpaicg_settings['text_height'])?>" type="number" min="30" class="wpaicg_text_height" name="wpaicg_chat_shortcode_options[text_height]">px
+                    </div>
+                    <div class="mb-5">
+                        <label class="wpaicg-form-label"><?php echo esc_html__('Border Radius - Text Field','gpt3-ai-content-generator')?>:</label>
+                        <input style="width: 80px" value="<?php echo esc_html($wpaicg_settings['text_rounded'])?>" type="number" min="0" class="wpaicg_text_rounded" name="wpaicg_chat_shortcode_options[text_rounded]">px
+                    </div>
+                    <div class="mb-5">
                         <label class="wpaicg-form-label"><?php echo esc_html__('Text Field Background','gpt3-ai-content-generator')?>:</label>
                         <input value="<?php echo esc_html($wpaicg_settings['bg_text_field'])?>" type="text" class="wpaicgchat_color wpaicg_bg_text_field" name="wpaicg_chat_shortcode_options[bg_text_field]">
                     </div>
@@ -579,10 +607,10 @@ endif;
             </div>
             <!--Audio-->
             <div class="wpaicg-collapse">
-                <div class="wpaicg-collapse-title"><span>+</span><?php echo esc_html__('Voice Input','gpt3-ai-content-generator')?></div>
+                <div class="wpaicg-collapse-title"><span>+</span><?php echo esc_html__('VoiceChat','gpt3-ai-content-generator')?></div>
                 <div class="wpaicg-collapse-content">
                     <div class="mb-5">
-                        <label class="wpaicg-form-label"><?php echo esc_html__('Enable','gpt3-ai-content-generator')?>:</label>
+                        <label class="wpaicg-form-label"><?php echo esc_html__('Enable Speech to Text','gpt3-ai-content-generator')?>:</label>
                         <input<?php echo isset($wpaicg_settings['audio_enable']) && $wpaicg_settings['audio_enable'] ? ' checked': ''?> value="1" type="checkbox" class="wpaicg_audio_enable" name="wpaicg_chat_shortcode_options[audio_enable]">
                     </div>
                     <div class="mb-5">
@@ -592,6 +620,77 @@ endif;
                     <div class="mb-5">
                         <label class="wpaicg-form-label"><?php echo esc_html__('Stop Color','gpt3-ai-content-generator')?>:</label>
                         <input value="<?php echo esc_html($wpaicg_settings['stop_color'])?>" type="text" class="wpaicgchat_color wpaicg_stop_color" name="wpaicg_chat_shortcode_options[stop_color]">
+                    </div>
+                    <div class="mb-5">
+                        <label class="wpaicg-form-label"><?php echo esc_html__('Enable Text to Speech','gpt3-ai-content-generator')?>:</label>
+                        <input<?php echo empty($wpaicg_elevenlabs_api) && empty($wpaicg_google_api_key) ? ' disabled':''?><?php echo (!empty($wpaicg_elevenlabs_api) || !empty($wpaicg_google_api_key)) && $wpaicg_chat_to_speech ? ' checked':''?> value="1" type="checkbox" name="wpaicg_chat_shortcode_options[chat_to_speech]" class="wpaicg_chat_to_speech">
+                    </div>
+                    <?php
+                    $disabled_voice_fields = false;
+                    if(!$wpaicg_chat_to_speech){
+                        $disabled_voice_fields = true;
+                    }
+                    ?>
+                    <div class="mb-5" style="<?php echo empty($wpaicg_google_api_key) && empty($wpaicg_elevenlabs_api) ? ' display:none' : ''?>">
+                        <label class="wpaicg-form-label"><?php echo esc_html__('Provider','gpt3-ai-content-generator')?>:</label>
+                        <select<?php echo $disabled_voice_fields || (empty($wpaicg_google_api_key) && empty($wpaicg_elevenlabs_api))  ? ' disabled': ''?> name="wpaicg_chat_shortcode_options[voice_service]" class="wpaicg_voice_service">
+                            <option value=""><?php echo esc_html__('ElevenLabs','gpt3-ai-content-generator')?></option>
+                            <option<?php echo $wpaicg_chat_voice_service == 'google' ? ' selected':'';?> value="google"><?php echo esc_html__('Google','gpt3-ai-content-generator')?></option>
+                        </select>
+                    </div>
+                    <div class="wpaicg_voice_service_google" style="<?php echo $wpaicg_chat_voice_service == 'google' && (!empty($wpaicg_google_api_key) || !empty($wpaicg_elevenlabs_api)) ? '' : 'display:none'?>">
+                        <?php
+                        $wpaicg_voice_language = isset($wpaicg_settings['voice_language']) && !empty($wpaicg_settings['voice_language']) ? $wpaicg_settings['voice_language'] : 'en-US';
+                        $wpaicg_voice_name = isset($wpaicg_settings['voice_name']) && !empty($wpaicg_settings['voice_name']) ? $wpaicg_settings['voice_name'] : 'en-US-Studio-M';
+                        $wpaicg_voice_device = isset($wpaicg_settings['voice_device']) && !empty($wpaicg_settings['voice_device']) ? $wpaicg_settings['voice_device'] : '';
+                        $wpaicg_voice_speed = isset($wpaicg_settings['voice_speed']) && !empty($wpaicg_settings['voice_speed']) ? $wpaicg_settings['voice_speed'] : 1;
+                        $wpaicg_voice_pitch = isset($wpaicg_settings['voice_pitch']) && !empty($wpaicg_settings['voice_pitch']) ? $wpaicg_settings['voice_pitch'] : 0;
+                        ?>
+                        <div class="mb-5">
+                            <label class="wpaicg-form-label"><?php echo esc_html__('Voice Language','gpt3-ai-content-generator')?>:</label>
+                            <select<?php echo empty($wpaicg_google_api_key) || $disabled_voice_fields ? ' disabled':''?> name="wpaicg_chat_shortcode_options[voice_language]" class="wpaicg_voice_language">
+                                <?php
+                                foreach(\WPAICG\WPAICG_Google_Speech::get_instance()->languages as $key=>$voice_language){
+                                    echo '<option'.($wpaicg_voice_language == $key ? ' selected':'').' value="'.esc_html($key).'">'.esc_html($voice_language).'</option>';
+                                }
+                                ?>
+                            </select>
+                        </div>
+                        <div class="mb-5">
+                            <label class="wpaicg-form-label"><?php echo esc_html__('Voice Name','gpt3-ai-content-generator')?>:</label>
+                            <select<?php echo empty($wpaicg_google_api_key) || $disabled_voice_fields ? ' disabled':''?> data-value="<?php echo esc_html($wpaicg_voice_name)?>" name="wpaicg_chat_shortcode_options[voice_name]" class="wpaicg_voice_name">
+                            </select>
+                        </div>
+                        <div class="mb-5">
+                            <label class="wpaicg-form-label"><?php echo esc_html__('Audio Device Profile','gpt3-ai-content-generator')?>:</label>
+                            <select<?php echo empty($wpaicg_google_api_key) || $disabled_voice_fields ? ' disabled':''?> name="wpaicg_chat_shortcode_options[voice_device]" class="wpaicg_voice_device">
+                                <?php
+                                foreach(\WPAICG\WPAICG_Google_Speech::get_instance()->devices() as $key => $device){
+                                    echo '<option'.($wpaicg_voice_device == $key ? ' selected':'').' value="'.esc_html($key).'">'.esc_html($device).'</option>';
+                                }
+                                ?>
+                            </select>
+                        </div>
+                        <div class="mb-5">
+                            <label class="wpaicg-form-label"><?php echo esc_html__('Voice Speed','gpt3-ai-content-generator')?>:</label>
+                            <input<?php echo empty($wpaicg_google_api_key) || $disabled_voice_fields ? ' disabled':''?> type="text" class="wpaicg_voice_speed" value="<?php echo esc_html($wpaicg_voice_speed)?>" name="wpaicg_chat_shortcode_options[voice_speed]">
+                        </div>
+                        <div class="mb-5">
+                            <label class="wpaicg-form-label"><?php echo esc_html__('Voice Pitch','gpt3-ai-content-generator')?>:</label>
+                            <input<?php echo empty($wpaicg_google_api_key) ||$disabled_voice_fields ? ' disabled':''?> type="text" class="wpaicg_voice_pitch" value="<?php echo esc_html($wpaicg_voice_pitch)?>" name="wpaicg_chat_shortcode_options[voice_pitch]">
+                        </div>
+                    </div>
+                    <div class="wpaicg_voice_service_elevenlabs" style="<?php echo $wpaicg_chat_voice_service == 'google' || (empty($wpaicg_google_api_key) && empty($wpaicg_elevenlabs_api)) ? 'display:none' : ''?>">
+                        <div class="mb-5">
+                            <label class="wpaicg-form-label"><?php echo esc_html__('Select a Voice','gpt3-ai-content-generator')?>:</label>
+                            <select<?php echo empty($wpaicg_elevenlabs_api) || $disabled_voice_fields ? ' disabled':''?> name="wpaicg_chat_shortcode_options[elevenlabs_voice]" class="wpaicg_elevenlabs_voice">
+                                <?php
+                                foreach(\WPAICG\WPAICG_ElevenLabs::get_instance()->voices as $key=>$voice){
+                                    echo '<option'.($wpaicg_elevenlabs_voice == $key ? ' selected':'').' value="'.esc_html($key).'">'.esc_html($voice).'</option>';
+                                }
+                                ?>
+                            </select>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -791,6 +890,114 @@ endif;
 </div>
 <script>
     jQuery(document).ready(function ($){
+        let wpaicg_google_voices = <?php echo json_encode($wpaicg_google_voices)?>;
+        let wpaicg_elevenlab_api = '<?php echo esc_html($wpaicg_elevenlabs_api)?>';
+        let wpaicg_google_api_key = '<?php  echo $wpaicg_google_api_key?>';
+        $(document).on('click','.wpaicg_chat_to_speech', function(e){
+            let parent = $(e.currentTarget).parent().parent();
+            let voice_service = parent.find('.wpaicg_voice_service');
+            if($(e.currentTarget).prop('checked')){
+                if(wpaicg_elevenlab_api !== '' || wpaicg_google_api_key !== ''){
+                    voice_service.removeAttr('disabled');
+                }
+                if(wpaicg_elevenlab_api !== ''){
+                    parent.find('.wpaicg_elevenlabs_voice').removeAttr('disabled');
+                }
+                if(wpaicg_google_api_key !== ''){
+                    parent.find('.wpaicg_voice_language').removeAttr('disabled');
+                    parent.find('.wpaicg_voice_name').removeAttr('disabled');
+                    parent.find('.wpaicg_voice_device').removeAttr('disabled');
+                    parent.find('.wpaicg_voice_speed').removeAttr('disabled');
+                    parent.find('.wpaicg_voice_pitch').removeAttr('disabled');
+                }
+            }
+            else{
+                voice_service.attr('disabled','disabled');
+                parent.find('.wpaicg_elevenlabs_voice').attr('disabled','disabled');
+                parent.find('.wpaicg_voice_language').attr('disabled','disabled');
+                parent.find('.wpaicg_voice_name').attr('disabled','disabled');
+                parent.find('.wpaicg_voice_device').attr('disabled','disabled');
+                parent.find('.wpaicg_voice_speed').attr('disabled','disabled');
+                parent.find('.wpaicg_voice_pitch').attr('disabled','disabled');
+            }
+        });
+        $(document).on('change','.wpaicg_voice_service',function(e){
+            let parent = $(e.currentTarget).parent().parent();
+            if($(e.currentTarget).val() === 'google'){
+                parent.find('.wpaicg_voice_service_elevenlabs').hide();
+                parent.find('.wpaicg_voice_service_google').show();
+            }
+            else{
+                parent.find('.wpaicg_voice_service_elevenlabs').show();
+                parent.find('.wpaicg_voice_service_google').hide();
+            }
+        })
+        $(document).on('keypress','.wpaicg_voice_speed,.wpaicg_voice_pitch', function (e){
+            var charCode = (e.which) ? e.which : e.keyCode;
+            if (charCode > 31 && (charCode < 48 || charCode > 57) && charCode !== 46) {
+                return false;
+            }
+            return true;
+        });
+        function wpaicgsetVoices(element){
+            let parent = element.parent().parent();
+            let language = element.val();
+            let voiceNameInput = parent.find('.wpaicg_voice_name');
+            voiceNameInput.empty();
+            let selected = voiceNameInput.attr('data-value');
+            $.each(wpaicg_google_voices[language], function (idx, item){
+                voiceNameInput.append('<option'+(selected === item.name ? ' selected':'')+' value="'+item.name+'">'+item.name+' - '+item.ssmlGender+'</option>');
+            })
+        }
+        function wpaicgcollectVoices(element){
+            if(!Object.keys(wpaicg_google_voices).length === 0){
+                $.ajax({
+                    url: '<?php echo admin_url('admin-ajax.php')?>',
+                    data: {action: 'wpaicg_sync_google_voices',nonce: '<?php echo wp_create_nonce('wpaicg_sync_google_voices')?>'},
+                    dataType: 'json',
+                    type: 'post',
+                    success: function(res){
+                        if(res.status === 'success'){
+                            wpaicg_google_voices = res.voices;
+                            wpaicgsetVoices(element);
+                        }else{
+                            alert(res.message);
+                        }
+                    }
+
+                });
+            }
+            else{
+                wpaicgsetVoices(element);
+            }
+        }
+        $(document).on('change','.wpaicg_voice_language', function(e){
+            wpaicgcollectVoices($(e.currentTarget));
+        })
+        if($('.wpaicg_voice_language').length){
+            wpaicgcollectVoices($('.wpaicg_voice_language'));
+        }
+        $('#form-chatbox-setting').on('submit', function (e){
+            if($('.wpaicg_voice_speed').length) {
+                let wpaicg_voice_speed = parseFloat($('.wpaicg_voice_speed').val());
+                let wpaicg_voice_pitch = parseFloat($('.wpaicg_voice_pitch').val());
+                let wpaicg_voice_name = parseFloat($('.wpaicg_voice_name').val());
+                let has_error = false;
+                if (wpaicg_voice_speed < 0.25 || wpaicg_voice_speed > 4) {
+                    has_error = '<?php echo sprintf(esc_html__('Please enter valid voice speed value between %s and %s', 'gpt3-ai-content-generator'), 0.25, 4)?>';
+                } else if (wpaicg_voice_pitch < -20 || wpaicg_voice_speed > 20) {
+                    has_error = '<?php echo sprintf(esc_html__('Please enter valid voice pitch value between %s and %s', 'gpt3-ai-content-generator'), -20, 20)?>';
+                }
+                else if(wpaicg_voice_name === ''){
+                    has_error = '<?php echo esc_html__('Please select voice name', 'gpt3-ai-content-generator')?>';
+                }
+                if (has_error) {
+                    e.preventDefault();
+                    alert(has_error);
+                    return false;
+                }
+            }
+        })
         let wpaicg_roles = <?php echo wp_kses_post(json_encode($wpaicg_roles))?>;
         $('.wpaicg_modal_close_second').click(function (){
             $('.wpaicg_modal_close_second').closest('.wpaicg_modal_second').hide();
@@ -1095,7 +1302,15 @@ endif;
                 chatbox_width = preview_width;
             }
             $('.wpaicg-chat-shortcode').width(chatbox_width+'px');
+            $('.wpaicg-chat-shortcode').attr('data-width',chatbox_width);
+            wpaicgChatShortcodeSize();
         });
+        $('.wpaicg_chat_rounded,.wpaicg_text_height,wpaicg_text_rounded').on('input', function (){
+            $('.wpaicg-chat-shortcode').attr('data-chat_rounded',$('.wpaicg_chat_rounded').val());
+            $('.wpaicg-chat-shortcode').attr('data-text_height',$('.wpaicg_text_height').val());
+            $('.wpaicg-chat-shortcode').attr('data-text_rounded',$('.wpaicg_text_rounded').val());
+            wpaicgChatShortcodeSize();
+        })
         $('.wpaicg_chat_shortcode_height').on('input', function (){
             var chatbox_height = $(this).val();
             var preview_width = $(window).height();
@@ -1112,6 +1327,7 @@ endif;
                 chatbox_height = preview_width;
             }
             $('.wpaicg-chat-shortcode-content ul').height((chatbox_height - 44)+'px');
+            $('.wpaicg-chat-shortcode').attr('data-height',chatbox_height);
         });
         $('.wpaicg_chatbox_icon').click(function (e){
             e.preventDefault();

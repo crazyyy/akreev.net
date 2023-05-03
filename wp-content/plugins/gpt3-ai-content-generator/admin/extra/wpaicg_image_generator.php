@@ -74,7 +74,7 @@ if(is_admin()){
         cursor: pointer;
     }
     .wpaicg-image-item img{
-        width: 100%;
+        width: 100%; /* instead of max-width */
         height: auto;
     }
     .wpaicg-image-item label{
@@ -148,7 +148,12 @@ if(is_admin()){
     }
     .wpaicg_modal{
         top: 5%;
+        width: 90%; /* Make modal 90% of the viewport width */
+        max-width: 800px; /* Set a maximum width */
+        left: 50%; /* Center the modal horizontally */
+        transform: translateX(-50%); /* Correct for the modal width */
         height: 90%;
+        overflow-y: auto; /* Enable scrolling if the content is taller than the modal */
     }
     .wpaicg_modal_content{
         height: calc(100% - 50px);
@@ -196,6 +201,27 @@ if(is_admin()){
             transform: rotate(360deg);
         }
     }
+    /* Use media queries for responsiveness */
+    @media only screen and (max-width: 600px) {
+        .image-grid {
+            grid-template-columns: 1fr; /* make it one column on small screens */
+        }
+    }
+
+    @media only screen and (min-width: 601px) and (max-width: 900px) {
+        .image-grid {
+            grid-template-columns: repeat(2,1fr); /* make it two columns on medium screens */
+        }
+    }
+    /* Use media queries for responsiveness */
+    @media only screen and (max-width: 800px) {
+        .wpaicg_modal {
+            width: 100%; /* Make modal full width on small screens */
+            height: 100%; /* Make modal full height on small screens */
+            top: 0;
+        }
+    }
+
 </style>
 <?php
 $wpaicg_art_file = WPAICG_PLUGIN_DIR . 'admin/data/art.json';
@@ -603,6 +629,11 @@ if(count($wpaicg_image_prompts)){
 if($wpaicg_action !== 'shortcodes' && $wpaicg_action != 'logs'):
 ?>
 <script>
+    let wpaicgImageSourceID = <?php echo !empty(get_the_ID()) ? get_the_ID() : 0?>;
+    let wpaicgImageShortcode = '<?php echo esc_html($wpaicg_shortcode_text)?>';
+    let wpaicgImageNonce = '<?php echo esc_html(wp_create_nonce( 'wpaicg-imagelog' ))?>';
+    let wpaicgImageSaveNonce = '<?php echo esc_html(wp_create_nonce('wpaicg-ajax-nonce'))?>';
+    let wpaicgSelectAllText = '<?php echo esc_html($wpaicg_image_select_all_text)?>';
     function getRandomPrompt() {
         <?php
         $wpaicg_art_file = WPAICG_PLUGIN_DIR . 'admin/data/art.json';
@@ -615,58 +646,6 @@ if($wpaicg_action !== 'shortcodes' && $wpaicg_action != 'logs'):
         var randomIndex = Math.floor(Math.random() * <?php echo esc_html(count($wpaicg_prompt_data['prompts'])); ?>);
         document.getElementById("prompt").value = <?php echo json_encode($wpaicg_prompt_data['prompts']); ?> [randomIndex];
     }
-    var wpaicgImageForm = document.getElementById('wpaicg-image-generator-form');
-    var wpaicg_image_ajax_url = '<?php echo admin_url('admin-ajax.php')?>';
-    var wpaicgImageGenerated = document.getElementsByClassName('image-generated')[0];
-    var wpaicgImageGrid = document.getElementById('image-grid');
-    var wpaicgImageLoading = document.getElementById('image-generate-loading');
-    var wpaicgImageSaveBtn = document.getElementById('image-generator-save');
-    var wpaicgImageMessage = document.getElementById('wpaicg_message');
-    var wpaicgImageConvertBar = document.getElementById('wpaicg-convert-bar');
-    var wpaicg_image_modal_close = document.getElementsByClassName('wpaicg_image_modal_close');
-    var wpaicgNumberImages = document.getElementById('num_images');
-    var wpaicgImageGenerateBtn = document.getElementById('wpaicg_button_generate');
-    var wpaicgImageSelectAll = document.getElementById('wpaicg_image_select_all');
-    let wpaicgImageSourceID = <?php echo !empty(get_the_ID()) ? get_the_ID() : 0?>;
-    let wpaicgImageShortcode = '<?php echo esc_html($wpaicg_shortcode_text)?>';
-    let wpaicgImageNonce = '<?php echo esc_html(wp_create_nonce( 'wpaicg-imagelog' ))?>';
-    let wpaicgStartTime;
-    <?php
-        if(is_admin()):
-    ?>
-    let wpaicgSetDefault = document.getElementById('wpaicg-set-default-setting');
-    if(wpaicgSetDefault) {
-        wpaicgSetDefault.addEventListener('click', function () {
-            let type = wpaicgSetDefault.getAttribute('data-type');
-            wpaicgImageLoadingEffect(wpaicgSetDefault);
-            let queryString = new URLSearchParams(new FormData(wpaicgImageForm)).toString();
-            queryString += '&action=wpaicg_image_default';
-            queryString += '&type_default='+type;
-            const xhttp = new XMLHttpRequest();
-            xhttp.open('POST', wpaicg_image_ajax_url);
-            xhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
-            xhttp.send(queryString);
-            xhttp.onreadystatechange = function (oEvent) {
-                if (xhttp.readyState === 4) {
-                    if (xhttp.status === 200) {
-                        let wpaicgParentCol = wpaicgSetDefault.parentElement;
-                        let successMessage = document.createElement('div');
-                        successMessage.style.color = '#009512';
-                        successMessage.style.fontWeight = 'bold';
-                        successMessage.innerHTML = '<?php echo esc_html__('Record updated successfully','gpt3-ai-content-generator')?>';
-                        wpaicgParentCol.appendChild(successMessage);
-                        setTimeout(function (){
-                            successMessage.remove();
-                        },2000);
-                        wpaicgImageRmLoading(wpaicgSetDefault);
-                    }
-                }
-            }
-        });
-    }
-    <?php
-        endif;
-    ?>
     function wpaicgImageLoadingEffect(btn){
         btn.setAttribute('disabled','disabled');
         btn.innerHTML += '<span class="wpaicg-loader"></span>';
@@ -692,30 +671,6 @@ if($wpaicg_action !== 'shortcodes' && $wpaicg_action != 'logs'):
         document.querySelectorAll('.wpaicg-overlay')[0].style.display = 'none';
         document.querySelectorAll('.wpaicg_modal')[0].style.display = 'none';
     }
-    function wpaicgModalImage(id){
-        var item = document.getElementById('wpaicg-image-item-'+id);
-        var alt = item.querySelectorAll('.wpaicg-image-item-alt')[0].value;
-        var title = item.querySelectorAll('.wpaicg-image-item-title')[0].value;
-        var caption = item.querySelectorAll('.wpaicg-image-item-caption')[0].value;
-        var description = item.querySelectorAll('.wpaicg-image-item-description')[0].value;
-        var url = item.querySelectorAll('input[type=checkbox]')[0].value;
-        document.querySelectorAll('.wpaicg_modal_content')[0].innerHTML = '';
-        document.querySelectorAll('.wpaicg-overlay')[0].style.display = 'block';
-        document.querySelectorAll('.wpaicg_modal')[0].style.display = 'block';
-        document.querySelectorAll('.wpaicg_modal_title')[0].innerHTML = '<?php echo esc_html__('Edit Image','gpt3-ai-content-generator')?>';
-        var html = '<div class="wpaicg_grid_form">';
-        html += '<div class="wpaicg_grid_form_2"><img src="'+url+'" style="width: 100%"></div>';
-        html += '<div class="wpaicg_grid_form_1">';
-        html += '<p><label><?php echo esc_html__('Alternative Text','gpt3-ai-content-generator')?></label><input type="text" class="wpaicg_edit_item_alt" style="width: 100%" value="'+alt+'"></p>';
-        html += '<p><label><?php echo esc_html__('Title','gpt3-ai-content-generator')?></label><input type="text" class="wpaicg_edit_item_title" style="width: 100%" value="'+title+'"></p>';
-        html += '<p><label><?php echo esc_html__('Caption','gpt3-ai-content-generator')?></label><input type="text" class="wpaicg_edit_item_caption" style="width: 100%" value="'+caption+'"></p>';
-        html += '<p><label><?php echo esc_html__('Description','gpt3-ai-content-generator')?></label><textarea class="wpaicg_edit_item_description" style="width: 100%">'+description+'</textarea></p>';
-        html += '<button onclick="wpaicgSaveImageData('+id+')" data-id="'+id+'" class="button button-primary wpaicg_edit_image_save" type="button"><?php echo esc_html__('Save','gpt3-ai-content-generator')?></button>';
-        html += '</div>';
-        html += '</div>';
-        document.querySelectorAll('.wpaicg_modal_content')[0].innerHTML = html;
-        wpaicgImageCloseModal();
-    }
     function wpaicgViewModalImage(element){
         var url = element.getAttribute('src');
         document.querySelectorAll('.wpaicg_modal_content')[0].innerHTML = '';
@@ -727,244 +682,39 @@ if($wpaicg_action !== 'shortcodes' && $wpaicg_action != 'logs'):
         document.querySelectorAll('.wpaicg_modal_content')[0].innerHTML = html;
         wpaicgImageCloseModal();
     }
-    function wpaicgImageGenerator(data, start, max, multi_steps,form_action){
-        const xhttp = new XMLHttpRequest();
-        xhttp.open('POST', wpaicg_image_ajax_url);
-        xhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
-        xhttp.send(data);
-        xhttp.onreadystatechange = function(oEvent) {
-            if (xhttp.readyState === 4) {
-                if (xhttp.status === 200) {
-                    var wpaicg_response = this.responseText;
-                    res = JSON.parse(wpaicg_response);
-                    if(res.status === 'success'){
-                        for(var idx = 0; idx < res.imgs.length; idx++){
-                            let idImageBox = idx;
-                            if(multi_steps){
-                                idImageBox = start -1;
-                            }
-                            var img = res.imgs[idx];
-                            var html = '<div id="wpaicg-image-item-'+idImageBox+'" class="wpaicg-image-item wpaicg-image-item-'+idx+'" data-id="'+idImageBox+'">';
-                            <?php
-                            if(is_user_logged_in()):
-                            ?>
-                            html += '<label><input data-id="'+idImageBox+'" class="wpaicg-image-item-select" type="checkbox" name="image_url" value="'+img+'"></label>';
-                            <?php
-                            endif;
-                            ?>
-                            html += '<input value="'+res.title+'" class="wpaicg-image-item-alt" type="hidden" name="image_alt">';
-                            html += '<input value="'+res.title+'" class="wpaicg-image-item-title" type="hidden" name="image_title">';
-                            html += '<input value="'+res.title+'" class="wpaicg-image-item-caption" type="hidden" name="image_caption">';
-                            html += '<input value="'+res.title+'" class="wpaicg-image-item-description" type="hidden" name="image_description">';
-                            <?php
-                            if(is_user_logged_in()):
-                            ?>
-                            html += '<img onclick="wpaicgModalImage(' + idImageBox + ')" src="' + img + '">';
-                            <?php
-                            else:
-                            ?>
-                            html += '<img onclick="wpaicgViewModalImage(this)" src="'+img+'">';
-                            <?php
-                            endif;
-                            ?>
-                            html += '</div>';
-                            wpaicgImageGrid.innerHTML += html;
-                        }
-                        if(multi_steps){
-                            if(start === max){
-                                wpaicgImageRmLoading(wpaicgImageGenerateBtn);
-                                wpaicgImageSelectAll.classList.remove('selectall')
-                                wpaicgImageSelectAll.innerHTML = '<?php echo esc_html($wpaicg_image_select_all_text)?>';
-                                wpaicgImageSelectAll.style.display = 'block';
-                                wpaicgImageLoading.style.display = 'none';
-                                wpaicgImageSaveBtn.style.display = 'block';
-                            }
-                            else{
-                                wpaicgImageGenerator(data, start+1, max, multi_steps,form_action)
-                            }
-                        }
-                        else{
-                            if(form_action === 'wpaicg_image_generator'){
-                                let endTime = new Date();
-                                let timeDiff = endTime - wpaicgStartTime;
-                                timeDiff = timeDiff/1000;
-                                data += '&action=wpaicg_image_log&duration='+timeDiff+'&_wpnonce_image_log='+wpaicgImageNonce+'&shortcode=['+wpaicgImageShortcode+']&source_id='+wpaicgImageSourceID;
-                                const xhttp = new XMLHttpRequest();
-                                xhttp.open('POST', '<?php echo admin_url('admin-ajax.php')?>');
-                                xhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
-                                xhttp.send(data);
-                                xhttp.onreadystatechange = function (oEvent) {
-                                    if (xhttp.readyState === 4) {
-
-                                    }
-                                }
-                            }
-                            wpaicgImageRmLoading(wpaicgImageGenerateBtn);
-                            wpaicgImageSelectAll.classList.remove('selectall')
-                            wpaicgImageSelectAll.innerHTML = '<?php echo esc_html($wpaicg_image_select_all_text)?>';
-                            wpaicgImageSelectAll.style.display = 'block';
-                            wpaicgImageLoading.style.display = 'none';
-                            wpaicgImageSaveBtn.style.display = 'block';
-                        }
-                    }
-                    else{
-                        wpaicgImageRmLoading(wpaicgImageGenerateBtn);
-                        wpaicgImageLoading.style.display = 'none';
-                        let errorMessage = document.createElement('div');
-                        errorMessage.style.color = '#f00';
-                        errorMessage.classList.add('wpaicg-image-error');
-                        errorMessage.innerHTML = res.msg;
-                        wpaicgImageGenerated.prepend(errorMessage);
-                        setTimeout(function (){
-                            errorMessage.remove();
-                        },3000);
-                    }
-                }
-                else{
-                    wpaicgImageLoading.style.display = 'none';
-                    wpaicgImageRmLoading(wpaicgImageGenerateBtn);
-                    alert('Something went wrong');
-                }
-            }
-        }
-
-    }
-    if(wpaicgImageForm !== null) {
-        wpaicgImageForm.addEventListener('submit', function (e) {
-            e.preventDefault();
-            var form_action = wpaicgImageForm.querySelectorAll('input[name=action]')[0].value;
-            var num_images = parseInt(wpaicgNumberImages.value);
-            if (num_images > 0) {
-                var wpaicg_error = false;
-                if (form_action === 'wpaicg_image_stable_diffusion') {
-                    var prompt_strength = parseFloat(document.getElementById('prompt_strength').value);
-                    var num_inference_steps = parseFloat(document.getElementById('num_inference_steps').value);
-                    var guidance_scale = parseFloat(document.getElementById('guidance_scale').value);
-                    if (prompt_strength < 0 || prompt_strength > 1) {
-                        wpaicg_error = '<?php echo sprintf(esc_html__('Please enter a valid prompt strength value between %d and %d.', 'gpt3-ai-content-generator'), 0, 1)?>'
-                    } else if (num_inference_steps < 1 || num_inference_steps > 500) {
-                        wpaicg_error = '<?php echo sprintf(esc_html__('Please enter a valid number of inference steps value between %d and %d.', 'gpt3-ai-content-generator'), 1, 500)?>'
-                    } else if (guidance_scale < 1 || guidance_scale > 20) {
-                        wpaicg_error = '<?php echo sprintf(esc_html__('Please enter a valid guidance scale value between %d and %d.', 'gpt3-ai-content-generator'), 1, 20)?>'
-                    }
-                }
-                if (wpaicg_error) {
-                    alert(wpaicg_error);
-                } else {
-                    const queryString = new URLSearchParams(new FormData(wpaicgImageForm)).toString();
-                    wpaicgImageSaveBtn.style.display = 'none';
-                    wpaicgImageLoadingEffect(wpaicgImageGenerateBtn);
-                    wpaicgImageConvertBar.style.display = 'none';
-                    wpaicgImageLoading.style.display = 'flex';
-                    wpaicgImageGrid.innerHTML = '';
-                    wpaicgImageSelectAll.style.display = 'none';
-                    let wpaicgImageError = document.getElementsByClassName('wpaicg-image-error');
-                    if (wpaicgImageError.length) {
-                        wpaicgImageError[0].remove();
-                    }
-                    if (form_action === 'wpaicg_image_stable_diffusion') {
-                        wpaicgImageGenerator(queryString, 1, num_images, true, form_action);
-                    } else {
-                        wpaicgStartTime = new Date();
-                        wpaicgImageGenerator(queryString, 1, num_images, false, form_action);
-                    }
-                }
-            } else {
-                alert('<?php echo esc_html__('Please select least one image for generate', 'gpt3-ai-content-generator')?>')
-            }
-            return false;
-        });
-    }
     <?php
-    if(is_user_logged_in()):
+    if(is_admin()):
     ?>
-    function wpaicgSaveImage(items,start){
-        if(start >= items.length){
-            wpaicgImageConvertBar.getElementsByTagName('small')[0].innerHTML = items.length+'/'+items.length;
-            wpaicgImageConvertBar.getElementsByTagName('span')[0].style.width = '100%';
-            wpaicgImageMessage.innerHTML = '<?php echo esc_html__('Save images to media successfully','gpt3-ai-content-generator')?>';
-            wpaicgImageRmLoading(wpaicgImageSaveBtn);
-            setTimeout(function (){
-                wpaicgImageMessage.innerHTML = '';
-            },2000)
-        }
-        else{
-            var id = items[start];
-            var item = document.getElementById('wpaicg-image-item-'+id);
-            var data = 'action=wpaicg_save_image_media';
-            data += '&image_alt='+item.querySelectorAll('.wpaicg-image-item-alt')[0].value;
-            data += '&image_title='+item.querySelectorAll('.wpaicg-image-item-title')[0].value;
-            data += '&image_caption='+item.querySelectorAll('.wpaicg-image-item-caption')[0].value;
-            data += '&image_description='+item.querySelectorAll('.wpaicg-image-item-description')[0].value;
-            data += '&image_url='+encodeURIComponent(item.querySelectorAll('.wpaicg-image-item-select')[0].value);
-            data +='&nonce=<?php echo wp_create_nonce('wpaicg-ajax-nonce')?>';
+    let wpaicgSetDefault = document.getElementById('wpaicg-set-default-setting');
+    let wpaicgImageForm = document.getElementById('wpaicg-image-generator-form');
+    if(wpaicgSetDefault) {
+        wpaicgSetDefault.addEventListener('click', function () {
+            let type = wpaicgSetDefault.getAttribute('data-type');
+            wpaicgImageLoadingEffect(wpaicgSetDefault);
+            let queryString = new URLSearchParams(new FormData(wpaicgImageForm)).toString();
+            queryString += '&action=wpaicg_image_default';
+            queryString += '&type_default='+type;
             const xhttp = new XMLHttpRequest();
-            xhttp.open('POST', wpaicg_image_ajax_url);
+            xhttp.open('POST', wpaicgParams.ajax_url);
             xhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
-            xhttp.send(data);
-            xhttp.onreadystatechange = function(oEvent) {
+            xhttp.send(queryString);
+            xhttp.onreadystatechange = function (oEvent) {
                 if (xhttp.readyState === 4) {
                     if (xhttp.status === 200) {
-                        var wpaicg_response = this.responseText;
-                        res = JSON.parse(wpaicg_response);
-                        if(res.status === 'success'){
-                            var currentPos = start+1;
-                            var percent = Math.ceil(currentPos*100/items.length);
-                            wpaicgImageConvertBar.getElementsByTagName('small')[0].innerHTML = currentPos+'/'+items.length;
-                            wpaicgImageConvertBar.getElementsByTagName('span')[0].style.width = percent+'%';
-                            wpaicgSaveImage(items, start+1);
-                        }
-                        else{
-                            wpaicgImageConvertBar.classList.add('wpaicg_error');
-                            wpaicgImageRmLoading(wpaicgImageSaveBtn);
-                            alert(res.msg);
-                        }
-                    } else {
-                        alert('<?php echo esc_html__('Something went wrong','gpt3-ai-content-generator')?>');
-                        wpaicgImageConvertBar.classList.add('wpaicg_error');
-                        wpaicgImageRmLoading(wpaicgImageSaveBtn);
+                        let wpaicgParentCol = wpaicgSetDefault.parentElement;
+                        let successMessage = document.createElement('div');
+                        successMessage.style.color = '#009512';
+                        successMessage.style.fontWeight = 'bold';
+                        successMessage.innerHTML = '<?php echo esc_html__('Record updated successfully','gpt3-ai-content-generator')?>';
+                        wpaicgParentCol.appendChild(successMessage);
+                        setTimeout(function (){
+                            successMessage.remove();
+                        },2000);
+                        wpaicgImageRmLoading(wpaicgSetDefault);
                     }
                 }
             }
-        }
-    }
-    if(wpaicgImageSelectAll !== null) {
-        wpaicgImageSelectAll.addEventListener('click', function (e) {
-            if (wpaicgImageSelectAll.classList.contains('selectall')) {
-                wpaicgImageSelectAll.classList.remove('selectall');
-                wpaicgImageSelectAll.innerHTML = '<?php echo esc_html($wpaicg_image_select_all_text)?>';
-                document.querySelectorAll('.wpaicg-image-item input[type=checkbox]').forEach(function (item) {
-                    item.checked = false;
-                })
-            } else {
-                wpaicgImageSelectAll.classList.add('selectall');
-                wpaicgImageSelectAll.innerHTML = '<?php echo esc_html__('Unselect', 'gpt3-ai-content-generator')?>';
-                document.querySelectorAll('.wpaicg-image-item input[type=checkbox]').forEach(function (item) {
-                    item.checked = true;
-                })
-            }
         });
-    }
-    if(wpaicgImageSaveBtn !== null) {
-        wpaicgImageSaveBtn.addEventListener('click', function (e) {
-            var items = [];
-            document.querySelectorAll('.wpaicg-image-item input[type=checkbox]').forEach(function (item) {
-                if (item.checked) {
-                    items.push(item.getAttribute('data-id'));
-                }
-            });
-            if (items.length) {
-                wpaicgImageConvertBar.style.display = 'block';
-                wpaicgImageConvertBar.classList.remove('wpaicg_error');
-                wpaicgImageConvertBar.getElementsByTagName('small')[0].innerHTML = '0/' + items.length;
-                wpaicgImageConvertBar.getElementsByTagName('span')[0].style.width = 0;
-                wpaicgImageMessage.innerHTML = '';
-                wpaicgImageLoadingEffect(wpaicgImageSaveBtn);
-                wpaicgSaveImage(items, 0);
-            } else {
-                alert('<?php echo esc_html__('Please select least one image to save', 'gpt3-ai-content-generator')?>');
-            }
-        })
     }
     <?php
     endif;

@@ -13,7 +13,7 @@ if ( ! defined( 'ABSPATH' ) ) exit;
   <div id="accordion">
     <h3>Models</h3>
         <div>
-            <p>GPT AI Power exclusively supports OpenAI <mark class="wpcgai_container_help_mark">GPT-3</mark>, <mark class="wpcgai_container_help_mark">GPT-3.5</mark> and <mark class="wpcgai_container_help_mark">GPT-4</mark>models.</p>
+            <p>AI Power exclusively supports OpenAI <mark class="wpcgai_container_help_mark">GPT-3</mark>, <mark class="wpcgai_container_help_mark">GPT-3.5</mark> and <mark class="wpcgai_container_help_mark">GPT-4</mark>models.</p>
             <p>Supported GPT-4 models:</p>
             <table class="wpcgai_container_help_table">
                 <tr>

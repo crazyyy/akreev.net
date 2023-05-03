@@ -71,6 +71,17 @@ $default_setting = array(
     'download_btn' => false,
     'bar_color' => '#fff',
     'thinking_color' => '#fff',
+    'chat_to_speech' => false,
+    'elevenlabs_voice' => '',
+    'text_height' => 60,
+    'text_rounded' => 20,
+    'chat_rounded' => 10,
+    'voice_language' => 'en-US',
+    'voice_name' => 'en-US-Studio-M',
+    'voice_device' => '',
+    'voice_speed' => 1,
+    'voice_pitch' => 0,
+    'voice_service' => ''
 );
 $wpaicg_settings = shortcode_atts($default_setting, $wpaicg_chat_shortcode_options);
 $wpaicg_ai_thinking = $wpaicg_settings['ai_thinking'];
@@ -96,6 +107,23 @@ $wpaicg_chat_widget_width = isset($wpaicg_settings['width']) && !empty($wpaicg_s
 $wpaicg_chat_widget_height = isset($wpaicg_settings['height']) && !empty($wpaicg_settings['height']) ? $wpaicg_settings['height'] : '400';
 $wpaicg_bar_color = isset($wpaicg_settings['bar_color']) && !empty($wpaicg_settings['bar_color']) ? $wpaicg_settings['bar_color'] : '#fff';
 $wpaicg_thinking_color = isset($wpaicg_settings['thinking_color']) && !empty($wpaicg_settings['thinking_color']) ? $wpaicg_settings['thinking_color'] : '#fff';
+$wpaicg_chat_to_speech = isset($wpaicg_settings['chat_to_speech']) ? $wpaicg_settings['chat_to_speech'] : false;
+$wpaicg_elevenlabs_voice = isset($wpaicg_settings['elevenlabs_voice']) ? $wpaicg_settings['elevenlabs_voice'] : '';
+$wpaicg_elevenlabs_hide_error = get_option('wpaicg_elevenlabs_hide_error', false);
+$wpaicg_elevenlabs_api = get_option('wpaicg_elevenlabs_api', '');
+$wpaicg_text_height = isset($wpaicg_settings['text_height']) && !empty($wpaicg_settings['text_height']) ? $wpaicg_settings['text_height'] : 60;
+$wpaicg_text_rounded = isset($wpaicg_settings['text_rounded']) && !empty($wpaicg_settings['text_height']) ? $wpaicg_settings['text_rounded'] : 20;
+$wpaicg_chat_rounded = isset($wpaicg_settings['chat_rounded']) && !empty($wpaicg_settings['text_height']) ? $wpaicg_settings['chat_rounded'] : 20;
+$wpaicg_chat_voice_service = isset($wpaicg_settings['voice_service']) && !empty($wpaicg_settings['voice_service']) ? $wpaicg_settings['voice_service'] : '';
+$wpaicg_voice_language = isset($wpaicg_settings['voice_language']) && !empty($wpaicg_settings['voice_language']) ? $wpaicg_settings['voice_language'] : 'en-US';
+$wpaicg_voice_name = isset($wpaicg_settings['voice_name']) && !empty($wpaicg_settings['voice_name']) ? $wpaicg_settings['voice_name'] : 'en-US-Studio-M';
+$wpaicg_voice_device = isset($wpaicg_settings['voice_device']) && !empty($wpaicg_settings['voice_device']) ? $wpaicg_settings['voice_device'] : '';
+$wpaicg_voice_speed = isset($wpaicg_settings['voice_speed']) && !empty($wpaicg_settings['voice_speed']) ? $wpaicg_settings['voice_speed'] : 1;
+$wpaicg_voice_pitch = isset($wpaicg_settings['voice_pitch']) && !empty($wpaicg_settings['voice_pitch']) ? $wpaicg_settings['voice_pitch'] : 0;
+$wpaicg_google_api_key = get_option('wpaicg_google_api_key', '');
+if(empty($wpaicg_elevenlabs_api) && empty($wpaicg_google_api_key)){
+    $wpaicg_chat_to_speech = false;
+}
 ?>
 <style>
     .wpaicg-chat-shortcode{
@@ -113,7 +141,7 @@ $wpaicg_thinking_color = isset($wpaicg_settings['thinking_color']) && !empty($wp
     .wpaicg-chat-shortcode-footer{
         height: 18px;
         font-size: 11px;
-        padding: 0 5px;
+        padding: 0 20px;
         color: <?php echo esc_html($wpaicg_settings['send_color'])?>;
         background: rgb(0 0 0 / 19%);
         margin-top:2px;
@@ -257,7 +285,7 @@ $wpaicg_thinking_color = isset($wpaicg_settings['thinking_color']) && !empty($wp
             right: auto;
         }
         .wpaicg_widget_right .wpaicg_chat_widget_content{
-            right: -15px!important;
+            right: -5px!important;
             left: auto;
         }
     }
@@ -381,6 +409,18 @@ if($wpaicg_chat_fullscreen || $wpaicg_chat_download_btn){
      data-height="<?php echo esc_html($wpaicg_chat_widget_height)?>"
      data-footer="<?php echo isset($wpaicg_settings['footer_text']) && !empty($wpaicg_settings['footer_text']) ? 'true' : 'false'?>"
      data-has-bar="<?php echo $wpaicg_has_action_bar ? 'true' : 'false'?>"
+     data-speech="<?php echo esc_html($wpaicg_chat_to_speech)?>"
+     data-voice="<?php echo esc_html($wpaicg_elevenlabs_voice)?>"
+     data-voice-error="<?php echo esc_html($wpaicg_elevenlabs_hide_error)?>"
+     data-text_height="<?php echo esc_html($wpaicg_text_height)?>"
+     data-text_rounded="<?php echo esc_html($wpaicg_text_rounded)?>"
+     data-chat_rounded="<?php echo esc_html($wpaicg_chat_rounded)?>"
+     data-voice_service="<?php echo esc_html($wpaicg_chat_voice_service)?>"
+     data-voice_language="<?php echo esc_html($wpaicg_voice_language)?>"
+     data-voice_name="<?php echo esc_html($wpaicg_voice_name)?>"
+     data-voice_device="<?php echo esc_html($wpaicg_voice_device)?>"
+     data-voice_speed="<?php echo esc_html($wpaicg_voice_speed)?>"
+     data-voice_pitch="<?php echo esc_html($wpaicg_voice_pitch)?>"
 >
     <?php
     if($wpaicg_has_action_bar):
