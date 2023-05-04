@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?><?xml-stylesheet type="text/xsl" href="//akreev.space/main-sitemap.xsl"?>
+<sitemapindex xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+	<sitemap>
+		<loc>https://akreev.space/post-sitemap.xml</loc>
+		<lastmod>2023-04-21T06:24:20+01:00</lastmod>
+	</sitemap>
+	<sitemap>
+		<loc>https://akreev.space/page-sitemap.xml</loc>
+		<lastmod>2023-04-21T00:45:06+01:00</lastmod>
+	</sitemap>
+	<sitemap>
+		<loc>https://akreev.space/collection-sitemap.xml</loc>
+		<lastmod>2023-05-04T06:58:26+01:00</lastmod>
+	</sitemap>
+	<sitemap>
+		<loc>https://akreev.space/collection-type-sitemap.xml</loc>
+		<lastmod>2023-05-04T06:58:26+01:00</lastmod>
+	</sitemap>
+</sitemapindex>

@@ -4,7 +4,7 @@
     "destination-folder": "mingled",
     "destination-extension": "set",
     "destination-structure": "doc-root",
-    "cache-control": "no-header",
+    "cache-control": "set",
     "cache-control-custom": "public, max-age=31536000, stale-while-revalidate=604800, stale-if-error=604800",
     "cache-control-max-age": "one-week",
     "cache-control-public": false,
@@ -57,7 +57,7 @@
             "options": {
                 "use-nice": true
             },
-            "working": false
+            "working": true
         },
         {
             "converter": "graphicsmagick",
@@ -87,7 +87,7 @@
         },
         {
             "converter": "imagick",
-            "working": false
+            "working": true
         },
         {
             "converter": "gmagick",
@@ -102,7 +102,7 @@
         }
     ],
     "metadata": "none",
-    "convert-on-upload": false,
+    "convert-on-upload": true,
     "fail": "original",
     "success-response": "converted",
     "alter-html": {
@@ -126,39 +126,39 @@
             {
                 "id": "uploads",
                 "rel-path": "wp-content/uploads",
-                "url": "https://akreev.local/wp-content/uploads"
+                "url": "https://akreev.space/wp-content/uploads"
             },
             {
                 "id": "themes",
                 "rel-path": "wp-content/themes",
-                "url": "https://akreev.local/wp-content/themes"
+                "url": "https://akreev.space/wp-content/themes"
             },
             {
                 "id": "plugins",
                 "rel-path": "wp-content/plugins",
-                "url": "https://akreev.local/wp-content/plugins"
+                "url": "https://akreev.space/wp-content/plugins"
             },
             {
                 "id": "wp-content",
                 "rel-path": "wp-content",
-                "url": "https://akreev.local/wp-content"
+                "url": "https://akreev.space/wp-content"
             },
             {
                 "id": "index",
                 "rel-path": ".",
-                "url": "https://akreev.local"
+                "url": "https://akreev.space"
             }
         ],
         "document-root": null
     },
     "base-htaccess-on-these-capability-tests": {
         "passThroughHeaderWorking": false,
-        "passThroughEnvWorking": null,
-        "modHeaderWorking": null,
-        "canRunTestScriptInWOD": null,
-        "canRunTestScriptInWOD2": null
+        "passThroughEnvWorking": true,
+        "modHeaderWorking": false,
+        "canRunTestScriptInWOD": true,
+        "canRunTestScriptInWOD2": true
     },
-    "document-root": "C:/Works/Web/akreev",
+    "document-root": "/home/akreev.space/public_html",
     "paths-used-in-htaccess": {
         "wod-url-path": "wp-content/plugins/webp-express/wod/webp-on-demand.php"
     }

@@ -1,77 +1,46 @@
 <?php
+defined( 'WPINC' ) || exit;
 /**
- * Plugin Name: Performance Lab Server Timing Object Cache Drop-In
- * Plugin URI: https://github.com/WordPress/performance
- * Description: Performance Lab drop-in to register Server-Timing metrics early. This is not a real object cache drop-in and will not override other actual object cache drop-ins.
- * Version: 2
- * Author: WordPress Performance Team
- * Author URI: https://make.wordpress.org/performance/
- * License: GPLv2 or later
- * License URI: https://www.gnu.org/licenses/old-licenses/gpl-2.0.html
+ * LiteSpeed Object Cache
  *
- * Object cache drop-in from Performance Lab plugin.
- *
- * This drop-in is used, admittedly as a hack, to be able to measure server
- * timings in WordPress as early as possible. Once a plugin is loaded, it is
- * too late to capture several critical events.
- *
- * This file respects any real object cache implementation the site may already
- * be using, and it is implemented in a way that there is no risk for breakage.
- *
- * If you do not want the Performance Lab plugin to place this file and thus be
- * limited to server timings only from after plugins are loaded, you can remove
- * this file and set the following constant (e.g. in wp-config.php):
- *
- *     define( 'PERFLAB_DISABLE_OBJECT_CACHE_DROPIN', true );
- *
- * @package performance-lab
- * @since 1.8.0
+ * @since  1.8
  */
 
-// Set constant to be able to later check for whether this file was loaded.
-if ( ! defined( 'PERFLAB_OBJECT_CACHE_DROPIN_VERSION' ) ) {
-	define( 'PERFLAB_OBJECT_CACHE_DROPIN_VERSION', 2 );
-}
+! defined( 'LSCWP_OBJECT_CACHE' ) && define( 'LSCWP_OBJECT_CACHE', true );
 
-if ( ! function_exists( 'perflab_load_server_timing_api_from_dropin' ) ) {
-	/**
-	 * Loads the Performance Lab Server-Timing API if available.
-	 *
-	 * This function will short-circuit if the constant
-	 * 'PERFLAB_DISABLE_OBJECT_CACHE_DROPIN' is set as true.
-	 *
-	 * @since 1.8.0
-	 */
-	function perflab_load_server_timing_api_from_dropin() {
-		if ( defined( 'PERFLAB_DISABLE_OBJECT_CACHE_DROPIN' ) && PERFLAB_DISABLE_OBJECT_CACHE_DROPIN ) {
-			return;
-		}
-
-		$plugins_dir = defined( 'WP_PLUGIN_DIR' ) ? WP_PLUGIN_DIR : WP_CONTENT_DIR . '/plugins';
-		$plugin_dir  = $plugins_dir . '/performance-lab/';
-		if ( ! file_exists( $plugin_dir . 'server-timing/load.php' ) ) {
-			$plugin_dir = $plugins_dir . '/performance/';
-			if ( ! file_exists( $plugin_dir . 'server-timing/load.php' ) ) {
-				return;
-			}
-		}
-
-		require_once $plugin_dir . 'server-timing/class-perflab-server-timing-metric.php';
-		require_once $plugin_dir . 'server-timing/class-perflab-server-timing.php';
-		require_once $plugin_dir . 'server-timing/load.php';
-		require_once $plugin_dir . 'server-timing/defaults.php';
+// Initialize const `LSCWP_DIR` and locate LSCWP plugin foder
+$lscwp_dir = ( defined( 'WP_PLUGIN_DIR' ) ? WP_PLUGIN_DIR : WP_CONTENT_DIR . '/plugins' ) . '/litespeed-cache/';
+// Use plugin as higher priority than MU plugin
+if ( ! file_exists( $lscwp_dir . 'litespeed-cache.php' ) ) {
+	// Check if is mu plugin or not
+	$lscwp_dir = ( defined( 'WPMU_PLUGIN_DIR' ) ? WPMU_PLUGIN_DIR : WP_CONTENT_DIR . '/mu-plugins' ) . '/litespeed-cache/';
+	if ( ! file_exists( $lscwp_dir . 'litespeed-cache.php' ) ) {
+		$lscwp_dir = '';
 	}
 }
-perflab_load_server_timing_api_from_dropin();
 
-/**
- * Load the original object cache drop-in if present.
- * This is only here for backward compatibility, as new Performance Lab
- * versions no longer use the approach of backing up the original
- * object-cache.php file and loading both.
- * It is critical however to maintain this line here to not break existing
- * sites where this approach has been working as expected.
- */
-if ( file_exists( WP_CONTENT_DIR . '/object-cache-plst-orig.php' ) ) {
-	require_once WP_CONTENT_DIR . '/object-cache-plst-orig.php';
+$data_file = WP_CONTENT_DIR . '/.litespeed_conf.dat';
+$lib_file = $lscwp_dir . 'src/object.lib.php';
+
+// Can't find LSCWP location, terminate object cache process
+if ( ! $lscwp_dir || ! file_exists( $data_file ) || ( ! file_exists( $lib_file ) ) ) {
+	if ( ! is_admin() ) { // Bypass object cache for frontend
+		require_once ABSPATH . WPINC . '/cache.php';
+	}
+	else {
+		$err = 'Can NOT find LSCWP path for object cache initialization in ' . __FILE__;
+		error_log( $err );
+		add_action( is_network_admin() ? 'network_admin_notices' : 'admin_notices', function() use ( &$err ) {
+			echo $err;
+		} );
+	}
+}
+else {
+	if ( ! LSCWP_OBJECT_CACHE ) { // Disable cache
+		wp_using_ext_object_cache(false);
+	}
+	// Init object cache & LSCWP
+	else if ( file_exists( $lib_file ) ) {
+		require_once $lib_file;
+	}
 }

@@ -1,0 +1,7 @@
+RewriteEngine On
+<IfModule mod_headers.c>
+    RewriteRule ^request-me\.txt$ 1.txt [L]
+</IfModule>
+<IfModule !mod_headers.c>
+    RewriteRule ^request-me\.txt$ 0.txt [L]
+</IfModule>
