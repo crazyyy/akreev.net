@@ -27,7 +27,7 @@ msgid "Senol Sahin"
 msgstr ""
 
 #. Author URI of the plugin
-msgid "https://gptaipower.com"
+msgid "https://aipower.org"
 msgstr ""
 
 #: admin/class-wp-ai-content-generator-admin.php:142

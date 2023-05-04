@@ -6,7 +6,7 @@ if ( ! defined( 'ABSPATH' ) ) exit;
  * Loads and defines the internationalization files for this plugin
  * so that it is ready for translation.
  *
- * @link       https://gptaipower.com
+ * @link       https://aipower.org
  * @since      1.0.0
  *
  * @package    Wp_Ai_Content_Generator

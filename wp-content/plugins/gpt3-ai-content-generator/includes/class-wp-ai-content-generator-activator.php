@@ -3,7 +3,7 @@ if ( ! defined( 'ABSPATH' ) ) exit;
 /**
  * Fired during plugin activation
  *
- * @link       https://gptaipower.com
+ * @link       https://aipower.org
  * @since      1.0.0
  *
  * @package    Wp_Ai_Content_Generator

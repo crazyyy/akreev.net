@@ -39,7 +39,7 @@ if($success){
 <form action="" method="post">
     <?php wp_nonce_field('wpaicg_chat_nonce'); ?>
     <h3 class="title"><?php echo esc_html__('Text to Speech','gpt3-ai-content-generator')?></h3>
-    <p><?php echo sprintf(esc_html__('Read tutorial %shere%s','gpt3-ai-content-generator'),'<a href="https://gptaipower.com/make-your-chatbot-speak-like-steve-jobs/" target=_blank>','</a>')?></p>
+    <p><?php echo sprintf(esc_html__('Read tutorial %shere%s','gpt3-ai-content-generator'),'<a href="https://aipower.org/make-your-chatbot-speak-like-steve-jobs/" target=_blank>','</a>')?></p>
     <table class="form-table">
         <tr>
             <th><?php echo esc_html__('ElevenLabs API Key','gpt3-ai-content-generator')?></th>

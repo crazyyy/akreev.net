@@ -15,7 +15,7 @@ if ( ! defined( 'ABSPATH' ) ) exit;
         <div>
           <p>Our plugin offers a semantic search feature called SearchGPT.</p>
           <p>You can use this feature to enhance the search functionality of your website.</p>
-          <p>You can see the demo <a href="https://gptaipower.com/gpt-powered-semantic-search-with-embeddings/" target="_blank">here</a>.</p>
+          <p>You can see the demo <a href="https://aipower.org/gpt-powered-semantic-search-with-embeddings/" target="_blank">here</a>.</p>
           <p>To use the SearchGPT feature, you must have a Pinecone API key entered under the "Embeddings-Settings" page.</p>
           <p>SearchGPT uses OpenAI embeddings and Pinecone vector database integration to provide a powerful semantic search experience.
           <p>Semantic search is a type of search that uses machine learning algorithms to understand the intent behind a search query and find results that are related to that intent, rather than just matching specific keywords.</p>

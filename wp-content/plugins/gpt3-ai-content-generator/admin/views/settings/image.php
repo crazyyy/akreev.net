@@ -35,7 +35,7 @@ $wpaicg_featured_image_source = get_option('wpaicg_featured_image_source','');
             echo  ( esc_html( $existingValue['img_size'] ) == '1024x1024' ? 'selected' : '' ) ;
             ?>><?php echo esc_html__('Big (1024x1024)','gpt3-ai-content-generator')?></option>
         </select>
-        <a class="wpcgai_help_link" href="https://gptaipower.com/dall-e-image-size/" target="_blank">?</a>
+        <a class="wpcgai_help_link" href="https://aipower.org/dall-e-image-size/" target="_blank">?</a>
     </div>
     <div class="wpcgai_form_row">
         <label class="wpcgai_label"><?php echo esc_html__('Style','gpt3-ai-content-generator')?>:</label>
@@ -72,7 +72,7 @@ $wpaicg_featured_image_source = get_option('wpaicg_featured_image_source','');
             echo  ( esc_html( $_wpaicg_image_style ) == 'graffiti' ? ' selected' : '' ) ;
             ?> value="graffiti"><?php echo esc_html__('Graffiti','gpt3-ai-content-generator')?></option>
         </select>
-        <a class="wpcgai_help_link" href="https://gptaipower.com/customizing-dall-e-generated-images-with-the-art-style-feature/" target="_blank">?</a>
+        <a class="wpcgai_help_link" href="https://aipower.org/customizing-dall-e-generated-images-with-the-art-style-feature/" target="_blank">?</a>
     </div>
     <?php
     $wpaicg_art_file = WPAICG_PLUGIN_DIR . 'admin/data/art.json';

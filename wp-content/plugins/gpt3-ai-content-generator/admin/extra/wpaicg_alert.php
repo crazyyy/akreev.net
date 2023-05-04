@@ -78,7 +78,7 @@ if(!empty($wpaicg_cron_job_last_time)){
     <p></p>
     <p><strong><?php echo esc_html__('Cron Job Configuration','gpt3-ai-content-generator')?></strong></p>
     <p></p>
-    <p><?php echo sprintf(esc_html__('If you are using a Linux/Unix server, copy the code below and paste it into the crontab. Read the detailed guide %shere%s','gpt3-ai-content-generator'),'<a href="'.esc_url("https://gptaipower.com/how-to-add-cron-job/").'" target="_blank">','</a>')?>.</p>
+    <p><?php echo sprintf(esc_html__('If you are using a Linux/Unix server, copy the code below and paste it into the crontab. Read the detailed guide %shere%s','gpt3-ai-content-generator'),'<a href="'.esc_url("https://aipower.org/how-to-add-cron-job/").'" target="_blank">','</a>')?>.</p>
     <p><code>* * * * * php <?php echo esc_html(ABSPATH)?>index.php -- wpaicg_cron=yes</code></p>
 </div>
 <?php

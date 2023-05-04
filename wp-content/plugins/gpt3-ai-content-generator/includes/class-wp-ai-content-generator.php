@@ -6,7 +6,7 @@ if ( ! defined( 'ABSPATH' ) ) exit;
  * A class definition that includes attributes and functions used across both the
  * public-facing side of the site and the admin area.
  *
- * @link       https://gptaipower.com
+ * @link       https://aipower.org
  * @since      1.0.0
  *
  * @package    Wp_Ai_Content_Generator

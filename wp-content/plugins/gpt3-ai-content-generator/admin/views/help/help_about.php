@@ -54,7 +54,7 @@ if ( ! defined( 'ABSPATH' ) ) exit;
         </div>
     <h3>Contact</h3>
         <div>
-          <p>If you have any suggestions or questions, or if you have noticed any bugs, please feel free to send us an email at <b>support@gptaipower.com</b></p>
+          <p>If you have any suggestions or questions, or if you have noticed any bugs, please feel free to send us an email at <b>support@aipower.org</b></p>
           <p>You're welcome to join our Discord community, which is a great place to connect with others using this plugin. You can join us <a href="https://discord.gg/EtkpBZYY6v" target="_blank">here</a>.</p>
           <p>You can also find me on <a href="https://twitter.com/sengpt" target="_blank">Twitter</a>.</p>
           <p>Thank you for using AI Power!</p>

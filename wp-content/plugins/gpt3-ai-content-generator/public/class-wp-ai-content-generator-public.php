@@ -3,7 +3,7 @@
 /**
  * The public-facing functionality of the plugin.
  *
- * @link       https://gptaipower.com
+ * @link       https://aipower.org
  * @since      1.0.0
  *
  * @package    Wp_Ai_Content_Generator

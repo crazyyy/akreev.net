@@ -91,7 +91,7 @@ if ( ! defined( 'ABSPATH' ) ) exit;
           <p>The plugin will only look for the <mark class="wpcgai_container_help_mark">first occurrence</mark> of the anchor text in the model's response and create a hyperlink for that occurrence.</p>
           <p>The generated content will automatically be added to your article or blog post, with the anchor text hyperlinked to the target URL. You can edit or delete the content using the WordPress editor.</p>
           <p><b>Example:</b></p>
-          <p>Let say you are generating a content about "GPT Models" and your anchor text is: "Davinci" and your target URL is: https://gptaipower.com/davinci.</p>
+          <p>Let say you are generating a content about "GPT Models" and your anchor text is: "Davinci" and your target URL is: https://aipower.org/davinci.</p>
           <p>The plugin will look for the anchor text "Davinci" in the response from AI engine and create a hyperlink to the target URL.</p>
           <p>If the anchor text is not found in the response, the plugin will not create a hyperlink.</p>
           <p><b>Adding a Call to Action</b></p>
@@ -100,9 +100,9 @@ if ( ! defined( 'ABSPATH' ) ) exit;
           <p>Review the generated call to action and decide whether to use it.</p>
           <p>The plugin will automatically add the call to action to your content based on your location selection (beginning or end of the content), with the hyperlink directing the reader to the target URL. You can edit or delete the call to action using the WordPress editor.</p>
           <p><b>Example:</b></p>
-          <p>Let say you are generating a content about "GPT Models" and your target call to action URL is: https://gptaipower.com.</p>
+          <p>Let say you are generating a content about "GPT Models" and your target call to action URL is: https://aipower.org.</p>
           <p>The plugin will send a request to the AI engine to get a call to action for the URL. The response may look like this:</p>
-          <p>"Are you interested in exploring the power and potential of GPT models? Look no further than AI Power! Visit our website at <a href="https://gptaipower.com">https://gptaipower.com</a> to learn more and get started today!"</p>
+          <p>"Are you interested in exploring the power and potential of GPT models? Look no further than AI Power! Visit our website at <a href="https://aipower.org">https://aipower.org</a> to learn more and get started today!"</p>
         </div>
     <h3>Image</h3>
         <div>
@@ -192,13 +192,13 @@ if ( ! defined( 'ABSPATH' ) ) exit;
         <div>
           <p>If you want to ensure that your content focuses on specific topics or concepts in a more prominent way, adding specific keywords can be useful.</p>
           <p><a href="<?php echo admin_url('admin.php?page=wpaicg-pricing')?>">Click here</a> to upgrade to the Pro plan to use this feature.</p>
-          <p><a href="https://gptaipower.com/adding-keywords/" target="_blank">Learn more</a>.</p>
+          <p><a href="https://aipower.org/adding-keywords/" target="_blank">Learn more</a>.</p>
         </div>
     <h3>Q&A <mark class="wpcgai_container_help_h3">Pro</mark></h3>
         <div>
           <p>Q&A is a feature that allows you to generate content based on a question and answer format.</p>
           <p><a href="<?php echo admin_url('admin.php?page=wpaicg-pricing')?>">Click here</a> to upgrade to the Pro plan to use this feature.</p>
-          <p><a href="https://gptaipower.com/adding-qa/" target="_blank">Learn more</a>.</p>
+          <p><a href="https://aipower.org/adding-qa/" target="_blank">Learn more</a>.</p>
         </div>
     <h3>Logs</h3>
         <div>

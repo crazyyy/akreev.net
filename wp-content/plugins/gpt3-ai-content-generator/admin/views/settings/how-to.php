@@ -62,7 +62,7 @@ if ( ! defined( 'ABSPATH' ) ) exit;
         <p>1. Go to <u><b><a href="<?php
                     echo  esc_html( $bulk_content_page_url ) ;
                     ?>">Auto Content Writer Page</a></b></u>.</p>
-        <p>2. Make sure to complete Cron Job setup. Guide <a href="https://gptaipower.com/how-to-add-cron-job/" target="_blank">here</a>.</p>
+        <p>2. Make sure to complete Cron Job setup. Guide <a href="https://aipower.org/how-to-add-cron-job/" target="_blank">here</a>.</p>
         <p>3. In the Bulk Editor tab, enter your title, select Draft or Publish then hit generate button.</p>
         <p>4. In the CSV tab, upload a CSV with the title value in each line and hit generate button. Free plan is limited to generate 5 article at a time.</p>
         <p>5. In the Copy-Paste tab, copy and paste your titles and hit generate button. Free plan is limited to generate 5 article at a time.</p>
@@ -151,8 +151,8 @@ if ( ! defined( 'ABSPATH' ) ) exit;
         <p>Please note that you need to use "Convert to Block" feature in Gutenberg Editor to use AI Assistant.</p>
         <hr>
         <h2>Contact</h2>
-        <p>For more information about the plugin, please visit <u><b><a href="https://gptaipower.com/" target="_blank">our website</a></u></b>.</p>
-        <p>If you have any questions, suggestion, feedback please contact me: <b>support@gptaipower.com</b> </p>
+        <p>For more information about the plugin, please visit <u><b><a href="https://aipower.org/" target="_blank">our website</a></u></b>.</p>
+        <p>If you have any questions, suggestion, feedback please contact me: <b>support@aipower.org</b> </p>
         <p>I am also on <u><b><a href="https://twitter.com/sengpt" target="_blank">Twitter</a></u></b>.</p>
         <p>You can also join our Discord community <u><b><a href="https://discord.gg/EtkpBZYY6v" target="_blank">here</a></u></b>.</p>
         <hr>
@@ -160,7 +160,7 @@ if ( ! defined( 'ABSPATH' ) ) exit;
         <p><i><b>Note1:</b> Please do not forget to get your api key from <a href="https://beta.openai.com/account/api-keys" target="_blank">OpenAI</a> and enter it in <a href="<?php
                 echo  admin_url( 'admin.php?page=wpaicg' ) ;
                 ?>">the settings.</a></i></p>
-        <p><i><b>Note2:</b> If you are using Cloudflare, please <a href="https://gptaipower.com/why-is-my-content-generation-process-taking-too-long/" target="_blank">read this</a>.</i></p>
+        <p><i><b>Note2:</b> If you are using Cloudflare, please <a href="https://aipower.org/why-is-my-content-generation-process-taking-too-long/" target="_blank">read this</a>.</i></p>
         <p><i><b>Note3:</b> If you are using WP Rocket caching plugin, please de-activate and re-activate your caching plugin.</i></p>
         <p><i><b>Note4:</b> If your server have a timeout limit than most probably you will not be able to generate longer contents. Please ask your hosting provider to increase server timeout limit at least to 2-3 minutes to generate longer contents.</i></p>
         <p><i><b>Note5:</b> If you are using ithemes security, please make sure to allow php calls from plugin folder, otherwise PromptBase wont work.</i></p>

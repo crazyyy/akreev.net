@@ -4,7 +4,7 @@ Tags: chatgpt, gpt, openai, ai, gpt4, chatbot, speech, whisper, image generator,
 Requires at least: 5.0.0
 Tested up to: 6.2
 Requires PHP: 7.4
-Stable tag: 1.6.86
+Stable tag: 1.6.87
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
  
@@ -14,7 +14,7 @@ ChatGPT, Content Writer, Auto Content Writer, AutoGPT, Chatbot, Image Generator,
 
 AI Power is a complete AI package for WordPress powered by GPT-3.5 and GPT-4. It is the most popular, WordPress-based open-source AI solution. It utilizes GPT-3.5, GPT-4, DaVinci and more to generate content, images, and forms with customizable options. It includes AI training, Chat widget, WooCommerce integration, Embeddings and more.
 
-Please read documentation here: <a href="https://gptaipower.com/">https://gptaipower.com/</a>
+Please read documentation here: <a href="https://aipower.org/">https://aipower.org/</a>
 
 == Core Features ==
 * Content Writer
@@ -240,6 +240,9 @@ The PHP max execution time setting determines the maximum amount of time a PHP s
 This message is coming from OpenAI, not from our plugin. It means that you have reached the limit of your OpenAI API quota, which is determined by your plan and billing details. Our plugin works on a "bring your own API key" model, serving as a bridge between WordPress and OpenAI, so the issue is not related to the plugin itself. To resolve this issue, you'll need to check your OpenAI account and ensure that you have enough quota for your needs, or upgrade your plan if necessary.
 
 == Changelog ==
+
+= 1.6.87 =
+* Improvement: Migrating from gptaipower.com to aipower.org. Updated all links with the new one.
 
 = 1.6.86 =
 * Improvement: Optimized image generator for mobile use.
