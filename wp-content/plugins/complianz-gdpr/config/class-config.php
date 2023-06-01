@@ -161,7 +161,7 @@ if ( ! class_exists( "cmplz_config" ) ) {
 				),
 				"disqus"           => array( 'disqus.com' ),
 				"addthis"          => array( 'addthis.com' ),
-				"addtoany"          => array( 'addtoany.min.js', 'window.a2a_config' ),
+				"addtoany"          => array( 'addtoany.min.js', 'window.a2a_config', 'static.addtoany.com' ),
 				"sharethis"        => array( 'sharethis.com' ),
 				"microsoftads"     => array('bat.bing.com'),
 				"livechat"         => array( 'cdn.livechatinc.com/tracking.js' ),
@@ -484,6 +484,13 @@ if ( ! class_exists( "cmplz_config" ) ) {
 					          '<br /><br />'.cmplz_sprintf(__('We have changed our Cookie Banner template for future capabilities, please check your %sCookie Banner settings%s.','complianz-gdpr'),'<a href="'.$banner_url.'">','</a>').'&nbsp;'.
 					          __('You can reset to default values, if needed.','complianz-gdpr'),
 					'admin_notice' => true,
+				),
+
+				'new_gutenberg_consentarea' => array(
+					'warning_condition'  => 'cmplz_upgraded_to_current_version',
+					'open' => __( 'New: Gutenberg Block with consent capabilities.', 'complianz-gdpr' ).cmplz_read_more('https://complianz.io/gutenberg-block-consent/'),
+					'admin_notice' => false,
+					'plus_one' => true,
 				),
 
 				'wizard-incomplete'  => array(

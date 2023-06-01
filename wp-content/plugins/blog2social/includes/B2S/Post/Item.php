@@ -105,7 +105,7 @@ class B2S_Post_Item {
                 $addSearchType = $wpdb->prepare(' posts.`post_status` = %s', $this->searchPostStatus);
             } else {
                 //V5.0.0 include Content Curation (post_status = private)
-                $addSearchType = " (posts.`post_status` = 'publish' OR posts.`post_status` = 'pending' " . (($this->type == 'draft-post' || $this->type == 'notice' || $this->type == 'publish') ? " OR posts.`post_status` = 'inherit'" : "") . " OR posts.`post_status` = 'future' " . (($this->type != 'all') ? " OR posts.`post_status` = 'private'" : "") . ") ";
+                $addSearchType = " (posts.`post_status` = 'publish' OR posts.`post_status` = 'pending' " . (($this->type == 'draft-post' || $this->type == 'notice' || $this->type == 'publish' || $this->type == 'sched') ? " OR posts.`post_status` = 'inherit'" : "") . " OR posts.`post_status` = 'future' " . (($this->type != 'all') ? " OR posts.`post_status` = 'private'" : "") . ") ";
             }
 
             if (!empty($this->searchSharedToNetwork)) {
@@ -157,7 +157,7 @@ class B2S_Post_Item {
                     $postTypes .= " posts.`post_type` IN("; // AND
                     foreach ($post_types as $k => $v) {
                         if (!in_array($this->type, array('draft-post', 'notice', 'publish'))) {
-                            if ($v != 'attachment' && $v != 'nav_menu_item' && $v != 'revision') {
+                            if (($v == "attachment" && $this->type == "sched") || ($v != 'attachment' && $v != 'nav_menu_item' && $v != 'revision')) {
                                 $postTypes .= "'" . $v . "',";
                             }
                         } else {
@@ -174,7 +174,7 @@ class B2S_Post_Item {
             }
         } else {
             //Video,Media Library
-            $postTypes .= " posts.`post_type` LIKE 'attachment' ";
+            $postTypes = " posts.`post_type` LIKE 'attachment' ";
         }
 
         $addNotAdmin = (B2S_PLUGIN_ADMIN == false) ? $wpdb->prepare(' AND posts.`post_author` = %d', B2S_PLUGIN_BLOG_USER_ID) : '';
@@ -192,6 +192,7 @@ class B2S_Post_Item {
                 LIMIT " . (($this->currentPage - 1) * $this->results_per_page) . "," . $this->results_per_page;
 
             $this->postData = $wpdb->get_results($sqlPosts);
+
             $sqlPostsTotal = "SELECT DISTINCT posts.`ID`
 		FROM `$wpdb->posts` posts $leftJoin $leftJoin2 $leftJoin3 $leftJoin4
 		WHERE $addSearchType $addSearchAuthorId $addSearchPostTitle $addNotAdmin
@@ -225,7 +226,16 @@ class B2S_Post_Item {
                     $selectInnerJoin = ' `sched_date` , `publish_date` ';
                 } else {
                     $addWhere = ($this->type == 'notice') ? ' AND a.`publish_error_code` != "" ' : ' AND a.`publish_error_code` = "" ';
-                    $where = ($this->type == 'publish' || $this->type == 'notice') ? " a.`hide` = 0 AND a.`post_for_approve`= 0 AND (a.`sched_date`= '0000-00-00 00:00:00' OR (a.`sched_type` = 3 AND a.`publish_date` != '0000-00-00 00:00:00')) $addWhere $addNotAdminPosts GROUP BY a.`post_id` ORDER BY a.`publish_date` " . $sortType : " a.`hide` = 0 AND ((a.`sched_date_utc` != '0000-00-00 00:00:00' AND a.`post_for_approve` = 0) OR (a.`sched_date_utc` >= '" . gmdate('Y-m-d H:i:s') . "' AND a.`post_for_approve` = 1)) AND (a.`sched_type` != 3 OR (a.`sched_type` = 3 AND a.`publish_date` = '0000-00-00 00:00:00')) AND a.`publish_date`= '0000-00-00 00:00:00' $addNotAdminPosts GROUP BY a.`post_id` ORDER BY a.`sched_date` " . $sortType;
+                    if($this->type == 'publish' || $this->type == 'notice'){
+                        $where = " a.`hide` = 0 AND a.`post_for_approve`= 0 AND (a.`sched_date`= '0000-00-00 00:00:00' OR (a.`sched_type` = 3 AND a.`publish_date` != '0000-00-00 00:00:00')) $addWhere $addNotAdminPosts GROUP BY a.`post_id` ORDER BY a.`publish_date` " . $sortType;
+                    } else {
+                        $where = " a.`hide` = 0 
+                        AND ((a.`sched_date_utc` != '0000-00-00 00:00:00' AND a.`post_for_approve` = 0) 
+                            OR (a.`sched_date_utc` >= '" . gmdate('Y-m-d H:i:s') . "' AND a.`post_for_approve` = 1)) 
+                        AND (a.`sched_type` != 3 OR (a.`sched_type` = 3 AND a.`publish_date` = '0000-00-00 00:00:00')) 
+                        AND a.`publish_date`= '0000-00-00 00:00:00' $addNotAdminPosts 
+                        GROUP BY a.`post_id` ORDER BY a.`sched_date` " . $sortType;
+                    }
                     $orderBy = ($this->type == 'publish' || $this->type == 'notice') ? " ORDER BY filter.max_publish_date " . $sortType : " ORDER BY filter.`sched_date` " . $sortType;
                     $addSearchBlogPostId = ((int) $this->searchBlogPostId != 0) ? " a.`post_id` = " . (int) $this->searchBlogPostId . " AND " : '';
                     $addSearchShowByDate = (!empty($this->searchShowByDate)) ? (($this->type == 'publish' || $this->type == 'notice') ? " DATE_FORMAT(a.`publish_date`,'%Y-%m-%d') = '" . $this->searchShowByDate . "' AND " : " DATE_FORMAT(a.`sched_date`,'%Y-%m-%d') = '" . $this->searchShowByDate . "' AND ") : '';
@@ -242,6 +252,7 @@ class B2S_Post_Item {
                 if (!empty($this->searchPostType) && $this->searchPostType == 'attachment') {
                     $postTypes .= " AND posts.`post_mime_type` LIKE '%video%' ";
                 }
+
 
                 $sqlPosts = "SELECT DISTINCT posts.`ID`, posts.`post_author`,posts.`post_type`,posts.`post_title`, " . $select . ", filter.`id` 
                             FROM `$wpdb->posts` posts $leftJoin $leftJoin2
@@ -445,7 +456,6 @@ class B2S_Post_Item {
                 $videoAddonDetails = B2S_PLUGIN_ADDON_VIDEO;
             }
         }
-
         foreach ($this->postData as $var) {
             $postType = 'post';
             if (strpos(strtolower($var->post_type), 'event') !== false) {
@@ -722,7 +732,6 @@ class B2S_Post_Item {
                                     </li>';
             }
         }
-
         return html_entity_decode($this->postItem, ENT_COMPAT, 'UTF-8');
     }
 
@@ -1051,8 +1060,22 @@ class B2S_Post_Item {
             if ($this->type == 'repost') {
                 $addSearchRepost = ' AND `' . $wpdb->prefix . 'b2s_posts`.`sched_type` = 5 ';
             }
-
-            $sqlData = $wpdb->prepare("SELECT `{$wpdb->prefix}b2s_posts`.`id`, `{$wpdb->prefix}b2s_posts`.`post_id`,`blog_user_id`,`last_edit_blog_user_id`,`v2_id`, `sched_date`, `sched_date_utc`, `sched_type`, `relay_primary_post_id`, `{$wpdb->prefix}b2s_posts_network_details`.`network_id`,`{$wpdb->prefix}b2s_posts_network_details`.`network_auth_id`,`{$wpdb->prefix}b2s_posts_network_details`.`network_type`,`{$wpdb->prefix}b2s_posts_network_details`.`network_display_name` FROM `{$wpdb->prefix}b2s_posts` LEFT JOIN `{$wpdb->prefix}b2s_posts_network_details` ON `{$wpdb->prefix}b2s_posts`.`network_details_id` = `{$wpdb->prefix}b2s_posts_network_details`.`id` WHERE `{$wpdb->prefix}b2s_posts`.`hide` = 0 AND ((`{$wpdb->prefix}b2s_posts`.`sched_date_utc` != '0000-00-00 00:00:00' AND `{$wpdb->prefix}b2s_posts`.`post_for_approve` = 0) OR (`{$wpdb->prefix}b2s_posts`.`sched_date_utc` >= '" . gmdate('Y-m-d H:i:s') . "' AND `{$wpdb->prefix}b2s_posts`.`post_for_approve` = 1)) AND (`{$wpdb->prefix}b2s_posts`.`sched_type` != 3 OR (`{$wpdb->prefix}b2s_posts`.`sched_type` = 3 AND `{$wpdb->prefix}b2s_posts`.`publish_date` = '0000-00-00 00:00:00'))  AND `{$wpdb->prefix}b2s_posts`.`publish_date` = '0000-00-00 00:00:00' $addNotAdminPosts $addSearchShowByDate $addSearchShowByNetwork $addSearchUserAuthId $addSearchRepost AND `{$wpdb->prefix}b2s_posts`.`post_id` = %d ORDER BY `{$wpdb->prefix}b2s_posts`.`sched_date` ASC ", $post_id);
+            $select = "SELECT `{$wpdb->prefix}b2s_posts`.`id`, `{$wpdb->prefix}b2s_posts`.`post_id`,`blog_user_id`,`last_edit_blog_user_id`,`v2_id`, `post_format`,`sched_date`, `sched_date_utc`, `sched_type`, `relay_primary_post_id`, `{$wpdb->prefix}b2s_posts_network_details`.`network_id`,`{$wpdb->prefix}b2s_posts_network_details`.`network_auth_id`,`{$wpdb->prefix}b2s_posts_network_details`.`network_type`,`{$wpdb->prefix}b2s_posts_network_details`.`network_display_name`,`{$wpdb->prefix}b2s_posts_sched_details`.`sched_data` ";
+            $from = "FROM `{$wpdb->prefix}b2s_posts` 
+                LEFT JOIN `{$wpdb->prefix}b2s_posts_network_details` 
+                    ON `{$wpdb->prefix}b2s_posts`.`network_details_id` = `{$wpdb->prefix}b2s_posts_network_details`.`id` 
+                LEFT JOIN `{$wpdb->prefix}b2s_posts_sched_details` 
+                    ON `{$wpdb->prefix}b2s_posts`.`sched_details_id` = `{$wpdb->prefix}b2s_posts_sched_details`.`id` ";
+            $where = "WHERE `{$wpdb->prefix}b2s_posts`.`hide` = 0 
+                AND (
+                    (`{$wpdb->prefix}b2s_posts`.`sched_date_utc` != '0000-00-00 00:00:00' AND `{$wpdb->prefix}b2s_posts`.`post_for_approve` = 0) 
+                    OR (`{$wpdb->prefix}b2s_posts`.`sched_date_utc` >= '" . gmdate('Y-m-d H:i:s') . "' AND `{$wpdb->prefix}b2s_posts`.`post_for_approve` = 1)) 
+                AND (`{$wpdb->prefix}b2s_posts`.`sched_type` != 3 
+                    OR (`{$wpdb->prefix}b2s_posts`.`sched_type` = 3 AND `{$wpdb->prefix}b2s_posts`.`publish_date` = '0000-00-00 00:00:00'))  
+                AND `{$wpdb->prefix}b2s_posts`.`publish_date` = '0000-00-00 00:00:00' 
+                $addNotAdminPosts $addSearchShowByDate $addSearchShowByNetwork $addSearchUserAuthId $addSearchRepost 
+                AND `{$wpdb->prefix}b2s_posts`.`post_id` = %d ORDER BY `{$wpdb->prefix}b2s_posts`.`sched_date` ASC ";
+            $sqlData = $wpdb->prepare($select . $from . $where, $post_id);
             $result = $wpdb->get_results($sqlData);
             $specialPostingData = array(3 => esc_html__('Auto-Posting', 'blog2social'), 4 => esc_html__('Retweet', 'blog2social'), 5 => esc_html__('Re-Share', 'blog2social'));
             if (!empty($result) && is_array($result)) {
@@ -1076,18 +1099,40 @@ class B2S_Post_Item {
                     $lastEdit = (!empty($userInfoLastEditName)) ? ' | ' . sprintf(esc_html__('last modified by %s', 'blog2social'), '<a href="' . get_author_posts_url($var->last_edit_blog_user_id) . '">' . esc_html((!empty($userInfoLastEditName) ? $userInfoLastEditName : '-')) . '</a> | ') : '';
 
                     $schedInProcess = ($var->sched_date_utc <= gmdate('Y-m-d H:i:s')) ? ' <span class="glyphicon glyphicon-exclamation-sign glyphicon-info"></span> ' . esc_html__('is currently being processed by the network', 'blog2social') : '';
-
+                    
+                    $boardName = "";
+                    if($var->network_id == 6){
+                        $boards = json_decode(B2S_Api_Post::post(B2S_PLUGIN_API_ENDPOINT, array('action' => 'getBoards', 'token' => B2S_PLUGIN_TOKEN, 'networkType' => $networkType, 'networkAuthId' => $var->network_auth_id, 'selBoard' => null, 'networkId' => 6)));
+                        $boards = explode("</option>",$boards->data);
+                        $boardId = unserialize($var->sched_data)["board"];
+                        foreach($boards as $b){
+                            if($b!=""){
+                                $boardInfo = explode('value="',$b)[1];    
+                                $boardInfo = explode('">',$boardInfo);
+                                if($boardId == $boardInfo[0]){
+                                    $boardName = $boardInfo[1];
+                                }
+                            }
+                        }
+                    }
+                    $name = ($boardName != "") ? ': '.$boardName : (!empty($var->network_display_name) ? (': ' . $var->network_display_name) : '' );
+                    
                     $content .= '<img class="pull-left hidden-xs" src="' . esc_url(plugins_url('/assets/images/portale/' . $var->network_id . '_flat.png', B2S_PLUGIN_FILE)) . '" alt="posttype">
                                             <div class="media-body">
                                                 <strong>' . esc_html($networkName[$var->network_id]) . $schedInProcess . '</strong>
-                                                <p class="info">' . esc_html($networkType[$var->network_type] . (!empty($var->network_display_name) ? (': ' . $var->network_display_name) : '' )) . ' | ' . sprintf(esc_html__('scheduled by %s', 'blog2social'), ' <a href="' . esc_url(get_author_posts_url($var->blog_user_id)) . '">' . esc_html((!empty($userInfoName) ? $userInfoName : '-')) . '</a>') . ' <span class="b2s-post-sched-area-sched-time" data-post-id="' . esc_attr($var->id) . '">' . $lastEdit . esc_html(B2S_Util::getCustomDateFormat($var->sched_date, substr(B2S_LANGUAGE, 0, 2))) . '</span> ' . $specialPosting . '</p>
+                                                <p class="info">' . esc_html($networkType[$var->network_type] . $name ) . ' | ' . sprintf(esc_html__('scheduled by %s', 'blog2social'), ' <a href="' . esc_url(get_author_posts_url($var->blog_user_id)) . '">' . esc_html((!empty($userInfoName) ? $userInfoName : '-')) . '</a>') . ' <span class="b2s-post-sched-area-sched-time" data-post-id="' . esc_attr($var->id) . '">' . $lastEdit . esc_html(B2S_Util::getCustomDateFormat($var->sched_date, substr(B2S_LANGUAGE, 0, 2))) . '</span> ' . $specialPosting . '</p>
                                                 <p class="info">';
 
                     if ((int) $var->v2_id == 0 && empty($schedInProcess)) {
                         //data-blog-sched-date="' . $blogPostDate . '" data-b2s-sched-date="' . strtotime($var->sched_date) . '000"
-                        $content .= ((B2S_PLUGIN_USER_VERSION > 0) ? ' <a href="#" class="b2s-post-edit-sched-btn" data-network-auth-id="' . esc_attr($var->network_auth_id) . '" data-network-type="' . esc_attr($var->network_type) . '" data-network-id="' . esc_attr($var->network_id) . '" data-post-id="' . esc_attr($var->post_id) . '" data-b2s-id="' . esc_attr($var->id) . '" data-relay-primary-post-id="' . esc_attr($var->relay_primary_post_id) . '" >' : ' <a href="#" class="b2sPreFeatureModalBtn" data-title="' . esc_attr__('You want to edit your scheduled post?', 'blog2social') . '">');
-                        $content .= esc_html__('edit', 'blog2social') . '</a> ';
-                        $content .= '|';
+                        if((B2S_PLUGIN_USER_VERSION > 0) && $var->post_format != 2){
+                            $content .= ((B2S_PLUGIN_USER_VERSION > 0) ? ' <a href="#" class="b2s-post-edit-sched-btn" data-network-auth-id="' . esc_attr($var->network_auth_id) . '" data-network-type="' . esc_attr($var->network_type) . '" data-network-id="' . esc_attr($var->network_id) . '" data-post-id="' . esc_attr($var->post_id) . '" data-b2s-id="' . esc_attr($var->id) . '" data-relay-primary-post-id="' . esc_attr($var->relay_primary_post_id) . '" >' : ' <a href="#" class="b2sPreFeatureModalBtn" data-title="' . esc_attr__('You want to edit your scheduled post?', 'blog2social') . '">');
+                            $content .= esc_html__('edit', 'blog2social') . '</a> ';
+                            $content .= '|';
+                        } else if (B2S_PLUGIN_USER_VERSION == 0){
+                            $content = ' <a href="#" class="b2sPreFeatureModalBtn" data-title="' . esc_attr__('You want to edit your scheduled post?', 'blog2social') . '">';
+                        }
+                        
                     }
                     $content .= '<a href="#" class="b2s-post-sched-area-drop-btn" data-post-id="' . esc_attr($var->id) . '"> ' . esc_html__('delete', 'blog2social') . '</a> ';
 

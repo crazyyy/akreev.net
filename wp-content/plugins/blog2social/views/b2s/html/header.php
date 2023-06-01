@@ -138,6 +138,30 @@ $hideFinalTrailModal = $options->_getOption('hide_final_trail');
         <span class="glyphicon glyphicon-ok glyphicon-success"></span> <?php esc_html_e('This entry was removed successfully.', 'blog2social'); ?>
     </div>
 </div>
+
+<?php if (isset($_GET['origin']) && $_GET['origin'] == 'publish_post' && isset($_GET['deletePostStatus']) && isset($_GET["deletedPostsNumber"])) { ?>
+
+<div class="panel panel-group b2s-network-auth-info b2s-left-border-success b2s-all-posts-delete-success">
+    <div class="panel-body">
+        <?php
+            if ($_GET['deletePostStatus'] == 'success') {
+
+                if($_GET["deletedPostsNumber"] == 0){
+                    echo __('No posts found','blog2social');
+
+                } else {
+                    echo sprintf(__('Deleted %s posts','blog2social'), $_GET["deletedPostsNumber"]);
+                }
+
+            } else {
+                echo esc_html__('Posts could not be deleted.', 'blog2social');
+            }
+            ?>
+    </div>
+</div>
+
+
+<?php } ?>
 <div class="panel panel-group b2s-network-auth-info b2s-left-border-success b2s-post-edit-success" style="display:none;">
     <div class="panel-body">
         <span class="glyphicon glyphicon-ok glyphicon-success"></span> <?php esc_html_e('This post was edited successfully.', 'blog2social'); ?>

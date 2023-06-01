@@ -56,7 +56,7 @@ class B2S_Video_Item {
         global $wpdb;
         $content = '';
         $addNotAdminPosts = (!B2S_PLUGIN_ADMIN) ? (" AND `{$wpdb->prefix}b2s_posts`.blog_user_id =" . B2S_PLUGIN_BLOG_USER_ID) : '';
-        $sqlData = $wpdb->prepare("SELECT `{$wpdb->prefix}b2s_posts`.`id`,`{$wpdb->prefix}b2s_posts`.`blog_user_id`,`publish_date`,`publish_link`,`publish_error_code`,`post_format`,`hook_action`,`upload_video_token`,`{$wpdb->prefix}b2s_posts_network_details`.`network_id`,`{$wpdb->prefix}b2s_posts_network_details`.`network_type`, `{$wpdb->prefix}b2s_posts_network_details`.`network_auth_id`, `{$wpdb->prefix}b2s_posts_network_details`.`network_display_name` FROM `{$wpdb->prefix}b2s_posts` LEFT JOIN `{$wpdb->prefix}b2s_posts_network_details` ON `{$wpdb->prefix}b2s_posts`.`network_details_id` = `{$wpdb->prefix}b2s_posts_network_details`.`id`  WHERE `{$wpdb->prefix}b2s_posts`.`hide` = 0 AND `{$wpdb->prefix}b2s_posts`.`publish_error_code` = '' $addNotAdminPosts  AND `{$wpdb->prefix}b2s_posts`.`post_id` = %d ORDER BY `{$wpdb->prefix}b2s_posts`.`publish_date` DESC", $attachment_id);
+        $sqlData = $wpdb->prepare("SELECT `{$wpdb->prefix}b2s_posts`.`id`,`{$wpdb->prefix}b2s_posts`.`blog_user_id`,`publish_date`,`publish_link`,`publish_error_code`,`{$wpdb->prefix}b2s_posts`.`sched_date`,`{$wpdb->prefix}b2s_posts`.`sched_date_utc`,`post_format`,`hook_action`,`upload_video_token`,`{$wpdb->prefix}b2s_posts_network_details`.`network_id`,`{$wpdb->prefix}b2s_posts_network_details`.`network_type`, `{$wpdb->prefix}b2s_posts_network_details`.`network_auth_id`, `{$wpdb->prefix}b2s_posts_network_details`.`network_display_name` FROM `{$wpdb->prefix}b2s_posts` LEFT JOIN `{$wpdb->prefix}b2s_posts_network_details` ON `{$wpdb->prefix}b2s_posts`.`network_details_id` = `{$wpdb->prefix}b2s_posts_network_details`.`id`  WHERE `{$wpdb->prefix}b2s_posts`.`hide` = 0 AND `{$wpdb->prefix}b2s_posts`.`publish_error_code` = '' $addNotAdminPosts  AND `{$wpdb->prefix}b2s_posts`.`post_id` = %d ORDER BY `{$wpdb->prefix}b2s_posts`.`publish_date` DESC", $attachment_id);
         $result = $wpdb->get_results($sqlData);
 
         if (!empty($result) && is_array($result)) {
@@ -68,13 +68,35 @@ class B2S_Video_Item {
             foreach ($result as $var) {
 
                 $publishLink = (!empty($var->publish_link)) ? '<a target="_blank" href="' . esc_url($var->publish_link) . '">' . esc_html__('show', 'blog2social') . '</a> | ' : '';
+                $reshareLink = (!empty($var->publish_link)) ? '<a href="' . esc_url('admin.php?page=blog2social-curation&type=link&url=' . urlencode($var->publish_link)) . '">' . esc_html__('Share on social media', 'blog2social') . '</a> | ' : '';
+
                 $error = '';
                 if (!empty($var->publish_error_code)) {
                     $errorCode = isset($networkErrorCode[trim($var->publish_error_code)]) ? $var->publish_error_code : 'DEFAULT';
                     $error = '<span class="network-text-info text-danger hidden-xs"> <i class="glyphicon glyphicon-remove-circle glyphicon-danger"></i> ' . $networkErrorCode[$errorCode] . $add . '</span>';
                 }
                 $publishDate = (($var->publish_date != "0000-00-00 00:00:00") && (int) $var->hook_action == 0) ? B2S_Util::getCustomDateFormat($var->publish_date, substr(B2S_LANGUAGE, 0, 2)) : '';
-                $publishText = (empty($publishDate)) ? __('uploading in progress by %s', 'blog2social') : __('uploaded by %s', 'blog2social');
+                
+                if($var->sched_date== "0000-00-00 00:00:00"){
+                    $schedDate = false;
+                } else {
+                    $schedDate = true;
+                }
+
+                if(!$schedDate){
+                    if(empty($publishDate)){
+                        $publishText = (empty($publishDate)) ? __('uploading in progress by %s', 'blog2social') : __('uploaded by %s', 'blog2social');
+                    } else {
+                        $publishText = __('uploaded by %s', 'blog2social');
+                    }
+                } 
+
+                if($schedDate && gmdate('Y-m-d H:i:s') < $var->sched_date_utc){
+                    $publishText = __( 'The video was scheduled by %s.', 'blog2social'). " ". esc_html(B2S_Util::getCustomDateFormat($var->sched_date, substr(B2S_LANGUAGE, 0, 2)));
+                } else if($schedDate && gmdate('Y-m-d H:i:s') >= $var->sched_date_utc){
+                    $publishText = __('uploaded by %s', 'blog2social');
+                }
+
                 //special Case
                 if ($var->hook_action == 7 && $var->network_id == 36) {
                     $publishText = __('Your video has been posted to TikTok and is now available to be released in the Tiktok mobile app.', 'blog2social');
@@ -101,6 +123,10 @@ class B2S_Video_Item {
                                             <div class="info">' . sprintf(esc_html($publishText), '<a href="' . esc_url(get_author_posts_url($var->blog_user_id)) . '">' . esc_html((!empty($userInfoName) ? $userInfoName : '-')) . '</a>') . ' ' . esc_html($publishDate);
 
                 $content .= '</div><p class="info">' . $publishLink;
+                if ($var->network_id == 32 || $var->network_id == 35) {
+                    $content .= $reshareLink;
+                }
+
 
                 if ((int) $var->hook_action == 0) {
                     $content .= (B2S_PLUGIN_USER_VERSION > 0) ? '<a href="#" class="b2s-post-video-upload-area-drop-btn" data-attachment-id="' . esc_attr($var->id) . '">' : '<a href="#" class="b2sPreFeatureModalBtn" data-title="' . esc_attr__('You want to delete a publish post entry?', 'blog2social') . '">';

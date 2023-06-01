@@ -294,7 +294,7 @@ var wpaicgPlayGround = {
                     content_generated = result.choices[0].delta !== undefined ? (result.choices[0].delta.content !== undefined ? result.choices[0].delta.content : '') : result.choices[0].text;
                 }
                 prompt_response += content_generated;
-                if ((content_generated === '\n' || content_generated === ' \n' || content_generated === '.\n' || content_generated === '\n\n' || content_generated === '.\n\n' || content_generated === ',\n\n') && wpaicg_response_events > 0 && currentContent !== '') {
+                if ((content_generated === '\n' || content_generated === ' \n' || content_generated === '.\n' || content_generated === '\n\n') && wpaicg_response_events > 0 && currentContent !== '') {
                     if (!wpaicg_newline_before) {
                         wpaicg_newline_before = true;
                         wpaicg_PlayGround.setContent(wpaicgFormData.response,formID,currentContent + wpaicg_break_newline);
@@ -303,8 +303,13 @@ var wpaicgPlayGround = {
                 else if(content_generated.indexOf("\n") > -1 && wpaicg_response_events > 0 && currentContent !== ''){
                     if (!wpaicg_newline_before) {
                         wpaicg_newline_before = true;
-                        if(wpaicgUserLoggedIn){
-                            content_generated = content_generated.replace(/\n/g,'<br>');
+                        if(wpaicgFormData.response === 'textarea'){
+                            if(!wpaicg_PlayGround.editor(formID)){
+                                content_generated = content_generated.replace(/\n/g,'<br><br>');
+                            }
+                        }
+                        else{
+                            content_generated = content_generated.replace(/\n/g,'<br><br>');
                         }
                         wpaicg_PlayGround.setContent(wpaicgFormData.response,formID,currentContent + content_generated);
                     }

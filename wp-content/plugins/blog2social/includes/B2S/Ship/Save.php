@@ -60,7 +60,7 @@ class B2S_Ship_Save {
             'post_for_relay' => ((isset($data['post_for_relay']) && (int) $data['post_for_relay'] == 1) ? 1 : 0),
             'post_for_approve' => $shareApprove,
             'network_details_id' => $networkDetailsId,
-            'post_format' => ((isset($data['post_format']) && $data['post_format'] != null && $data['post_format'] !== '') ? (((int) $data['post_format'] >= 1) ? (int) $data['post_format'] : 0) : NULL),
+            'post_format' => ((isset($data['post_format']) && ($data['post_format'] != null || $data['post_format'] == 0)&& $data['post_format'] !== '') ? (((int) $data['post_format'] >= 1) ? (int) $data['post_format'] : 0) : NULL),
         );
         $wpdb->insert($wpdb->prefix . 'b2s_posts', $postData, array('%d', '%d', '%d', '%s', '%d', '%d', '%d'));
         B2S_Rating::trigger();
@@ -106,7 +106,174 @@ class B2S_Ship_Save {
                 'image_url' => $data['image_url'],
                 'content' => $data['content'],
                 'url' => $data['url'],
+                'share_as_reel' => $data['share_as_reel']
             );
+        }
+    }
+
+    public function saveVideoDetails($data = array(), $schedData = array()) {
+        global $wpdb;
+        $networkDetailsId = $this->getNetworkDetailsId($data['network_id'], $data['network_type'], $data['network_auth_id'], $data['network_display_name']);
+        $serializeData = $data;
+
+        $shareApprove = (isset($data['instant_sharing']) && (int) $data['instant_sharing'] == 1) ? 1 : 0;
+
+        unset($serializeData['network_type']);
+        unset($serializeData['network_display_name']);
+        unset($serializeData['post_id']);
+        unset($serializeData['image']);
+        unset($serializeData['token']);
+        unset($serializeData['blog_user_id']);
+        unset($serializeData['original_blog_user_id']);
+        unset($serializeData['last_edit_blog_user_id']);
+
+        //mode:scheduling
+        if (($schedData['releaseSelect'] == 1) && is_array($schedData['date']) && isset($schedData['date'][0]) && !empty($schedData['date'][0]) && isset($schedData['time'][0]) && !empty($schedData['time'][0])) {
+            foreach ($schedData['date'] as $key => $date) {
+                if (isset($schedData['time'][$key]) && !empty($schedData['time'][$key])) {
+                    //content
+                    if (isset($schedData['sched_content'][$key]) && !empty($schedData['sched_content'][$key])) {
+                        $serializeData['content'] = $schedData['sched_content'][$key];
+                    }
+                    //Update - calendar edit function
+                    if (isset($data['sched_details_id'])) {
+                        $wpdb->update($wpdb->prefix . 'b2s_posts_sched_details', array(
+                            'sched_data' => serialize($serializeData)
+                                ), array("id" => $data['sched_details_id']), array('%s', '%s', '%d'));
+                        $schedDetailsId = $data['sched_details_id'];
+                        //new entry insert
+                    } else {
+                        $wpdb->insert($wpdb->prefix . 'b2s_posts_sched_details', array('sched_data' => serialize($serializeData), 'image_url' => $data['image_url']), array('%s', '%s'));
+                        $schedDetailsId = $wpdb->insert_id;
+                    }
+
+                    $sendTime = strtotime($date . ' ' . $schedData['time'][$key]);
+                    $shipdays[] = array('sched_details_id' => $schedDetailsId, 'sched_date' => date('Y-m-d H:i:00', $sendTime), 'sched_date_utc' => date('Y-m-d H:i:00', strtotime(B2S_Util::getUTCForDate($date . ' ' . $schedData['time'][$key], $data['user_timezone'] * (-1)))));
+                    if (isset($schedData['saveSetting']) && $schedData['saveSetting'] !== false) {
+                        $this->saveUserTimeSettings(date('H:i', $sendTime), $data['network_auth_id']);
+                    }
+                }
+            }
+
+            $this->postData['token'] = $data['token'];
+            $this->postData["default_titel"] = $data["default_titel"];
+            $this->postData["is_video"] = $data["is_video"];
+            $this->postData["video_upload_size"] = $data["video_upload_size"];
+            $this->postData["no_cache"] = (int) $data["no_cache"];
+            $this->postData["lang"] = $data["lang"];
+            $this->postData["blog_user_id"] = $data["blog_user_id"];
+            $this->postData["post_id"] = $data["post_id"];
+            $this->postData['user_timezone'] = $data['user_timezone'];
+            unset($data['token']);
+            unset($data['default_titel']);
+            unset($data['is_video']);
+            unset($data['video_upload_size']);
+            unset($data['no_cache']);
+            unset($data['lang']);
+            unset($data['publish_date']);
+
+            foreach ($shipdays as $k => $date) {
+                if (isset($data['b2s_id']) && $data['b2s_id'] > 0) {
+                    $wpdb->update($wpdb->prefix . 'b2s_posts', array(
+                        'post_id' => $data['post_id'],
+                        'last_edit_blog_user_id' => $data['last_edit_blog_user_id'],
+                        'user_timezone' => $data['user_timezone'],
+                        'publish_date' => "0000-00-00 00:00:00",
+                        'sched_details_id' => $date['sched_details_id'],
+                        'sched_type' => 1,
+                        'sched_date' => $date['sched_date'],
+                        'sched_date_utc' => $date['sched_date_utc'],
+                        'network_details_id' => $networkDetailsId,
+                        'post_for_approve' => $shareApprove,
+                        'post_format' => (($data['post_format'] !== '') ? (((int) $data['post_format'] > 0) ? (int) $data['post_format'] : 0) : null)
+                            ), array("id" => $data['b2s_id']), array('%d', '%d', '%s', '%s', '%d', '%d', '%s', '%s', '%d', '%d', '%d'));
+                } else {
+                    $wpdb->insert($wpdb->prefix . 'b2s_posts', array(
+                        'post_id' => $data['post_id'],
+                        'blog_user_id' => $data['blog_user_id'],
+                        'user_timezone' => $data['user_timezone'],
+                        'publish_date' => "0000-00-00 00:00:00",
+                        'sched_details_id' => $date['sched_details_id'],
+                        'sched_type' => 1,
+                        'sched_date' => $date['sched_date'],
+                        'sched_date_utc' => $date['sched_date_utc'],
+                        'network_details_id' => $networkDetailsId,
+                        'post_for_approve' => $shareApprove,
+                        'post_format' => ((isset($data['post_format']) && $data['post_format'] != null && $data['post_format'] !== '') ? (((int) $data['post_format'] >= 1) ? (int) $data['post_format'] : 0) : NULL),
+                            ), array('%d', '%d', '%s', '%s', '%d', '%d', '%s', '%s', '%d', '%d', '%d', '%d'));
+
+                    B2S_Rating::trigger();
+                    $data['internal_post_id'] = $wpdb->insert_id;
+                    $postData = array(
+                        'post_id' => $data['post_id'],
+                        'blog_user_id' => $data['blog_user_id'],
+                        'user_timezone' => $data['user_timezone'],
+                        'post_for_approve' => $shareApprove,
+                        'network_details_id' => $networkDetailsId,
+                        'post_format' => ((isset($data['post_format']) && $data['post_format'] != null && $data['post_format'] !== '') ? (((int) $data['post_format'] >= 1) ? (int) $data['post_format'] : 0) : NULL),
+                    );
+                    $date = array_merge(array("sched_content" => $schedData['sched_content'][$k]), $date);
+                    unset($data['content']);
+                    $this->postData['post'][] = array_merge($data, $date);
+                }
+            }
+
+            unset($data['blog_user_id']);
+            unset($data['post_id']);
+            unset($data['user_timezone']);
+
+            //mode:direct share
+        } else {
+            $postData = array(
+                'post_id' => $data['post_id'],
+                'blog_user_id' => $data['blog_user_id'],
+                'user_timezone' => $data['user_timezone'],
+                'publish_date' => $data['publish_date'],
+                'post_for_approve' => $shareApprove,
+                'network_details_id' => $networkDetailsId,
+                'post_format' => ((isset($data['post_format']) && $data['post_format'] != null && $data['post_format'] !== '') ? (((int) $data['post_format'] >= 1) ? (int) $data['post_format'] : 0) : NULL),
+            );
+            $wpdb->insert($wpdb->prefix . 'b2s_posts', $postData, array('%d', '%d', '%d', '%s', '%d', '%d', '%d'));
+            B2S_Rating::trigger();
+
+            $data['internal_post_id'] = $wpdb->insert_id;
+
+            if ($shareApprove == 0) {
+                $this->postData['token'] = $data['token'];
+                $this->postData["blog_user_id"] = $data["blog_user_id"];
+                $this->postData["post_id"] = $data["post_id"];
+                $this->postData["default_titel"] = $data["default_titel"];
+                $this->postData["is_video"] = $data["is_video"];
+                $this->postData["video_upload_size"] = $data["video_upload_size"];
+                $this->postData["no_cache"] = (int) $data["no_cache"];
+                $this->postData["lang"] = $data["lang"];
+                $this->postData['user_timezone'] = $data['user_timezone'];
+
+                unset($data['token']);
+                unset($data['blog_user_id']);
+                unset($data['post_id']);
+                unset($data['default_titel']);
+                unset($data['is_video']);
+                unset($data['video_upload_size']);
+                unset($data['no_cache']);
+                unset($data['lang']);
+                unset($data['user_timezone']);
+                unset($data['publish_date']);
+
+                $this->postData['post'][] = $data;
+            } else {
+                $this->postDataApprove['post'][] = array('internal_post_id' => $data['internal_post_id'],
+                    'network_id' => $data['network_id'],
+                    'network_auth_id' => $data['network_auth_id'],
+                    'network_type' => $data['network_type'],
+                    'network_display_name' => $data['network_display_name'],
+                    'post_format' => (isset($data['post_format']) ? (int) $data['post_format'] : 0),
+                    'image_url' => $data['image_url'],
+                    'content' => $data['content'],
+                    'url' => $data['url'],
+                    'share_as_reel' => $data['share_as_reel']
+                );
+            }
         }
     }
 
@@ -134,7 +301,7 @@ class B2S_Ship_Save {
         $errorText = unserialize(B2S_PLUGIN_NETWORK_ERROR);
         $insertInsights = true;
         $requestSuccess = false;
-
+        
         foreach ($postData as $k => $v) {
             $found = false;
             $networkId = (isset($v['network_id']) && (int) $v['network_id'] > 0) ? (int) $v['network_id'] : 0;
@@ -158,13 +325,40 @@ class B2S_Ship_Save {
                             $sched_date_utc = date('Y-m-d H:i:00', strtotime(B2S_Util::getUTCForDate($sched_date, $userTimeZone * (-1))));
                             $schedData = array('user_timezone' => $userTimeZone, 'sched_date' => $sched_date, 'sched_date_utc' => $sched_date_utc, 'post_id' => $this->postData['post_id'], 'blog_user_id' => $this->postData['blog_user_id']);
                             $printDelayDates = $this->saveRelayDetails((int) $v['internal_post_id'], $v['relay_data'], $schedData);
-                        }
-                        if (!$quickShare) {
+                            if (!$quickShare) {
+                                $videoUploadType = isset($post->video_upload_type) ? (int) $post->video_upload_type : 0;
+                                $content[] = array('networkAuthId' => $post->network_auth_id, 'html' => $this->getItemHtml($networkId, $errorCode, $post->publishUrl, $printDelayDates, true, $videoUploadType));
+                            } else {
+                                $content[] = array('networkAuthId' => $post->network_auth_id, 'networkDisplayName' => $v['network_display_name'], 'networkId' => $v['network_id'], 'networkType' => $v['network_type'], 'html' => $this->getItemHtml($networkId, $errorCode, $post->publishUrl, $printDelayDates, true));
+                            }
+                            //since V7.1.0 video Posts
+                        } else if (empty($errorCode) && isset($v["post_format"]) && $v["post_format"] == 2 && isset($v["sched_date_utc"]) && !empty($v["sched_date_utc"])) {
+                            $printDelayDates[] = $v["sched_date"];
                             $videoUploadType = isset($post->video_upload_type) ? (int) $post->video_upload_type : 0;
-                            $content[] = array('networkAuthId' => $post->network_auth_id, 'html' => $this->getItemHtml($networkId, $errorCode, $post->publishUrl, $printDelayDates, true, $videoUploadType));
+                            $valueInContent = false;
+                            foreach ($content as $key => &$value) {
+                                if ($value["networkAuthId"] == $post->network_auth_id) {
+                                    if (!isset($value["html"])) {
+                                        $value["html"] = $this->getItemHtml($networkId, $errorCode, $post->publishUrl, $printDelayDates, true, $videoUploadType);
+                                    } else {
+                                        $value["html"] .= $this->getItemHtml($networkId, $errorCode, $post->publishUrl, $printDelayDates, true, $videoUploadType);
+                                    }
+                                    $valueInContent = true;
+                                    continue;
+                                }
+                            }
+                            if (!$valueInContent) {
+                                $content[] = array('networkAuthId' => $post->network_auth_id, 'html' => $this->getItemHtml($networkId, $errorCode, $post->publishUrl, $printDelayDates, true, $videoUploadType));
+                            }
                         } else {
-                            $content[] = array('networkAuthId' => $post->network_auth_id, 'networkDisplayName' => $v['network_display_name'], 'networkId' => $v['network_id'], 'networkType' => $v['network_type'], 'html' => $this->getItemHtml($networkId, $errorCode, $post->publishUrl, $printDelayDates, true));
+                            if (!$quickShare) {
+                                $videoUploadType = isset($post->video_upload_type) ? (int) $post->video_upload_type : 0;
+                                $content[] = array('networkAuthId' => $post->network_auth_id, 'html' => $this->getItemHtml($networkId, $errorCode, $post->publishUrl, $printDelayDates, true, $videoUploadType));
+                            } else {
+                                $content[] = array('networkAuthId' => $post->network_auth_id, 'networkDisplayName' => $v['network_display_name'], 'networkId' => $v['network_id'], 'networkType' => $v['network_type'], 'html' => $this->getItemHtml($networkId, $errorCode, $post->publishUrl, $printDelayDates, true));
+                            }
                         }
+
 
                         $found = true;
                         $requestSuccess = true;
@@ -199,6 +393,16 @@ class B2S_Ship_Save {
             }
         }
 
+        if (!isset($post->error_code) || $post->error_code == "") {
+            if (isset($this->postData['post_id']) && (int) $this->postData['post_id'] > 0 && isset($v['network_auth_id']) && (int) $v['network_auth_id'] > 0) {
+                $prepare = $wpdb->prepare(
+                        "UPDATE {$wpdb->prefix}b2s_posts LEFT JOIN {$wpdb->prefix}b2s_posts_network_details ON {$wpdb->prefix}b2s_posts.network_details_id={$wpdb->prefix}b2s_posts_network_details.id SET {$wpdb->prefix}b2s_posts.hide = 1 WHERE {$wpdb->prefix}b2s_posts.post_id = %d AND {$wpdb->prefix}b2s_posts_network_details.network_auth_id = %d AND {$wpdb->prefix}b2s_posts.publish_error_code != ''",
+                        array($this->postData['post_id'], $v['network_auth_id'])
+                );
+                $wpdb->query($prepare);
+            }
+        }
+
         if ($requestSuccess && isset($this->postData['is_video']) && $this->postData['is_video'] == 1 && isset($this->postData['video_upload_size']) && $this->postData['video_upload_size'] > 0) {
             $versionDetails = get_option('B2S_PLUGIN_USER_VERSION_' . B2S_PLUGIN_BLOG_USER_ID);
             $versionDetails['B2S_PLUGIN_ADDON_VIDEO']['volume_open'] -= (int) ($this->postData['video_upload_size'] / 1024);
@@ -207,7 +411,6 @@ class B2S_Ship_Save {
             }
             update_option('B2S_PLUGIN_USER_VERSION_' . B2S_PLUGIN_BLOG_USER_ID, $versionDetails, false);
         }
-
         return $content;
     }
 
@@ -501,12 +704,18 @@ class B2S_Ship_Save {
                 if ($videoUploadType > 0) {
                     if ($network_id == 36) { // mobile approvement
                         $html .= '<br><div class="alert alert-warning"><b>' . esc_html__('Your video will now be uploaded. After TikTok has processed your video, you can unlock it in your TikTok app.', 'blog2social') . '</b> (<a href="' . esc_url(B2S_Tools::getSupportLink('video_sharing_tiktok')) . '" target="_blank">' . esc_html__('Learn how it works', 'blog2social') . '</a>)</div>';
-                    } else {
+                    } else if (is_array($schedDate) && empty($schedDate)) {
                         $html .= '<br><div class="alert alert-info"><b>' . esc_html__('Your video is uploading.', 'blog2social') . '</b></div>';
                     }
                 } else {
-                    $html = '<br><span class="text-success"><i class="glyphicon glyphicon-ok-circle"></i> ' . esc_html__('published', 'blog2social');
-                    $html .= !empty($link) ? ': <a href="' . esc_url($link) . '" target="_blank">' . esc_html__('view social media post', 'blog2social') . '</a>' : '';
+                    /* if ($network_id == 1 && empty($link)) { // NOTE fb reel ?
+                      $html .= '<br><span class="text-success"><i class="glyphicon glyphicon-ok-circle"></i> ' . esc_html__('Your video will now be uploaded. Your video will be published after Facebook processing', 'blog2social');
+                      } else { *///}
+                    if(!isset($schedDate) || empty($schedDate)){
+                        $html .= '<br><span class="text-success"><i class="glyphicon glyphicon-ok-circle"></i> ' . esc_html__('published', 'blog2social');
+                        $html .= !empty($link) ? ': <a href="' . esc_url($link) . '" target="_blank">' . esc_html__('view social media post', 'blog2social') . '</a>' : '';    
+                    }
+
                     $html .= '</span>';
                 }
             }
@@ -515,8 +724,18 @@ class B2S_Ship_Save {
                 $timeFormat = get_option('time_format');
                 sort($schedDate);
                 foreach ($schedDate as $k => $v) {
-                    $schedDateTime = date_i18n($dateFormat . ' ' . $timeFormat, strtotime($v['date']));
+                    if (is_array($v)) {
+                        $date = $v['date'];
+                    } else {
+                        $date = $v;
+                    }
+                    $schedDateTime = date_i18n($dateFormat . ' ' . $timeFormat, strtotime($date));
                     $isRelay = (isset($v['relay'])) ? " - " . esc_html__('Retweet', 'blog2social') : '';
+                    if ($videoUploadType > 0) {
+                        
+                    } else {
+                        
+                    }
                     $html .= '<br><span class="text-success"><i class="glyphicon glyphicon-time"></i> ' . esc_html__('scheduled on', 'blog2social') . ': ' . esc_html($schedDateTime) . $isRelay . '</span>';
                 }
             }

@@ -1,5 +1,4 @@
 <?php
-
 class B2S_RePost_Save {
 
     private $title;
@@ -34,8 +33,8 @@ class B2S_RePost_Save {
         $this->allowHashTag = $allowHashTag;
         $this->b2sUserLang = $b2sUserLang;
         $this->bestTimes = (!empty($bestTimes)) ? $bestTimes : array();
-        $this->setPreFillText = array(0 => array(6 => 300, 8 => 239, 9 => 200, 10 => 442, 16 => 250, 17 => 442, 18 => 800, 20 => 300, 21 => 65000), 1 => array(8 => 1200, 10 => 442, 17 => 442, 19 => 239), 2 => array(8 => 239, 10 => 442, 17 => 442, 19 => 239));
-        $this->setPreFillTextLimit = array(0 => array(6 => 400, 8 => 400, 9 => 200, 10 => 500, 18 => 1000, 20 => 400, 16 => false, 21 => 65535), 1 => array(8 => 1200, 10 => 500, 19 => 400), 2 => array(8 => 400, 10 => 500, 19 => 9000));
+        $this->setPreFillText = array(0 => array(6 => 300, 8 => 239, 10 => 442, 16 => 250, 17 => 442, 18 => 800, 20 => 300, 21 => 65000, 38 => 500, 39 => 2000), 1 => array(8 => 1200, 10 => 442, 17 => 442, 19 => 239), 2 => array(8 => 239, 10 => 442, 17 => 442, 19 => 239));
+        $this->setPreFillTextLimit = array(0 => array(6 => 400, 8 => 400, 10 => 500, 18 => 1000, 20 => 400, 16 => false, 21 => 65535, 38 => 500, 39 => 2000), 1 => array(8 => 1200, 10 => 500, 19 => 400), 2 => array(8 => 400, 10 => 500, 19 => 9000));
         $this->notAllowNetwork = array(4, 11, 14, 16, 18);
         $this->allowHtml = array(4, 11, 14);
         $this->allowNetworkOnlyImage = array(6, 7, 12, 20, 21);
@@ -262,6 +261,9 @@ class B2S_RePost_Save {
                     if (!empty($this->url) && $networkId == 2) {
                         $limit = 254;
                     }
+                    if (!empty($this->url) && $networkId == 38) {
+                        $limit = 500-strlen($this->url);
+                    }
                     $postData['content'] = B2S_Util::getExcerpt($postData['content'], 0, $limit);
                 }
             } else {
@@ -352,6 +354,15 @@ class B2S_RePost_Save {
                     } else {
                         return false;
                     }
+                }
+
+                if ($networkId == 38) {
+                    $postData['content'] = (isset($this->setPreFillText[$networkType][$networkId])) ? B2S_Util::getExcerpt($this->content, (int) $this->setPreFillText[$networkType][$networkId], (isset($this->setPreFillTextLimit[$networkType][$networkId]) ? (int) $this->setPreFillTextLimit[$networkType][$networkId] : false)) : $this->content;
+                    $postData['custom_title'] = strip_tags($this->title);
+                }
+                if ($networkId == 39) { 
+                    $postData['content'] = (isset($this->setPreFillText[$networkType][$networkId])) ? B2S_Util::getExcerpt($this->content, (int) $this->setPreFillText[$networkType][$networkId], (isset($this->setPreFillTextLimit[$networkType][$networkId]) ? (int) $this->setPreFillTextLimit[$networkType][$networkId] : false)) : $this->content;
+                    $postData['custom_title'] = strip_tags($this->title);
                 }
             }
 

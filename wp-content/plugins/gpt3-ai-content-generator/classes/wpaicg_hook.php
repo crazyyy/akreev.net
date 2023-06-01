@@ -52,6 +52,7 @@ if(!class_exists('\\WPAICG\\WPAICG_Hook')) {
                     'title' => esc_html__('Title','gpt3-ai-content-generator'),
                     'caption' => esc_html__('Caption','gpt3-ai-content-generator'),
                     'description' => esc_html__('Description','gpt3-ai-content-generator'),
+                    'edit_image' => esc_html__('Edit Image','gpt3-ai-content-generator'),
                     'save' => esc_html__('Save','gpt3-ai-content-generator')
                 )
             ));
@@ -114,9 +115,9 @@ if(!class_exists('\\WPAICG\\WPAICG_Hook')) {
                     'select_save_error' => esc_html__('Please select least one image to save', 'gpt3-ai-content-generator'),
                     'alternative' => esc_html__('Alternative Text','gpt3-ai-content-generator'),
                     'title' => esc_html__('Title','gpt3-ai-content-generator'),
+                    'edit_image' => esc_html__('Edit Image','gpt3-ai-content-generator'),
                     'caption' => esc_html__('Caption','gpt3-ai-content-generator'),
                     'description' => esc_html__('Description','gpt3-ai-content-generator'),
-                    'edit_image' => esc_html__('Edit Image','gpt3-ai-content-generator'),
                     'save' => esc_html__('Save','gpt3-ai-content-generator')
                 )
             ));

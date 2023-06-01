@@ -5,7 +5,7 @@ Tags: auto post, auto publish, social media scheduling, social media calendar, s
 Donate link: https://paypal.me/adenion
 Requires at least: 4.7.0
 Tested up to: 6.2
-Stable tag: 7.0.3
+Stable tag: 7.1.0
 License: GPLv3
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -18,9 +18,9 @@ Blog2Social automatically creates social media posts for your content and auto-p
 
 _Compatible with WooCommerce, Gutenberg Editor, Hummingbird, Bitly, Rebrand.ly, Sniply, WP Automatic Plugin, Page Builder & RSS Importer._
 
-* Version 7.0: Publish and share videos
+* Version 7.1: Schedule video posts, share reels, post videos to LinkedIn, and connect Mastodon and Discord
 
-Download Blog2Social today to make your social media marketing for your WordPress site or blog easier than ever. Blog2Social is a freemium plugin, with a free comprehensive basic version and premium plans offering more advanced features. To ensure compliance with the high quality standards of the new networks’ API rules and community guidelines, some functions of the auto-poster are premium features and not part of the free version. 
+Download Blog2Social today to make your social media marketing easier than ever for your WordPress site or blog. Blog2Social is a freemium plugin, with a free comprehensive basic version and premium plans offering more advanced features. To ensure compliance with the high quality standards of the new networks’ API rules and community guidelines, some functions of the auto-poster are premium features and not part of the free version. 
 The Blog2Social free version offers you a wide range of features. ([See what’s included in the free version](https://wordpress.org/plugins/blog2social/#faq "Blog2Social Free Features")). 
 To benefit from all the advanced features for automatic sharing and scheduling your content on social media you can [start your free 30-day trial for Blog2SocialPremium Pro- today and upgrade any time.](https://www.blog2social.com/en/plugin/wordpress/premium-trial/ "Free Blog2Social Premium Trial")
 
@@ -29,30 +29,32 @@ To benefit from all the advanced features for automatic sharing and scheduling y
 * **Twitter** - Post to your Twitter account
 * **Google Business Profile** - Post to your Google Business Listing (Premium)
 * **LinkedIn** - Post to your profile (Free) or page (Premium)
-* **XING** - Post to your profile (Free), page (Premium), and in groups (Premium) 
+* **XING** - Post to your profile (Free) and page (Premium) 
 * **Instagram** - Post to your Business Account (Premium)
 * **Pinterest** - Post to all your different Pinboards (Free)
 * **Flickr** - Post to your Flickr profile (Free)
 * **Reddit** - Post to your subreddits (Free)
-* **VK.com** - post to your profile (Free), page (Premium) or in groups (Premium) 
-* **Medium** - post to your blog post with canonical-backlinks to your original post (Free)
-* **Tumblr** - post to your blog post with canonical-backlinks to your original post (Free)
-* **Torial** - post to your blog post with canonical-backlinks to your original post (Free)
-* **Diigo** - post a bookmark to your account (Free)
-* **Bloglovin** - post to your blog post with canonical-backlinks to your original post (Free)
-* **Telegram** - post to your Telegram groups and Telegram channels (Business)
-* **Blogger.com** - post to your blog post with canonical-backlinks to your original post (Premium)
-* **Instapaper** - post to your Instapaper account (Premium)
-* **Ravelry** - post to your Ravelry account (Premium)
-* **Youtube** - publish your videos on your Youtube channel
-* **Vimeo** - publish your videos on your Vimeo channel
-* **TikTok** - share your videos on TikTok
+* **VK.com** - Post to your profile (Free), page (Premium) or in groups (Premium) 
+* **Medium** - Post to your blog post with canonical-backlinks to your original post (Free)
+* **Tumblr** - Post to your blog post with canonical-backlinks to your original post (Free)
+* **Torial** - Post to your blog post with canonical-backlinks to your original post (Free)
+* **Diigo** - Post a bookmark to your account (Free)
+* **Bloglovin** - Post to your blog post with canonical-backlinks to your original post (Free)
+* **Telegram** - Post to your Telegram groups and Telegram channels (Business)
+* **Blogger.com** - Post to your blog post with canonical-backlinks to your original post (Premium)
+* **Instapaper** - Post to your Instapaper account (Premium)
+* **Ravelry** - Post to your Ravelry account (Premium)
+* **Youtube** - Publish your videos on your Youtube channel (Premium + Add-on)
+* **Vimeo** - Publish your videos on your Vimeo channel (Premium + Add-on)
+* **TikTok** - Share your videos on TikTok (Premium + Add-on)
+* **Mastodon** - Post to your Mastodon account (Premium)
+* **Discord** - Post to your Discord servers (Premium)
 
 = Benefits from using Blog2Social =
 
 BLOG2SOCIAL FREE
 
-* Share your Share your content on 13 different networks: Twitter, Facebook (profile and page), LinkedIn (profile), XING (profile), VK (profile), Pinterest, Reddit, Torial, Medium, Tumblr, Flickr, Diigo and Bloglovin at once.
+* Share your content on 13 different networks: Twitter, Facebook (profile and page), LinkedIn (profile), XING (profile), VK (profile), Pinterest, Reddit, Torial, Medium, Tumblr, Flickr, Bloglovin and Diigo at once.
 * Customize your social media posts with unique personal comments, hashtags, handles, emojis, and select an image or animated GIF of your choice. 
 * You can even edit the complete HTML markup for re-publishing your post on Tumblr, Torial, and Medium. 
 * Manage all users posts and pages and share them on your channels.
@@ -95,7 +97,7 @@ Activate the autoposter to **automatically share your new and updated posts** on
 Schedule all your social media posts in one social media calendar. Manage and share all your social media posts right from your WordPress dashboard.
 
 
-**#6 Publish and share video posts** -  Publish video files on Youtube and Vimeo and share them on Instagram, Facebook, Twitter, Pinterest and TikTok
+**#6 Share and schedule video posts** -  Share your videos on YouTube, Vimeo, Instagram, Facebook, Twitter, Pinterest, TikTok and LinkedIn. Share Reels on Facebook and Instagram. Schedule your videos to post them at your convenience.
 
 Save valuable time by managing your complete **social media content right from your WordPress dashboard.**
 
@@ -239,8 +241,8 @@ To get started with the basics of Blog2Social and maybe find some useful tips an
 7. Keep track of your shared posts and scheduling plan with the Social Media Calendar.
 
 == Changelog ==
-= 7.0.3 = 
-compatibility with wordpress version 6.2 or higher
+= 7.1.0 =
+Video Scheduling & Mastodon,Discord Integration 
 = 7.0.2 = 
 Bugfix: Pinterest Autorisation
 = 7.0.1 = 
@@ -349,8 +351,8 @@ Usability Optimization, Rebrandly integration, url parameter settings
 New Image Posts, Imgur, Animated Gifs and Emojis
 
 == Upgrade Notice ==
-= 7.0.3 = 
-compatibility with wordpress version 6.2 or higher
+= 7.1.0 =
+Video Scheduling & Mastodon,Discord Integration 
 = 7.0.2 = 
 Bugfix: Pinterest Autorisation
 = 7.0.1 = 

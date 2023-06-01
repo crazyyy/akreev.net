@@ -35,8 +35,8 @@ class B2S_AutoPost {
         $this->keywords = $keywords;
         $this->optionPostFormat = $optionPostFormat;
         $this->allowHashTag = $allowHashTag;
-        $this->setPreFillText = array(0 => array(6 => 300, 9 => 200, 16 => 250, 17 => 442, 18 => 800, 21 => 65000), 1 => array(6 => 300, 17 => 442, 19 => 239), 2 => array(17 => 442, 19 => 239), 20 => 300);
-        $this->setPreFillTextLimit = array(0 => array(6 => 400, 9 => 200, 18 => 1000, 16 => false, 21 => 65535), 1 => array(6 => 400, 19 => 400), 2 => array(19 => 9000));
+        $this->setPreFillText = array(0 => array(6 => 300, 16 => 250, 17 => 442, 18 => 800, 21 => 65000, 38 => 500, 39 => 2000), 1 => array(6 => 300, 17 => 442, 19 => 239), 2 => array(17 => 442, 19 => 239), 20 => 300);
+        $this->setPreFillTextLimit = array(0 => array(6 => 400, 18 => 1000, 16 => false, 21 => 65535, 38 => 500, 39 => 2000), 1 => array(6 => 400, 19 => 400), 2 => array(19 => 9000));
         $this->default_template = (defined('B2S_PLUGIN_NETWORK_SETTINGS_TEMPLATE_DEFAULT')) ? unserialize(B2S_PLUGIN_NETWORK_SETTINGS_TEMPLATE_DEFAULT) : false;
     }
 
@@ -159,6 +159,9 @@ class B2S_AutoPost {
                     if(!empty($this->url) && $networkId == 2) {
                         $limit = 254;
                     }
+                    if (!empty($this->url) && $networkId == 38) {
+                        $limit = 500-strlen($this->url);
+                    }
                     $postData['content'] = B2S_Util::getExcerpt($postData['content'], 0, $limit);
                 }
             } else {
@@ -249,6 +252,16 @@ class B2S_AutoPost {
                     } else {
                         return false;
                     }
+                }
+
+                if ($networkId == 38) {
+                    $postData['content'] = (isset($this->setPreFillText[$networkType][$networkId])) ? B2S_Util::getExcerpt($this->content, (int) $this->setPreFillText[$networkType][$networkId], (isset($this->setPreFillTextLimit[$networkType][$networkId]) ? (int) $this->setPreFillTextLimit[$networkType][$networkId] : false)) : $this->content;
+                    $postData['custom_title'] = strip_tags($this->title);
+                }
+
+                if ($networkId == 39) {
+                    $postData['content'] = (isset($this->setPreFillText[$networkType][$networkId])) ? B2S_Util::getExcerpt($this->content, (int) $this->setPreFillText[$networkType][$networkId], (isset($this->setPreFillTextLimit[$networkType][$networkId]) ? (int) $this->setPreFillTextLimit[$networkType][$networkId] : false)) : $this->content;
+                    $postData['custom_title'] = strip_tags($this->title);
                 }
             }
 

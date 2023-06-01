@@ -6,12 +6,12 @@
  * Author: Blog2Social, Adenion
  * Text Domain: blog2social
  * Domain Path: /languages
- * Version: 7.0.3
+ * Version: 7.1.0
  * Author URI: https://www.blog2social.com
  * License: GPL2+
  */
 
-define('B2S_PLUGIN_VERSION', '703');
+define('B2S_PLUGIN_VERSION', '710');
 define('B2S_PLUGIN_LANGUAGE', serialize(array('de_DE', 'en_US')));
 define('B2S_PLUGIN_DIR', plugin_dir_path(__FILE__));
 define('B2S_PLUGIN_URL', plugin_dir_url(__FILE__));
