@@ -189,24 +189,19 @@ class B2S_Network_Item {
         $b2sAuthUrl = $this->authurl . '&portal_id=' . $networkId . '&transfer=' . (in_array($networkId, $this->oAuthPortal) ? 'oauth' : 'form' ) . '&mandant_id=' . $mandantId . '&version=3&affiliate_id=' . B2S_Tools::getAffiliateId();
 
         if (in_array($networkId, $this->allowProfil)) {
-            if($isVideo && $networkId == 3){
-                $html .= '';
-            } else {
-                $name = $this->networkTypeName[0];
-                if (isset($this->networkTypeNameIndividual[$networkId][0]) && !empty($this->networkTypeNameIndividual[$networkId][0])) {
-                    $name = $this->networkTypeNameIndividual[$networkId][0];
-                }
-                if ($networkId == 24 && B2S_PLUGIN_USER_VERSION < 1) {
-                    $html .= '<button href="#" class="btn btn-' . esc_attr(str_replace(' ', '', strtolower($networkName))) . ' btn-sm b2s-network-auth-btn b2s-btn-disabled b2sBusinessFeatureModalBtn" data-title="' . esc_attr__('You want to connect a network profile?', 'blog2social') . '" data-type="auth-network">' . sprintf(esc_html__('Connect %s', 'blog2social'), esc_html($name)) . ' <span class="label label-success">' . esc_html__("BUSINESS", "blog2social") . '</button>';
-                } else if ($networkId == 38 && B2S_PLUGIN_USER_VERSION < 1) {
-                    $html .= '<button href="#" class="btn btn-' . esc_attr(str_replace(' ', '', strtolower($networkName))) . ' btn-sm b2s-network-auth-btn b2s-btn-disabled b2sProFeatureModalBtn" data-title="' . esc_attr__('You want to connect a network profile?', 'blog2social') . '" data-type="auth-network">' . sprintf(esc_html__('Connect %s', 'blog2social'), esc_html($name)) . ' <span class="label label-success">' . esc_html__("PRO", "blog2social") . '</button>';
-                } else if (($networkId == 25 || $networkId == 26 || $networkId == 27 || $networkId == 39) && B2S_PLUGIN_USER_VERSION < 1) {
-                    $html .= '<button href="#" class="btn btn-' . esc_attr(str_replace(' ', '', strtolower($networkName))) . ' btn-sm b2s-network-auth-btn b2s-btn-disabled b2sPreFeatureModalBtn" data-title="' . esc_attr__('You want to connect a network profile?', 'blog2social') . '" data-type="auth-network">' . sprintf(esc_html__('Connect %s', 'blog2social'), esc_html($name)) . ' <span class="label label-success">' . esc_html__("SMART", "blog2social") . '</button>';
-                } else {
-                    $html .= ($networkId != 18 || (B2S_PLUGIN_USER_VERSION >= 2 && $networkId == 18)) ? '<button onclick="wop(\'' . esc_url($b2sAuthUrl) . '&choose=profile\', \'Blog2Social Network\'); return false;" class="btn btn-' . esc_attr(str_replace(' ', '', strtolower($networkName))) . ' btn-sm b2s-network-auth-btn" data-network-type="0">' . sprintf(esc_html__('Connect %s', 'blog2social'), esc_html($name)) . '</button>' : '<button class="btn btn-' . esc_attr(str_replace(' ', '', strtolower($networkName))) . ' btn-sm b2s-network-auth-btn b2s-btn-disabled b2sProFeatureModalBtn" data-title="' . esc_attr__('You want to connect a network profile?', 'blog2social') . '" data-type="auth-network">+ ' . esc_html__('Profile', 'blog2social') . ' <span class="label label-success">' . esc_html__("PRO", "blog2social") . '</button>';
-                }
+            $name = $this->networkTypeName[0];
+            if (isset($this->networkTypeNameIndividual[$networkId][0]) && !empty($this->networkTypeNameIndividual[$networkId][0])) {
+                $name = $this->networkTypeNameIndividual[$networkId][0];
             }
-            
+            if ($networkId == 24 && B2S_PLUGIN_USER_VERSION < 1) {
+                $html .= '<button href="#" class="btn btn-' . esc_attr(str_replace(' ', '', strtolower($networkName))) . ' btn-sm b2s-network-auth-btn b2s-btn-disabled b2sBusinessFeatureModalBtn" data-title="' . esc_attr__('You want to connect a network profile?', 'blog2social') . '" data-type="auth-network">' . sprintf(esc_html__('Connect %s', 'blog2social'), esc_html($name)) . ' <span class="label label-success">' . esc_html__("BUSINESS", "blog2social") . '</button>';
+            } else if ($networkId == 38 && B2S_PLUGIN_USER_VERSION < 1) {
+                $html .= '<button href="#" class="btn btn-' . esc_attr(str_replace(' ', '', strtolower($networkName))) . ' btn-sm b2s-network-auth-btn b2s-btn-disabled b2sProFeatureModalBtn" data-title="' . esc_attr__('You want to connect a network profile?', 'blog2social') . '" data-type="auth-network">' . sprintf(esc_html__('Connect %s', 'blog2social'), esc_html($name)) . ' <span class="label label-success">' . esc_html__("PRO", "blog2social") . '</button>';
+            } else if (($networkId == 25 || $networkId == 26 || $networkId == 27 || $networkId == 39) && B2S_PLUGIN_USER_VERSION < 1) {
+                $html .= '<button href="#" class="btn btn-' . esc_attr(str_replace(' ', '', strtolower($networkName))) . ' btn-sm b2s-network-auth-btn b2s-btn-disabled b2sPreFeatureModalBtn" data-title="' . esc_attr__('You want to connect a network profile?', 'blog2social') . '" data-type="auth-network">' . sprintf(esc_html__('Connect %s', 'blog2social'), esc_html($name)) . ' <span class="label label-success">' . esc_html__("SMART", "blog2social") . '</button>';
+            } else {
+                $html .= ($networkId != 18 || (B2S_PLUGIN_USER_VERSION >= 2 && $networkId == 18)) ? '<button onclick="wop(\'' . esc_url($b2sAuthUrl) . '&choose=profile\', \'Blog2Social Network\'); return false;" class="btn btn-' . esc_attr(str_replace(' ', '', strtolower($networkName))) . ' btn-sm b2s-network-auth-btn" data-network-type="0">' . sprintf(esc_html__('Connect %s', 'blog2social'), esc_html($name)) . '</button>' : '<button class="btn btn-' . esc_attr(str_replace(' ', '', strtolower($networkName))) . ' btn-sm b2s-network-auth-btn b2s-btn-disabled b2sProFeatureModalBtn" data-title="' . esc_attr__('You want to connect a network profile?', 'blog2social') . '" data-type="auth-network">+ ' . esc_html__('Profile', 'blog2social') . ' <span class="label label-success">' . esc_html__("PRO", "blog2social") . '</button>';
+            }
         }
         if (in_array($networkId, $this->allowPage)) {
             $name = $this->networkTypeName[1];
@@ -286,8 +281,8 @@ class B2S_Network_Item {
                     $html .= '<div class="b2s-network-auth-list-info" data-b2s-auth-info="isInterrupted"><span class="glyphicon glyphicon-remove-circle"></span> ' . esc_html__('Connection is interrupted since', 'blog2social') . ' ' . esc_html(($sprache == 'en' ? $v['expiredDate'] : date('d.m.Y', strtotime($v['expiredDate'])))) . '</div>';
                 }
 
-                if ($networkId == 1) {
-                    $html .= '<div class="b2s-network-auth-list-info b2s-network-video-not-supported"><span class="glyphicon glyphicon-ban-circle"></span> ' . esc_html__('Facebook does not support video upload via instant sharing', 'blog2social') . '</div>';
+                if ($networkId == 1 || $networkId == 3) {
+                    $html .= '<div class="b2s-network-auth-list-info b2s-network-video-not-supported"><span class="glyphicon glyphicon-ban-circle"></span> ' . esc_html__('This profile is not supported for video uploads by this network', 'blog2social') . '</div>';
                 }
 
                 if ($v['owner_blog_user_id'] !== false) {

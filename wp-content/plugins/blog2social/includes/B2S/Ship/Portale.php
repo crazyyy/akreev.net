@@ -63,7 +63,7 @@ class B2S_Ship_Portale {
                     }
                 }
                 if (in_array($portal->id, $this->allowProfil)) {
-                    if ($isVideoView && $portal->id == 1) {
+                    if ($isVideoView &&  ($portal->id == 1 || $portal->id == 3)) {
                         $html .= '';
                     } else {
                         $name = $this->networkTypeName[0];

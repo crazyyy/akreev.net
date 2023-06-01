@@ -1,26 +1,27 @@
-===AI Power: Complete AI Pack===
+===AI Power: Complete AI Pack - Powered by GPT-4===
 Contributors: senols
 Tags: chatgpt, gpt, openai, ai, gpt4, chatbot, speech, whisper, image generator, ai training
 Requires at least: 5.0.0
 Tested up to: 6.2
 Requires PHP: 7.4
-Stable tag: 1.6.96
+Stable tag: 1.7.16
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
  
-ChatGPT, Content Writer, Auto Content Writer, AutoGPT, Chatbot, Image Generator, AI Assistant, WooCommerce Product Writer, Audio Converter, Speech-to-Post, SEO optimizer, AI Training, Embeddings, Title Suggestions, FAQ/Knowledgebase builder and hundreds of ready to use prompts and forms.
+ChatGPT, Content Writer, Auto Content Writer, AutoGPT, PDF Chat, ChatPDF, Chatbot, Twitter bot, Image Generator, AI Assistant, WooCommerce Product Writer, Audio Converter, Speech-to-Post, SEO optimizer, AI Training, Embeddings, Title Suggestions, FAQ/Knowledgebase builder and hundreds of ready to use prompts and forms.
  
 == Description ==
 
 AI Power is a complete AI package for WordPress powered by GPT-3.5 and GPT-4. It is the most popular, WordPress-based open-source AI solution. It utilizes GPT-3.5, GPT-4, DaVinci and more to generate content, images, and forms with customizable options. It includes AI training, Chat widget, WooCommerce integration, Embeddings and more.
 
-Please read documentation here: <a href="https://aipower.org/">https://aipower.org/</a>
+Please read documentation here: [https://docs.aipower.org/](https://docs.aipower.org/)
 
 == Core Features ==
 * Content Writer
 * Auto Content Writer (Bulk)
 * Image Generator (DALL-E and Stable Diffusion 🚀🚀🚀)
 * ChatGPT - Fully customizable chat widget and chat bot with Chat logs and long term external memory.
+* PDF Chat
 * WooCommerce Product Writer
 * AI Assistant (Integrated with Gutenberg and Classic Editor)
 * AI Training
@@ -45,6 +46,8 @@ Please read documentation here: <a href="https://aipower.org/">https://aipower.o
 * Role Manager
 * Token Sale
 * Comment Replier
+* Twitter bot
+* WooCommerce Bulk Writer
 * 40 langauge support
 
 == How to Generate OpenAI API Key ==
@@ -137,6 +140,8 @@ https://www.youtube.com/watch?v=hetYOlR-ms4
 * ElevenLabs Text to Speech
 * Google Text to Speech
 * Pixabay integration
+* WooCommerce Bulk Writer
+* [PREMIUM] PDF chat.
 * [PREMIUM] Moderation for chat bot.
 * [PREMIUM] Ability to add keywords
 * [PREMIUM] Ability to avoid certain keywords
@@ -240,6 +245,145 @@ The PHP max execution time setting determines the maximum amount of time a PHP s
 This message is coming from OpenAI, not from our plugin. It means that you have reached the limit of your OpenAI API quota, which is determined by your plan and billing details. Our plugin works on a "bring your own API key" model, serving as a bridge between WordPress and OpenAI, so the issue is not related to the plugin itself. To resolve this issue, you'll need to check your OpenAI account and ensure that you have enough quota for your needs, or upgrade your plan if necessary.
 
 == Changelog ==
+
+= 1.7.16 =
+
+- Fixed authenticated option issue.
+- Fixed nonce verification issues.
+
+= 1.7.15 =
+
+**New**
+
+The WooCommerce Bulk Writer is here! You can now generate content for your products in bulk with a single click. See the documentationm [here](https://docs.aipower.org/docs/woocommerce#bulk-product-writer).
+
+**Improvement**
+
+You can now use **Shift + Enter** to create a line break in the chat bot.
+
+= 1.7.14 =
+
+Added documentation links for AutoGPT.
+
+= 1.7.13 =
+
+Fixed some broken links.
+
+= 1.7.12 =
+
+Added search functionality for Embeddings.
+
+Now, you can quickly access your embeddings through a search box found under the **Embeddings - Entries** and **Embeddings - Index Builder** sections.
+
+This update allows for more efficient navigation and management of your embeddings.
+
+= 1.7.11 =
+
+We've made an update to the chat bot's message input. Instead of using a text field, we have now transitioned to a textarea.
+
+This change was made for two main reasons:
+
+- The text field doesn't display a carriage return.
+- The textarea allows for the copying and pasting of large text amounts, maintaining line breaks effectively.
+
+P.S.: You might need to clear your cache for the changes to take effect.
+
+= 1.7.10 =
+
+Fixed an issue in AutoGPT - Queue tab.
+
+= 1.7.9 =
+
+Update links in the License Activation UI.
+
+= 1.7.8 =
+
+- Fixed an issue where OpenAI was not providing a clear error message when an incorrect API key was entered.
+
+= 1.7.7 =
+
+**New (Pro only)**
+
+Twitter Social Poster feature - Now automate your Twitter posts with Blog2Tweet and Twitter Writer. Define your keywords and time interval and let GPT writes your tweets.
+
+Documentation [here](https://docs.aipower.org/docs/AutoGPT/social-poster/twitter).
+
+**Enhancement**
+
+Improved keyword extraction for Pixabay and Pexels.
+
+= 1.7.6 =
+
+**New (Pro only)**
+
+You can now embed PDFs for your chat bot from backend. Documentation [here](https://docs.aipower.org/docs/embeddings#pdf-upload).
+
+**Enhancement**
+
+Chat PDF is now language aware. For example, if chat language is set to Spanish then sample questions will be in Spanish too.
+
+= 1.7.5 =
+
+- Fixed an issue where if the Pinecone index was empty, the chat bot would respond with an "I don't know" message. Now, the bot will continue to interact regardless of the index status.
+- Fixed an issue related to deleting multiple vectors.
+
+= 1.7.4 =
+
+Added more Pinecone environments. If you cant find your environment please let us know.
+
+= 1.7.3 =
+
+Added more Pinecone environments. If you cant find your environment please let us know.
+
+= 1.7.2 =
+
+Improvement: Added clear button to clear current PDF session. Documentation [here](https://docs.aipower.org/docs/ChatGPT/advanced-setup/pdfchat#clearing-the-pdf-session).
+Fix: Removed automated my ai account page creation.
+
+= 1.7.1 =
+
+**New**
+
+Introduced a new Pro feature: PDF Chat. Documentation [here](https://docs.aipower.org/docs/ChatGPT/advanced-setup/pdfchat).
+
+- Your users can now upload PDF files (up to 120 pages) directly in the chat interface.
+- Admins can set a page limit for the uploaded PDFs ranging from 1 to 120 pages.
+- Customizable success message upon successful upload of a PDF.
+- The plugin will automatically generate and display three random questions from the PDF to guide the user interaction.
+- The color of the PDF icon in the chat interface can be customized to align with your brand or preference.
+- You can view all PDFs under ChatGPT - Uploaded PDFs tab.
+
+Also..
+
+- Fixed various minor bugs and improved overall performance and stability.
+- Brought Force Refresh button back to AutoGPT.
+
+= 1.7 =
+
+More Pinecone environments have been added.
+
+= 1.6.99 =
+
+More Pinecone environments have been added.
+
+= 1.6.98 =
+
+**New**
+
+You can now select different Pinecone index for different chat bots. Documentation [here](https://docs.aipower.org/docs/ChatGPT/advanced-setup/context#index-selection)
+
+This step is the beginning of a very cool upcoming feature..
+
+= 1.6.97 =
+
+**New**
+
+- New troubleshooting tool for Embeddings. Go give it a try. It is under Embeddings - Troubleshoot tab. Tutorial will be uploaded soon.
+
+**Fix**
+
+- Fix an issue in Role Manager.
+- Default value for autorestart option in AutoGPT is now 20 minute.
 
 = 1.6.96 =
 

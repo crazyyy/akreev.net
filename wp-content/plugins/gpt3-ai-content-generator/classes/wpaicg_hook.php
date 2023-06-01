@@ -53,7 +53,8 @@ if(!class_exists('\\WPAICG\\WPAICG_Hook')) {
                     'caption' => esc_html__('Caption','gpt3-ai-content-generator'),
                     'description' => esc_html__('Description','gpt3-ai-content-generator'),
                     'edit_image' => esc_html__('Edit Image','gpt3-ai-content-generator'),
-                    'save' => esc_html__('Save','gpt3-ai-content-generator')
+                    'save' => esc_html__('Save','gpt3-ai-content-generator'),
+                    'removed_pdf' => esc_html__('Your pdf session is cleared','gpt3-ai-content-generator')
                 )
             ));
             wp_enqueue_script('wpaicg-chat-shortcode',WPAICG_PLUGIN_URL.'public/js/wpaicg-chat.js',array(),null,true);
@@ -118,7 +119,8 @@ if(!class_exists('\\WPAICG\\WPAICG_Hook')) {
                     'edit_image' => esc_html__('Edit Image','gpt3-ai-content-generator'),
                     'caption' => esc_html__('Caption','gpt3-ai-content-generator'),
                     'description' => esc_html__('Description','gpt3-ai-content-generator'),
-                    'save' => esc_html__('Save','gpt3-ai-content-generator')
+                    'save' => esc_html__('Save','gpt3-ai-content-generator'),
+                    'removed_pdf' => esc_html__('Your pdf session is cleared','gpt3-ai-content-generator')
                 )
             ));
             wp_enqueue_script('wpaicg-chat-script',WPAICG_PLUGIN_URL.'public/js/wpaicg-chat.js',null,null,true);
@@ -235,20 +237,20 @@ if(!class_exists('\\WPAICG\\WPAICG_Hook')) {
                     color: <?php echo esc_html($wpaicg_chat_fontcolor)?>;
                 }
                 .wpaicg_chat_widget_content .wpaicg-chatbox-type{
-                    <?php
-                    if($wpaicg_include_footer):
-                    ?>
+                <?php
+                if($wpaicg_include_footer):
+                ?>
                     padding: 5px 5px 0 5px;
-                    <?php
-                    endif;
-                    ?>
+                <?php
+                endif;
+                ?>
                     border-top: 0;
                     background: rgb(0 0 0 / 19%);
                 }
                 .wpaicg_chat_widget_content .wpaicg-chat-message{
                     color: <?php echo esc_html($wpaicg_chat_fontcolor)?>;
                 }
-                .wpaicg_chat_widget_content input.wpaicg-chatbox-typing{
+                .wpaicg_chat_widget_content textarea.wpaicg-chatbox-typing{
                     background-color: <?php echo esc_html($wpaicg_bg_text_field)?>;
                     border-color: <?php echo esc_html($wpaicg_border_text_field)?>;
                 }
@@ -264,7 +266,7 @@ if(!class_exists('\\WPAICG\\WPAICG_Hook')) {
                     margin-top:2px;
                     margin-bottom: 2px;
                 }
-                .wpaicg_chat_widget_content input.wpaicg-chatbox-typing:focus{
+                .wpaicg_chat_widget_content textarea.wpaicg-chatbox-typing:focus{
                     outline: none;
                 }
                 .wpaicg_chat_widget .wpaicg_toggle{
@@ -278,15 +280,42 @@ if(!class_exists('\\WPAICG\\WPAICG_Hook')) {
                     position: relative;
                 }
                 .wpaicg-mic-icon{
-                    display: flex;
                     cursor: pointer;
-                    position: absolute;
-                    right: 47px;
                 }
                 .wpaicg-mic-icon svg{
                     width: 16px;
                     height: 16px;
                     fill: currentColor;
+                }
+                .wpaicg-pdf-icon svg{
+                    width: 22px;
+                    height: 22px;
+                    fill: currentColor;
+                }
+                .wpaicg_chat_additions span{
+                    cursor: pointer;
+                    margin-right: 2px;
+                }
+                .wpaicg_chat_additions span:last-of-type{
+                    margin-right: 0;
+                }
+                .wpaicg-pdf-loading{
+                    width: 18px;
+                    height: 18px;
+                    border: 2px solid #FFF;
+                    border-bottom-color: transparent;
+                    border-radius: 50%;
+                    display: inline-block;
+                    box-sizing: border-box;
+                    animation: wpaicg_rotation 1s linear infinite;
+                }
+                @keyframes wpaicg_rotation {
+                    0% {
+                        transform: rotate(0deg);
+                    }
+                    100% {
+                        transform: rotate(360deg);
+                    }
                 }
                 .wpaicg-chat-message code{
                     padding: 3px 5px 2px;
@@ -300,11 +329,45 @@ if(!class_exists('\\WPAICG\\WPAICG_Hook')) {
                     border-radius: 4px;
                     white-space: pre-wrap;
                 }
-                input.wpaicg-chat-shortcode-typing,input.wpaicg-chatbox-typing{
+                textarea.wpaicg-chat-shortcode-typing,textarea.wpaicg-chatbox-typing{
                     height: 30px;
                 }
                 .wpaicg_chat_widget_content .wpaicg-chatbox-content,.wpaicg-chat-shortcode-content{
                     overflow: hidden;
+                }
+                .wpaicg_chatbox_line{
+                    overflow: hidden;
+                    text-align: center;
+                    display: block!important;
+                    font-size: 12px;
+                }
+                .wpaicg_chatbox_line:after,.wpaicg_chatbox_line:before{
+                    background-color: rgb(255 255 255 / 26%);
+                    content: "";
+                    display: inline-block;
+                    height: 1px;
+                    position: relative;
+                    vertical-align: middle;
+                    width: 50%;
+                }
+                .wpaicg_chatbox_line:before {
+                    right: 0.5em;
+                    margin-left: -50%;
+                }
+
+                .wpaicg_chatbox_line:after {
+                    left: 0.5em;
+                    margin-right: -50%;
+                }
+                .wpaicg-chat-shortcode-typing::-webkit-scrollbar,.wpaicg-chatbox-typing::-webkit-scrollbar{
+                    width: 5px
+                }
+                .wpaicg-chat-shortcode-typing::-webkit-scrollbar-track,.wpaicg-chatbox-typing::-webkit-scrollbar-track{
+                    -webkit-box-shadow:inset 0 0 6px rgba(0, 0, 0, 0.15);border-radius:5px;
+                }
+                .wpaicg-chat-shortcode-typing::-webkit-scrollbar-thumb,.wpaicg-chatbox-typing::-webkit-scrollbar-thumb{
+                    border-radius:5px;
+                    -webkit-box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.75);
                 }
             </style>
             <script>
@@ -362,15 +425,42 @@ if(!class_exists('\\WPAICG\\WPAICG_Hook')) {
                     position: relative;
                 }
                 .wpaicg-mic-icon{
-                    display: flex;
                     cursor: pointer;
-                    position: absolute;
-                    right: 47px;
                 }
                 .wpaicg-mic-icon svg{
                     width: 16px;
                     height: 16px;
                     fill: currentColor;
+                }
+                .wpaicg-pdf-icon svg{
+                    width: 22px;
+                    height: 22px;
+                    fill: currentColor;
+                }
+                .wpaicg-pdf-loading{
+                    width: 18px;
+                    height: 18px;
+                    border: 2px solid #FFF;
+                    border-bottom-color: transparent;
+                    border-radius: 50%;
+                    display: inline-block;
+                    box-sizing: border-box;
+                    animation: wpaicg_rotation 1s linear infinite;
+                }
+                @keyframes wpaicg_rotation {
+                    0% {
+                        transform: rotate(0deg);
+                    }
+                    100% {
+                        transform: rotate(360deg);
+                    }
+                }
+                .wpaicg_chat_additions span{
+                    cursor: pointer;
+                    margin-right: 2px;
+                }
+                .wpaicg_chat_additions span:last-of-type{
+                    margin-right: 0;
                 }
                 .wp-picker-container{
                     z-index: 99999;
@@ -489,6 +579,51 @@ if(!class_exists('\\WPAICG\\WPAICG_Hook')) {
                 .wpaicg_chat_widget_content .wpaicg-chatbox-content,.wpaicg-chat-shortcode-content{
                     overflow: hidden;
                 }
+                .wpaicg_chatbox_line{
+                    overflow: hidden;
+                    text-align: center;
+                    display: block!important;
+                    font-size: 12px;
+                }
+                .wpaicg_chatbox_line:after,.wpaicg_chatbox_line:before{
+                    background-color: rgb(255 255 255 / 26%);
+                    content: "";
+                    display: inline-block;
+                    height: 1px;
+                    position: relative;
+                    vertical-align: middle;
+                    width: 50%;
+                }
+                .wpaicg_chatbox_line:before {
+                    right: 0.5em;
+                    margin-left: -50%;
+                }
+
+                .wpaicg_chatbox_line:after {
+                    left: 0.5em;
+                    margin-right: -50%;
+                }
+                .wpaicg-chat-shortcode-typing::-webkit-scrollbar,.wpaicg-chatbox-typing::-webkit-scrollbar{
+                    width: 5px
+                }
+                .wpaicg-chat-shortcode-typing::-webkit-scrollbar-track,.wpaicg-chatbox-typing::-webkit-scrollbar-track{
+                    -webkit-box-shadow:inset 0 0 6px rgba(0, 0, 0, 0.15);border-radius:5px;
+                }
+                .wpaicg-chat-shortcode-typing::-webkit-scrollbar-thumb,.wpaicg-chatbox-typing::-webkit-scrollbar-thumb{
+                    border-radius:5px;
+                    -webkit-box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.75);
+                }
+                .wpaicg-woocommerce-content-btn.button-primary{
+                    background: #d63638;
+                    border-color: #d63638;
+                }
+                .wpaicg-woocommerce-content-btn.button-primary:hover{
+                    background: #8d0000;
+                    border-color: #8d0000;
+                }
+                .wpcgai_form_row label{
+                    vertical-align: top;
+                }
             </style>
             <?php
         }
@@ -497,8 +632,10 @@ if(!class_exists('\\WPAICG\\WPAICG_Hook')) {
         {
             global  $menu ;
             global  $submenu ;
-            if($submenu['wpaicg'][0][2] == 'wpaicg'){
-                $submenu['wpaicg'][0][0] = 'Settings';
+            if(isset($submenu['wpaicg'])) {
+                if ($submenu['wpaicg'][0][2] == 'wpaicg') {
+                    $submenu['wpaicg'][0][0] = 'Settings';
+                }
             }
         }
     }
