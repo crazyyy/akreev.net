@@ -37,6 +37,10 @@ if(!class_exists('\\WPAICG\\WPAICG_Chat')) {
         {
             global $wpdb;
             $wpaicg_result = array('status' => 'error', 'msg' => esc_html__('Something went wrong','gpt3-ai-content-generator'));
+            if(!current_user_can('wpaicg_chatgpt_bots')){
+                $wpaicg_result['msg'] = esc_html__('You do not have permission for this action.','gpt3-ai-content-generator');
+                wp_send_json($wpaicg_result);
+            }
             if ( ! wp_verify_nonce( $_POST['_wpnonce'], 'wpaicg_chatbot_save' ) ) {
                 $wpaicg_result['msg'] = WPAICG_NONCE_ERROR;
                 wp_send_json($wpaicg_result);

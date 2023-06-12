@@ -29,6 +29,11 @@ if ( !class_exists( '\\WPAICG\\WPAICG_WooCommerce' ) ) {
         {
             global $wpdb;
             $wpaicg_result = array('status' => 'error','msg' => esc_html__('Something went wrong','gpt3-ai-content-generator'));
+            if(!current_user_can('wpaicg_woocommerce_content')){
+                $wpaicg_result['status'] = 'error';
+                $wpaicg_result['msg'] = esc_html__('You do not have permission for this action.','gpt3-ai-content-generator');
+                wp_send_json($wpaicg_result);
+            }
             if ( ! wp_verify_nonce( $_POST['nonce'], 'wpaicg-ajax-action' ) ) {
                 $wpaicg_result['status'] = 'error';
                 $wpaicg_result['msg'] = WPAICG_NONCE_ERROR;
@@ -79,7 +84,7 @@ if ( !class_exists( '\\WPAICG\\WPAICG_WooCommerce' ) ) {
                     $wpaicg_woo_custom_prompt_meta = $wpaicg_languages['meta_desc_prompt'];
                     $wpaicg_woo_custom_prompt_keywords = $wpaicg_languages['woo_product_tags'];
                 }
-                $wpaicg_ai_model = get_option('wpaicg_ai_model','text-davinci-003');
+                $wpaicg_ai_model = get_option('wpaicg_ai_model','gpt-3.5-turbo');
                 $wpaicg_generator = WPAICG_Generator::get_instance();
                 $wpaicg_generator->openai($open_ai);
                 $wpaicg_generator->sleep_request();
@@ -475,6 +480,11 @@ if ( !class_exists( '\\WPAICG\\WPAICG_WooCommerce' ) ) {
         {
             global $wpdb;
             $wpaicg_result = array('status' => 'error','msg' => esc_html__('Something went wrong','gpt3-ai-content-generator'));
+            if(!current_user_can('wpaicg_woocommerce_product_writer')){
+                $wpaicg_result['status'] = 'error';
+                $wpaicg_result['msg'] = esc_html__('You do not have permission for this action.','gpt3-ai-content-generator');
+                wp_send_json($wpaicg_result);
+            }
             if ( ! wp_verify_nonce( $_POST['nonce'], 'wpaicg-ajax-nonce' ) ) {
                 $wpaicg_result['status'] = 'error';
                 $wpaicg_result['msg'] = WPAICG_NONCE_ERROR;
@@ -596,6 +606,11 @@ if ( !class_exists( '\\WPAICG\\WPAICG_WooCommerce' ) ) {
             global $wpdb;
             $open_ai = WPAICG_OpenAI::get_instance()->openai();
             $wpaicg_result = array('status' => 'error','msg' => esc_html__('Something went wrong','gpt3-ai-content-generator'),'data' => '');
+            if(!current_user_can('wpaicg_woocommerce_product_writer')){
+                $wpaicg_result['status'] = 'error';
+                $wpaicg_result['msg'] = esc_html__('You do not have permission for this action.','gpt3-ai-content-generator');
+                wp_send_json($wpaicg_result);
+            }
             if ( ! wp_verify_nonce( $_POST['nonce'], 'wpaicg-ajax-nonce' ) ) {
                 $wpaicg_result['status'] = 'error';
                 $wpaicg_result['msg'] = WPAICG_NONCE_ERROR;
@@ -651,7 +666,7 @@ if ( !class_exists( '\\WPAICG\\WPAICG_WooCommerce' ) ) {
                 /*End Custom Prompt*/
                 $myprompt = isset($wpaicg_languages[$wpaicg_language_key]) && !empty($wpaicg_languages[$wpaicg_language_key]) ? sprintf($wpaicg_languages[$wpaicg_language_key], $wpaicg_title) : $wpaicg_title;
                 $wpaicg_result['prompt'] = $myprompt;
-                $wpaicg_ai_model = get_option('wpaicg_ai_model','text-davinci-003');
+                $wpaicg_ai_model = get_option('wpaicg_ai_model','gpt-3.5-turbo');
                 if($wpaicg_ai_model == 'gpt-3.5-turbo' || $wpaicg_ai_model == 'gpt-4' || $wpaicg_ai_model == 'gpt-4-32k'){
                     $myprompt = $wpaicg_languages['fixed_prompt_turbo'].' '.$myprompt;
                 }

@@ -90,17 +90,6 @@ msgstr ""
 msgid "Free users can only generate 5 pieces of content at a time. Please %sclick here%s to upgrade to the Pro plan to unlock more."
 msgstr ""
 
-#: admin/extra/wpaicg_bulk.php:32
-#: admin/extra/wpaicg_chatmode.php:20
-#: admin/extra/wpaicg_forms.php:20
-#: admin/extra/wpaicg_promptbase.php:20
-#: admin/extra/wpaicg_single.php:26
-#: admin/views/audio/index.php:20
-#: admin/views/embeddings/index.php:26
-#: admin/views/finetune/index.php:20
-msgid "Love our plugin? Support us with a quick review: %s[Write a Review]%s - Thank you! ❤️ 😊"
-msgstr ""
-
 #: admin/extra/wpaicg_bulk.php:38
 #: admin/extra/wpaicg_bulk_queue.php:84
 msgid "Bulk Editor"
