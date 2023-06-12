@@ -81,8 +81,8 @@ if($checkRole){
                     </form>
 
                     <!-- Modal -->
-                    <div class="modal fade" id="myModal" role="dialog" data-backdrop="static" data-keyboard="false">
-                        <div class="modal-dialog">
+                    <div class="modal-wpaicg fade" id="myModal" role="dialog" data-backdrop="static" data-keyboard="false">
+                        <div class="modal-wpaicg-dialog">
 
                             <!-- Modal content-->
                             <div class="wpcgai_modal-content">
