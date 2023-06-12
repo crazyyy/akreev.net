@@ -2250,8 +2250,14 @@ function ewww_image_optimizer_bulk_cleanup() {
 	ewwwio_ob_clean();
 	die(
 		'<p><b>' . esc_html__( 'Finished', 'ewww-image-optimizer' ) . '</b> - ' .
+		( ewww_image_optimizer_get_option( 'ewww_image_optimizer_cloud_key' ) ?
 		'<a target="_blank" href="https://wordpress.org/support/plugin/ewww-image-optimizer/reviews/#new-post">' .
-		esc_html__( 'Write a Review', 'ewww-image-optimizer' ) . '</a></p>'
+		esc_html__( 'Write a Review', 'ewww-image-optimizer' ) :
+		esc_html__( 'Want more compression?', 'ewww-image-optimizer' ) . ' ' .
+		'<a target="_blank" href="https://ewww.io/trial/">' .
+		esc_html__( 'Get 5x more with a free trial', 'ewww-image-optimizer' )
+		) .
+		'</a></p>'
 	);
 }
 
@@ -2265,4 +2271,3 @@ add_action( 'wp_ajax_ewww_bulk_update_meta', 'ewww_image_optimizer_bulk_update_m
 add_action( 'wp_ajax_bulk_cleanup', 'ewww_image_optimizer_bulk_cleanup' );
 add_action( 'wp_ajax_bulk_quota_update', 'ewww_image_optimizer_bulk_quota_update' );
 add_filter( 'ewww_image_optimizer_count_optimized_queries', 'ewww_image_optimizer_reduce_query_count' );
-?>

@@ -25,11 +25,13 @@ if(!class_exists('\\WPAICG\\WPAICG_Roles')) {
                 'name' => 'AutoGPT',
                 'hide' => 'bulk_content',
                 'roles' => array(
-                    'bulk' => array('name' => 'Bulk Editor'),
+                    'bulk' => array('name' => 'Dashboard'),
+                    'editor' => array('name' => 'Bulk Editor'),
                     'csv' => array('name' => 'CSV'),
                     'copy-paste' => array('name' => 'Copy-Paste'),
                     'google-sheets' => array('name' => 'Google Sheets'),
                     'rss' => array('name' => 'RSS'),
+                    'tweet' => array('name' => 'Twitter'),
                     'tracking' => array('name' => 'Queue'),
                     'setting' => array('name' => 'Settings')
                 )
@@ -41,7 +43,9 @@ if(!class_exists('\\WPAICG\\WPAICG_Roles')) {
                     'shortcode' => array('name' => 'Shortcode'),
                     'widget' => array('name' => 'Widget'),
                     'bots' => array('name' => 'Chat Bots'),
-                    'logs' => array('name' => 'Logs')
+                    'pdf' => array('name' => 'PDF'),
+                    'logs' => array('name' => 'Logs'),
+                    'settings' => array('name' => 'Settings')
                 )
             ),
             'image_generator' => array(
@@ -79,8 +83,10 @@ if(!class_exists('\\WPAICG\\WPAICG_Roles')) {
                 'roles' => array(
                     'content' => array('name' => 'Content Builder'),
                     'logs' => array('name' => 'Entries'),
+                    'pdf' => array('name' => 'PDF'),
                     'builder' => array('name' => 'Index Builder'),
-                    'settings' => array('name' => 'Settings')
+                    'settings' => array('name' => 'Settings'),
+                    'troubleshoot' => array('name' => 'Troubleshoot')
                 )
             ),
             'finetune' => array(
@@ -106,11 +112,18 @@ if(!class_exists('\\WPAICG\\WPAICG_Roles')) {
             'comment_reply' => array('name' => 'Comment Replier'),
             'ai_assistant' => array('name' => 'AI Assistant'),
             'instant_embedding' => array('name' => 'Instant Embedding'),
-            'woocommerce' => array('name' => 'WooCommerce Product Writer'),
+            'woocommerce' => array(
+                'name' => 'WooCommerce',
+                'hide' => '',
+                'roles' => array(
+                    'product_writer' => array('name' => 'Product Writer'),
+                    'meta_box' => array('name' => 'Product Token Metabox'),
+                    'content' => array('name' => 'Bulk Product Writer')
+                )
+            ),
             'suggester' => array('name' => 'Title Suggester'),
             'meta_box' => array('name' => 'Post Metabox'),
-            'myai_account' => array('name' => 'AI Account'),
-            'woocommerce_meta_box' => array('name' => 'Product Token Metabox')
+            'myai_account' => array('name' => 'AI Account')
         );
 
         public static function get_instance()

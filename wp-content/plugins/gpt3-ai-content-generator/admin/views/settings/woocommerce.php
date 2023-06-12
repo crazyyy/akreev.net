@@ -7,43 +7,49 @@ if ( ! defined( 'ABSPATH' ) ) exit;
             <label class="wpcgai_label"><?php echo esc_html__('Write a SEO friendly product title?','gpt3-ai-content-generator')?>:</label>
             <?php $wpaicg_woo_generate_title = get_option('wpaicg_woo_generate_title',false); ?>
             <input<?php echo $wpaicg_woo_generate_title ? ' checked':'';?> type="checkbox" name="wpaicg_woo_generate_title" value="1">
-            <a class="wpcgai_help_link" href="https://gptaipower.com/optimize-your-woocommerce-product-listings-with-gpt-3-ai/" target="_blank">?</a>
+            <a class="wpcgai_help_link" href="https://docs.aipower.org/docs/woocommerce#woocommerce-product-writer" target="_blank">?</a>
         </div>
         <div class="wpcgai_form_row">
             <label class="wpcgai_label"><?php echo esc_html__('Write a SEO Meta Description?','gpt3-ai-content-generator')?>:</label>
             <?php $wpaicg_woo_meta_description = get_option('wpaicg_woo_meta_description',false); ?>
             <input<?php echo $wpaicg_woo_meta_description ? ' checked':'';?> type="checkbox" name="wpaicg_woo_meta_description" value="1">
-            <a class="wpcgai_help_link" href="https://gptaipower.com/optimize-your-woocommerce-product-listings-with-gpt-3-ai/" target="_blank">?</a>
+            <a class="wpcgai_help_link" href="https://docs.aipower.org/docs/woocommerce#woocommerce-product-writer" target="_blank">?</a>
         </div>
         <div class="wpcgai_form_row">
             <label class="wpcgai_label"><?php echo esc_html__('Write a product description?','gpt3-ai-content-generator')?>:</label>
             <?php $wpaicg_woo_generate_description = get_option('wpaicg_woo_generate_description',false); ?>
             <input<?php echo $wpaicg_woo_generate_description ? ' checked':'';?> type="checkbox" name="wpaicg_woo_generate_description" value="1">
-            <a class="wpcgai_help_link" href="https://gptaipower.com/optimize-your-woocommerce-product-listings-with-gpt-3-ai/" target="_blank">?</a>
+            <a class="wpcgai_help_link" href="https://docs.aipower.org/docs/woocommerce#woocommerce-product-writer" target="_blank">?</a>
         </div>
         <div class="wpcgai_form_row">
             <label class="wpcgai_label"><?php echo esc_html__('Write a short product description?','gpt3-ai-content-generator')?>:</label>
             <?php $wpaicg_woo_generate_short = get_option('wpaicg_woo_generate_short',false); ?>
             <input<?php echo $wpaicg_woo_generate_short ? ' checked':'';?> type="checkbox" name="wpaicg_woo_generate_short" value="1">
-            <a class="wpcgai_help_link" href="https://gptaipower.com/optimize-your-woocommerce-product-listings-with-gpt-3-ai/" target="_blank">?</a>
+            <a class="wpcgai_help_link" href="https://docs.aipower.org/docs/woocommerce#woocommerce-product-writer" target="_blank">?</a>
         </div>
         <div class="wpcgai_form_row">
             <label class="wpcgai_label"><?php echo esc_html__('Generate product tags?','gpt3-ai-content-generator')?>:</label>
             <?php $wpaicg_woo_generate_tags = get_option('wpaicg_woo_generate_tags',false); ?>
             <input<?php echo $wpaicg_woo_generate_tags ? ' checked':'';?> type="checkbox" name="wpaicg_woo_generate_tags" value="1">
-            <a class="wpcgai_help_link" href="https://gptaipower.com/optimize-your-woocommerce-product-listings-with-gpt-3-ai/" target="_blank">?</a>
+            <a class="wpcgai_help_link" href="https://docs.aipower.org/docs/woocommerce#woocommerce-product-writer" target="_blank">?</a>
         </div>
         <?php
         $wpaicg_woo_custom_prompt = get_option('wpaicg_woo_custom_prompt',false);
-        $wpaicg_woo_custom_prompt_title = get_option('wpaicg_woo_custom_prompt_title',esc_html__('Write a SEO friendly product title: %s.','gpt3-ai-content-generator'));
-        $wpaicg_woo_custom_prompt_short = get_option('wpaicg_woo_custom_prompt_short',esc_html__('Summarize this product in 2 short sentences: %s.','gpt3-ai-content-generator'));
-        $wpaicg_woo_custom_prompt_description = get_option('wpaicg_woo_custom_prompt_description',esc_html__('Write a detailed product description about: %s.','gpt3-ai-content-generator'));
-        $wpaicg_woo_custom_prompt_keywords = get_option('wpaicg_woo_custom_prompt_keywords',esc_html__('Suggest keywords for this product: %s.','gpt3-ai-content-generator'));
-        $wpaicg_woo_custom_prompt_meta = get_option('wpaicg_woo_custom_prompt_meta',esc_html__('Write a meta description about: %s. Max: 155 characters.','gpt3-ai-content-generator'));
+        $wpaicg_woo_custom_prompt_title = get_option('wpaicg_woo_custom_prompt_title',esc_html__('Compose an SEO-optimized title in English for the following product: %s. Ensure it is engaging, concise, and includes relevant keywords to maximize its visibility on search engines.','gpt3-ai-content-generator'));
+        $wpaicg_woo_custom_prompt_short = get_option('wpaicg_woo_custom_prompt_short',esc_html__('Provide a compelling and concise summary in English for the following product: %s, highlighting its key features, benefits, and unique selling points.','gpt3-ai-content-generator'));
+        $wpaicg_woo_custom_prompt_description = get_option('wpaicg_woo_custom_prompt_description',esc_html__('Craft a comprehensive and engaging product description in English for: %s. Include specific details, features, and benefits, as well as the value it offers to the customer, thereby creating a compelling narrative around the product.','gpt3-ai-content-generator'));
+        $wpaicg_woo_custom_prompt_keywords = get_option('wpaicg_woo_custom_prompt_keywords',esc_html__('Propose a set of relevant keywords in English for the following product: %s. The keywords should be directly related to the product, enhancing its discoverability. Please present these keywords in a comma-separated format, avoiding the use of symbols such as -, #, etc.','gpt3-ai-content-generator'));
+        $wpaicg_woo_custom_prompt_meta = get_option('wpaicg_woo_custom_prompt_meta',esc_html__('Craft a compelling and concise meta description in English for: %s. Aim to highlight its key features and benefits within a limit of 155 characters, while incorporating relevant keywords for SEO effectiveness.','gpt3-ai-content-generator'));
+        $wpaicg_woo_custom_prompt_title = str_replace("\\",'',$wpaicg_woo_custom_prompt_title);
+        $wpaicg_woo_custom_prompt_short = str_replace("\\",'',$wpaicg_woo_custom_prompt_short);
+        $wpaicg_woo_custom_prompt_description = str_replace("\\",'',$wpaicg_woo_custom_prompt_description);
+        $wpaicg_woo_custom_prompt_keywords = str_replace("\\",'',$wpaicg_woo_custom_prompt_keywords);
+        $wpaicg_woo_custom_prompt_meta = str_replace("\\",'',$wpaicg_woo_custom_prompt_meta);
         ?>
         <div class="wpcgai_form_row">
             <label class="wpcgai_label"><?php echo esc_html__('Use Custom Prompt','gpt3-ai-content-generator')?>:</label>
             <input<?php echo $wpaicg_woo_custom_prompt ? ' checked':'';?> type="checkbox" class="wpaicg_woo_custom_prompt" name="wpaicg_woo_custom_prompt" value="1">
+            <a class="wpcgai_help_link" href="https://docs.aipower.org/docs/woocommerce#customizing-prompts" target="_blank">?</a>
         </div>
         <div<?php echo $wpaicg_woo_custom_prompt ? '':' style="display:none"';?> class="wpaicg_woo_custom_prompts">
             <div class="wpcgai_form_row">
@@ -71,12 +77,13 @@ if ( ! defined( 'ABSPATH' ) ) exit;
         <?php
         $wpaicg_order_status_token = get_option('wpaicg_order_status_token','completed');
         ?>
-        <div class="wpcgai_form_row">
+        <div class="wpcgai_form_row wpaicg_woo_token_sale">
             <label class="wpcgai_label"><?php echo esc_html__('Add tokens to user account if order status is','gpt3-ai-content-generator')?>: </label>
             <select name="wpaicg_order_status_token">
                 <option<?php echo $wpaicg_order_status_token == 'completed'? ' selected':''?> value="completed"><?php echo esc_html__('Completed','gpt3-ai-content-generator')?></option>
                 <option<?php echo $wpaicg_order_status_token == 'processing'? ' selected':''?> value="processing"><?php echo esc_html__('Processing','gpt3-ai-content-generator')?></option>
             </select>
+        <a class="wpcgai_help_link" href="https://docs.aipower.org/docs/user-management-token-sale" target="_blank">?</a>
         </div>
     </div>
 <script>

@@ -63,9 +63,11 @@ class Ajax_Post {
         add_action('wp_ajax_b2s_auto_post_assign_by_disconnect', array($this, 'autoPostAssignByDisconnect'));
         add_action('wp_ajax_b2s_metrics_starting_confirm', array($this, 'metricsStartingConfirm'));
         add_action('wp_ajax_b2s_metrics_banner_close', array($this, 'metricsBannerClose'));
+        add_action('wp_ajax_b2s_metrics_feedback_close', array($this, 'metricsFeedbackClose'));
         add_action('wp_ajax_b2s_continue_trial_option', array($this, 'continueTrialOption'));
         add_action('wp_ajax_b2s_final_trial_option', array($this, 'hideFinalTrialOption'));
         add_action('wp_ajax_b2s_upload_video', array($this, 'uploadVideo'));
+        add_action('wp_ajax_b2s_delete_all_posts_older_than', array($this, 'deleteAllPostsOlderThan'));
     }
 
     public function uploadVideo() {
@@ -572,8 +574,6 @@ class Ajax_Post {
             $metaOg = false;
             $metaCard = false;
 
-            //$post['video_upload_url'] = 'https://www.sample-videos.com/video123/flv/720/big_buck_bunny_720p_1mb.flv';
-
             if (!isset($post['b2s']) || !is_array($post['b2s']) || !isset($post['post_id']) || (int) $post['post_id'] == 0) {
                 echo json_encode(array('result' => false));
                 wp_die();
@@ -600,7 +600,6 @@ class Ajax_Post {
                     continue;
                 }
                 if (isset($post['is_video']) && (int) $post['is_video'] == 1) {
-                    $data['releaseSelect'] = 0; //share now
                     $data['post_format'] = 2; //video
                 } else {
                     if ((int) $data['network_id'] == 1 || (int) $data['network_id'] == 3 || (int) $data['network_id'] == 19) {
@@ -626,7 +625,6 @@ class Ajax_Post {
                             $meta->setMeta('og_image_alt', '');
                         }
                         $meta->updateMeta((int) $post['post_id']);
-                        //TODO update scheds
                         global $wpdb;
                         $res = $wpdb->get_results($wpdb->prepare("SELECT * FROM {$wpdb->prefix}b2s_posts LEFT JOIN {$wpdb->prefix}b2s_posts_sched_details ON {$wpdb->prefix}b2s_posts.sched_details_id = {$wpdb->prefix}b2s_posts_sched_details.id LEFT JOIN {$wpdb->prefix}b2s_posts_network_details ON {$wpdb->prefix}b2s_posts.network_details_id = {$wpdb->prefix}b2s_posts_network_details.id WHERE {$wpdb->prefix}b2s_posts.sched_details_id > 0 AND {$wpdb->prefix}b2s_posts.post_id = %d AND {$wpdb->prefix}b2s_posts_network_details.network_id IN (" . implode(',', json_decode(B2S_PLUGIN_NETWORK_META_TAGS, true)['og']) . ") AND sched_date_utc > %s", $post['post_id'], gmdate('Y-m-d H:i:s')));
                         foreach ($res as $key => $sched) {
@@ -670,6 +668,7 @@ class Ajax_Post {
                     "group" => isset($data['group']) ? sanitize_text_field($data['group']) : '',
                     "custom_title" => isset($data['custom_title']) ? sanitize_text_field($data['custom_title']) : '',
                     "content" => (isset($data['content']) && !empty($data['content'])) ? strip_tags(preg_replace("/(<[\/]*)em(>)/", "$1i$2", html_entity_decode(sanitize_textarea_field(htmlentities($data['content'])))), '<p><h1><h2><br><i><b><a><img>') : '',
+                    'share_as_reel' => isset($data['share_as_reel']) && !empty($data['share_as_reel']) ? (int) $data['share_as_reel'] : 0,
                     'url' => isset($data['url']) ? htmlspecialchars_decode(esc_url_raw($data['url'])) : '',
                     'image_url' => isset($data['image_url']) ? trim(esc_url_raw($data['image_url'])) : '',
                     'video_url' => ((isset($post['is_video']) && (int) $post['is_video'] == 1 && isset($post['video_upload_url']) && !empty($post['video_upload_url'])) ? htmlspecialchars_decode(esc_url_raw($post['video_upload_url'])) : ''),
@@ -734,56 +733,71 @@ class Ajax_Post {
                     }
                 }
 
-                //mode: share now
-                $schedData = array();
-                if (isset($data['releaseSelect']) && (int) $data['releaseSelect'] == 0) {
-                    $b2sShipSend->savePublishDetails(array_merge($defaultPostData, $sendData), $relayData);
-                    //mode: schedule custom once times
-                } else if (isset($data['releaseSelect']) && (int) $data['releaseSelect'] == 1 && isset($data['date'][0]) && isset($data['time'][0])) {
-                    $schedData = array(
-                        'date' => isset($data['date']) ? $data['date'] : array(),
-                        'time' => isset($data['time']) ? $data['time'] : array(),
-                        'sched_content' => isset($data['sched_content']) ? $data['sched_content'] : array(),
-                        'sched_image_url' => isset($data['sched_image_url']) ? $data['sched_image_url'] : array(),
-                        'sched_multi_image_1' => isset($data['sched_multi_image_1']) ? $data['sched_multi_image_1'] : array(),
-                        'sched_multi_image_2' => isset($data['sched_multi_image_2']) ? $data['sched_multi_image_2'] : array(),
-                        'sched_multi_image_3' => isset($data['sched_multi_image_3']) ? $data['sched_multi_image_3'] : array(),
-                        'sched_multi_image_4' => isset($data['sched_multi_image_4']) ? $data['sched_multi_image_4'] : array(),
-                        'sched_multi_image_5' => isset($data['sched_multi_image_5']) ? $data['sched_multi_image_5'] : array(),
-                        'sched_multi_image_6' => isset($data['sched_multi_image_6']) ? $data['sched_multi_image_6'] : array(),
-                        'sched_multi_image_7' => isset($data['sched_multi_image_7']) ? $data['sched_multi_image_7'] : array(),
-                        'sched_multi_image_8' => isset($data['sched_multi_image_8']) ? $data['sched_multi_image_8'] : array(),
-                        'sched_multi_image_9' => isset($data['sched_multi_image_9']) ? $data['sched_multi_image_9'] : array(),
-                        'releaseSelect' => isset($data['releaseSelect']) ? $data['releaseSelect'] : 0,
-                        'user_timezone' => isset($post['user_timezone']) ? sanitize_text_field(wp_unslash($post['user_timezone'])) : 0,
-                        'saveSetting' => isset($data['saveSchedSetting']) ? true : false);
-                    $schedResult [] = $b2sShipSend->saveSchedDetails(array_merge($defaultPostData, $sendData), $schedData, $relayData);
-                    $content = array_merge($content, $schedResult);
-//mode: recurrently schedule
+                if (isset($post['is_video']) && $post['is_video'] == 1) {
+                    $schedData = array();
+                    if (isset($data['releaseSelect']) && (int) $data['releaseSelect'] == 1 && isset($data['date'][0]) && isset($data['time'][0])) {
+                        $schedData = array(
+                            'date' => isset($data['date']) ? $data['date'] : array(),
+                            'time' => isset($data['time']) ? $data['time'] : array(),
+                            'user_timezone' => isset($post['user_timezone']) ? sanitize_text_field(wp_unslash($post['user_timezone'])) : 0,
+                            'releaseSelect' => isset($data['releaseSelect']) ? $data['releaseSelect'] : 0,
+                            'sched_content' => isset($data['sched_content']) ? $data['sched_content'] : array(),
+                            'saveSetting' => isset($data['saveSchedSetting']) ? true : false
+                        );
+                    }
+                    $b2sShipSend->saveVideoDetails(array_merge($defaultPostData, $sendData), $schedData);
                 } else {
-                    $schedData = array(
-                        'interval_select' => isset($data['intervalSelect']) ? $data['intervalSelect'] : array(),
-                        'duration_month' => isset($data['duration_month']) ? $data['duration_month'] : array(),
-                        'select_day' => isset($data['select_day']) ? $data['select_day'] : array(),
-                        'duration_time' => isset($data['duration_time']) ? $data['duration_time'] : array(),
-                        'select_timespan' => isset($data['select_timespan']) ? $data['select_timespan'] : array(),
-                        'weeks' => isset($data['weeks']) ? $data['weeks'] : 0,
-                        'date' => isset($data['date']) ? $data['date'] : array(),
-                        'time' => isset($data['time']) ? $data['time'] : array(),
-                        'mo' => isset($data['mo']) ? $data['mo'] : array(),
-                        'di' => isset($data['di']) ? $data['di'] : array(),
-                        'mi' => isset($data['mi']) ? $data['mi'] : array(),
-                        'do' => isset($data['do']) ? $data['do'] : array(),
-                        'fr' => isset($data['fr']) ? $data['fr'] : array(),
-                        'sa' => isset($data['sa']) ? $data['sa'] : array(),
-                        'so' => isset($data['so']) ? $data['so'] : array(),
-                        'releaseSelect' => isset($data['releaseSelect']) ? $data['releaseSelect'] : 0,
-                        'user_timezone' => isset($post['user_timezone']) ? sanitize_text_field(wp_unslash($post['user_timezone'])) : 0,
-                        'saveSetting' => isset($data['saveSchedSetting']) ? true : false
-                    );
-
-                    $schedResult [] = $b2sShipSend->saveSchedDetails(array_merge($defaultPostData, $sendData), $schedData, $relayData);
-                    $content = array_merge($content, $schedResult);
+                    //mode: share now
+                    $schedData = array();
+                    if (isset($data['releaseSelect']) && (int) $data['releaseSelect'] == 0) {
+                        $b2sShipSend->savePublishDetails(array_merge($defaultPostData, $sendData), $relayData);
+                        //mode: schedule custom once times
+                    } else if (isset($data['releaseSelect']) && (int) $data['releaseSelect'] == 1 && isset($data['date'][0]) && isset($data['time'][0])) {
+                        $schedData = array(
+                            'date' => isset($data['date']) ? $data['date'] : array(),
+                            'time' => isset($data['time']) ? $data['time'] : array(),
+                            'sched_content' => isset($data['sched_content']) ? $data['sched_content'] : array(),
+                            'sched_image_url' => isset($data['sched_image_url']) ? $data['sched_image_url'] : array(),
+                            'sched_multi_image_1' => isset($data['sched_multi_image_1']) ? $data['sched_multi_image_1'] : array(),
+                            'sched_multi_image_2' => isset($data['sched_multi_image_2']) ? $data['sched_multi_image_2'] : array(),
+                            'sched_multi_image_3' => isset($data['sched_multi_image_3']) ? $data['sched_multi_image_3'] : array(),
+                            'sched_multi_image_4' => isset($data['sched_multi_image_4']) ? $data['sched_multi_image_4'] : array(),
+                            'sched_multi_image_5' => isset($data['sched_multi_image_5']) ? $data['sched_multi_image_5'] : array(),
+                            'sched_multi_image_6' => isset($data['sched_multi_image_6']) ? $data['sched_multi_image_6'] : array(),
+                            'sched_multi_image_7' => isset($data['sched_multi_image_7']) ? $data['sched_multi_image_7'] : array(),
+                            'sched_multi_image_8' => isset($data['sched_multi_image_8']) ? $data['sched_multi_image_8'] : array(),
+                            'sched_multi_image_9' => isset($data['sched_multi_image_9']) ? $data['sched_multi_image_9'] : array(),
+                            'releaseSelect' => isset($data['releaseSelect']) ? $data['releaseSelect'] : 0,
+                            'user_timezone' => isset($post['user_timezone']) ? sanitize_text_field(wp_unslash($post['user_timezone'])) : 0,
+                            'saveSetting' => isset($data['saveSchedSetting']) ? true : false
+                        );
+                        $schedResult [] = $b2sShipSend->saveSchedDetails(array_merge($defaultPostData, $sendData), $schedData, $relayData);
+                        $content = array_merge($content, $schedResult);
+                        //mode: recurrently schedule
+                    } else {
+                        $schedData = array(
+                            'interval_select' => isset($data['intervalSelect']) ? $data['intervalSelect'] : array(),
+                            'duration_month' => isset($data['duration_month']) ? $data['duration_month'] : array(),
+                            'select_day' => isset($data['select_day']) ? $data['select_day'] : array(),
+                            'duration_time' => isset($data['duration_time']) ? $data['duration_time'] : array(),
+                            'select_timespan' => isset($data['select_timespan']) ? $data['select_timespan'] : array(),
+                            'weeks' => isset($data['weeks']) ? $data['weeks'] : 0,
+                            'date' => isset($data['date']) ? $data['date'] : array(),
+                            'time' => isset($data['time']) ? $data['time'] : array(),
+                            'mo' => isset($data['mo']) ? $data['mo'] : array(),
+                            'di' => isset($data['di']) ? $data['di'] : array(),
+                            'mi' => isset($data['mi']) ? $data['mi'] : array(),
+                            'do' => isset($data['do']) ? $data['do'] : array(),
+                            'fr' => isset($data['fr']) ? $data['fr'] : array(),
+                            'sa' => isset($data['sa']) ? $data['sa'] : array(),
+                            'so' => isset($data['so']) ? $data['so'] : array(),
+                            'releaseSelect' => isset($data['releaseSelect']) ? $data['releaseSelect'] : 0,
+                            'user_timezone' => isset($post['user_timezone']) ? sanitize_text_field(wp_unslash($post['user_timezone'])) : 0,
+                            'saveSetting' => isset($data['saveSchedSetting']) ? true : false
+                        );
+                        $schedResult [] = $b2sShipSend->saveSchedDetails(array_merge($defaultPostData, $sendData), $schedData, $relayData);
+                        $content = array_merge($content, $schedResult);
+                    }
                 }
             }
 
@@ -1732,7 +1746,6 @@ class Ajax_Post {
                                 $meta->setMeta('og_image_alt', '');
                             }
                             $meta->updateMeta((int) $post['post_id']);
-                            //TODO Update scheds
                             global $wpdb;
                             $res = $wpdb->get_results($wpdb->prepare("SELECT * FROM {$wpdb->prefix}b2s_posts LEFT JOIN {$wpdb->prefix}b2s_posts_sched_details ON {$wpdb->prefix}b2s_posts.sched_details_id = {$wpdb->prefix}b2s_posts_sched_details.id LEFT JOIN {$wpdb->prefix}b2s_posts_network_details ON {$wpdb->prefix}b2s_posts.network_details_id = {$wpdb->prefix}b2s_posts_network_details.id WHERE {$wpdb->prefix}b2s_posts.sched_details_id > 0 AND {$wpdb->prefix}b2s_posts.post_id = %d AND {$wpdb->prefix}b2s_posts_network_details.network_id IN (" . implode(',', json_decode(B2S_PLUGIN_NETWORK_META_TAGS, true)['og']) . ") AND sched_date_utc > %s", $post['post_id'], gmdate('Y-m-d H:i:s')));
                             foreach ($res as $key => $sched) {
@@ -2394,16 +2407,27 @@ class Ajax_Post {
                     } else {
                         //check if posts already in queue
                         $hook_filter = new B2S_Hook_Filter();
+
                         $postIds = array();
                         for ($i = 0; $i < count($result); $i++) {
                             array_push($postIds, (int) $result[$i]->ID);
                         }
-                        $sql = "SELECT DISTINCT post_id FROM {$wpdb->prefix}b2s_posts WHERE sched_type = '5' AND hide = '0' AND publish_date = '0000-00-00 00:00:00' AND blog_user_id = " . B2S_PLUGIN_BLOG_USER_ID . " AND post_id IN (" . implode(",", $postIds) . ")";
+
+                        $networkIds = array();
+                        foreach ($networkData as $network) {
+                            array_push($networkIds, (int) $network->networkAuthId);
+                        }
+
+                        $where = "WHERE sched_type = '5' AND hide = '0' AND publish_date = '0000-00-00 00:00:00' AND blog_user_id = " . B2S_PLUGIN_BLOG_USER_ID . " AND post_id IN (" . implode(",", $postIds) . ")";
+                        $sql = "SELECT {$wpdb->prefix}b2s_posts.post_id AS post_id, {$wpdb->prefix}b2s_posts_network_details.network_auth_id AS network_auth_id FROM {$wpdb->prefix}b2s_posts LEFT JOIN {$wpdb->prefix}b2s_posts_network_details ON {$wpdb->prefix}b2s_posts.network_details_id={$wpdb->prefix}b2s_posts_network_details.id " . $where;
                         $result = $wpdb->get_results($sql);
+
                         if (is_array($result) && !empty($result)) {
                             foreach ($result as $k => $v) {
                                 $key = array_search($v->post_id, $postIds);
-                                if ($key !== false) {
+                                $networkKey = array_search($v->network_auth_id, $networkIds);
+
+                                if ($key !== false && $networkKey !== false) {
                                     unset($postIds[$key]);
                                 }
                             }
@@ -2611,6 +2635,19 @@ class Ajax_Post {
         }
     }
 
+    public function metricsFeedbackClose() {
+        if (current_user_can('read') && isset($_POST['b2s_security_nonce']) && (int) wp_verify_nonce(sanitize_text_field(wp_unslash($_POST['b2s_security_nonce'])), 'b2s_security_nonce') > 0) {
+            require_once (B2S_PLUGIN_DIR . '/includes/Options.php');
+            $option = new B2S_Options(B2S_PLUGIN_BLOG_USER_ID);
+            $option->_setOption('metrics_feedback', true);
+            echo json_encode(array('result' => true));
+            wp_die();
+        } else {
+            echo json_encode(array('result' => false, 'error_reason' => 'nonce'));
+            wp_die();
+        }
+    }
+
     public function continueTrialOption() {
         if (current_user_can('read') && isset($_POST['b2s_security_nonce']) && (int) wp_verify_nonce(sanitize_text_field(wp_unslash($_POST['b2s_security_nonce'])), 'b2s_security_nonce') > 0) {
             require_once (B2S_PLUGIN_DIR . '/includes/Options.php');
@@ -2630,6 +2667,58 @@ class Ajax_Post {
             $option = new B2S_Options(B2S_PLUGIN_BLOG_USER_ID);
             $option->_setOption('hide_final_trail', true);
             echo json_encode(array('result' => true));
+            wp_die();
+        } else {
+            echo json_encode(array('result' => false, 'error_reason' => 'nonce'));
+            wp_die();
+        }
+    }
+
+    public function deleteAllPostsOlderThan() {
+        if (current_user_can('administrator') && isset($_POST['b2s_security_nonce']) && (int) wp_verify_nonce(sanitize_text_field(wp_unslash($_POST['b2s_security_nonce'])), 'b2s_security_nonce') > 0) {
+            $timeSetoff = null;
+            if (isset($_POST["timeframe"])) {
+                switch ($_POST["timeframe"]) {
+                    case 0: $timeSetoff = "-1 month";
+                        break;
+                    case 1: $timeSetoff = "-3 months";
+                        break;
+                    case 2: $timeSetoff = "-6 months";
+                        break;
+                    case 3: $timeSetoff = "-12 months";
+                        break;
+                    case 4: $timeSetoff = "+1 day";
+                        break;
+                    default: $timeSetoff = null;
+                        break;
+                }
+
+                if (isset($timeSetoff)) {
+                    $cutoffDate = gmdate("Y-m-d H:i:s", strtotime($timeSetoff));
+                    global $wpdb;
+                    $deleteByDateTime = $cutoffDate; //delete rows until this date time (Format: Y-m-d H:i:s)
+                    $sql = "SELECT id,sched_details_id FROM {$wpdb->prefix}b2s_posts WHERE sched_date ='0000-00-00 00:00:00' AND sched_date_utc ='0000-00-00 00:00:00' AND publish_date < %s AND hook_action = %d LIMIT 500";
+                    $postData = $wpdb->get_results($wpdb->prepare($sql, $deleteByDateTime, 0), ARRAY_A);
+
+                    if (!empty($postData) && is_array($postData)) {
+                        $count = 0;
+                        foreach ($postData as $k => $value) {
+                            if (isset($value['id']) && (int) $value['id'] > 0) {
+                                $prepare = $wpdb->prepare("UPDATE {$wpdb->prefix}b2s_posts SET hide = 2, hook_action = 4 WHERE id = %d", (int) $value['id']);
+                                $wpdb->get_results($prepare);
+                                $count++;
+                            }
+                        }
+                        echo json_encode(array("result" => true, "count" => $count));
+                        wp_die();
+                    } else {
+
+                        echo json_encode(array("result" => true, "count" => 0));
+                        wp_die();
+                    }
+                }
+            }
+            echo json_encode(array("result" => false, "count" => 0));
             wp_die();
         } else {
             echo json_encode(array('result' => false, 'error_reason' => 'nonce'));

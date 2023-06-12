@@ -7863,6 +7863,32 @@ CSS CheckBOX
     color: #fff;
 }
 
+.btn-discord {
+    background-color: #5865f2 !important;
+    border-color: #5865f2 !important;
+    color: #fff;
+}
+.btn-discord:hover {
+    color: #fff;
+}
+
+.btn-skyrock {
+    background-color: #08aaff !important;
+    border-color: #08aaff !important;
+    color: #fff;
+
+}
+
+.btn-mastodon {
+    background-color: #5b49de !important;
+    border-color: #5b49de !important;
+    color: #fff;
+}
+
+.btn-skyrock:hover {
+    color: #fff;
+}
+
 .btn-outline-dark {
     color: #343a40;
     background-color: transparent;
@@ -7884,6 +7910,10 @@ CSS CheckBOX
 
 .b2s-bold{
     font-weight: 600;
+}
+
+.b2s-delete-post-btn {
+    margin-top: 5px;
 }
 
 .padding-lr-40 {
@@ -7913,4 +7943,22 @@ CSS CheckBOX
 
 .b2s-label-success-border-left{
     border-left: 3px solid #398439;
+}
+
+.b2s-attachment-details-video-share-btn {
+    color: #fff !important;
+    background-color: #337ab7 !important;
+    border-color: #2e6da4 !important;
+    background-image: none;
+    border: 1px solid transparent;
+    border-radius: 4px;
+    cursor: pointer;
+    display: inline-block;
+    font-size: 12px;
+    font-weight: normal;
+    line-height: 1.42857;
+    margin-bottom: 0;
+    padding: 6px 12px;
+    text-align: center;
+    vertical-align: middle;
 }

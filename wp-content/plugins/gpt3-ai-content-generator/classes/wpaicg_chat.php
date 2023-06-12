@@ -37,6 +37,10 @@ if(!class_exists('\\WPAICG\\WPAICG_Chat')) {
         {
             global $wpdb;
             $wpaicg_result = array('status' => 'error', 'msg' => esc_html__('Something went wrong','gpt3-ai-content-generator'));
+            if(!current_user_can('wpaicg_chatgpt_bots')){
+                $wpaicg_result['msg'] = esc_html__('You do not have permission for this action.','gpt3-ai-content-generator');
+                wp_send_json($wpaicg_result);
+            }
             if ( ! wp_verify_nonce( $_POST['_wpnonce'], 'wpaicg_chatbot_save' ) ) {
                 $wpaicg_result['msg'] = WPAICG_NONCE_ERROR;
                 wp_send_json($wpaicg_result);
@@ -226,6 +230,7 @@ if(!class_exists('\\WPAICG\\WPAICG_Chat')) {
                         'embedding' =>  false,
                         'embedding_type' =>  false,
                         'embedding_top' =>  false,
+                        'embedding_index' => '',
                         'no_answer' => '',
                         'fontsize' => 13,
                         'fontcolor' => '#fff',
@@ -282,6 +287,9 @@ if(!class_exists('\\WPAICG\\WPAICG_Chat')) {
                     $wpaicg_chat_best_of = isset($wpaicg_settings['best_of']) && !empty($wpaicg_settings['best_of']) ? $wpaicg_settings['best_of'] :$wpaicg_chat_best_of;
                     $wpaicg_chat_frequency_penalty = isset($wpaicg_settings['frequency_penalty']) && !empty($wpaicg_settings['frequency_penalty']) ? $wpaicg_settings['frequency_penalty'] :$wpaicg_chat_frequency_penalty;
                     $wpaicg_chat_presence_penalty = isset($wpaicg_settings['presence_penalty']) && !empty($wpaicg_settings['presence_penalty']) ? $wpaicg_settings['presence_penalty'] :$wpaicg_chat_presence_penalty;
+                    if(isset($wpaicg_settings['embedding_index']) && !empty($wpaicg_settings['embedding_index'])){
+                        $wpaicg_pinecone_environment = $wpaicg_settings['embedding_index'];
+                    }
                     if(is_user_logged_in() && $wpaicg_settings['user_limited'] && $wpaicg_settings['user_tokens'] > 0){
                         $wpaicg_limited_tokens = true;
                         $wpaicg_limited_tokens_number = $wpaicg_settings['user_tokens'];
@@ -380,6 +388,9 @@ if(!class_exists('\\WPAICG\\WPAICG_Chat')) {
                         $wpaicg_moderation_model = $wpaicg_chat_pro->model($wpaicg_chat_widget);
                         $wpaicg_moderation_notice = $wpaicg_chat_pro->notice($wpaicg_chat_widget);
                     }
+                    if(isset($wpaicg_chat_widget['embedding_index']) && !empty($wpaicg_chat_widget['embedding_index'])){
+                        $wpaicg_pinecone_environment = $wpaicg_chat_widget['embedding_index'];
+                    }
                 }
                 if(isset($_REQUEST['bot_id']) && !empty($_REQUEST['bot_id'])){
                     $wpaicg_bot = get_post(sanitize_text_field($_REQUEST['bot_id']));
@@ -457,6 +468,9 @@ if(!class_exists('\\WPAICG\\WPAICG_Chat')) {
                             $wpaicg_moderation_notice = $wpaicg_chat_pro->notice($wpaicg_chat_widget);
                         }
                         $wpaicg_chat_source = $wpaicg_bot_type.'ID: '.$wpaicg_bot->ID;
+                        if(isset($wpaicg_chat_widget['embedding_index']) && !empty($wpaicg_chat_widget['embedding_index'])){
+                            $wpaicg_pinecone_environment = $wpaicg_chat_widget['embedding_index'];
+                        }
                     }
                 }
                 if(!is_user_logged_in()){
@@ -536,6 +550,9 @@ if(!class_exists('\\WPAICG\\WPAICG_Chat')) {
                     $completion = json_decode($completion);
                     if($completion && isset($completion->error)){
                         $wpaicg_result['msg'] = $completion->error->message;
+                        if(empty($wpaicg_result['msg']) && isset($completion->error->code) && $completion->error->code == 'invalid_api_key'){
+                            $wpaicg_result['msg'] = 'Incorrect API key provided. You can find your API key at https://platform.openai.com/account/api-keys.';
+                        }
                         wp_send_json($wpaicg_result);
                     }
                     $wpaicg_message = $completion->text;
@@ -575,28 +592,35 @@ if(!class_exists('\\WPAICG\\WPAICG_Chat')) {
                 $wpaicg_embedding_content = '';
                 if($wpaicg_chat_embedding){
                     /*Using embeddings only*/
-                    $wpaicg_embeddings_result = $this->wpaicg_embeddings_result($open_ai,$wpaicg_pinecone_api, $wpaicg_pinecone_environment, $wpaicg_message, $wpaicg_chat_embedding_top);
-                    if(!$wpaicg_chat_embedding_type || empty($wpaicg_chat_embedding_type)){
-                        $wpaicg_result['status'] = $wpaicg_embeddings_result['status'];
-                        $wpaicg_result['data'] = empty($wpaicg_embeddings_result['data']) ? $wpaicg_chat_no_answer : $wpaicg_embeddings_result['data'];
-                        $wpaicg_result['msg'] = empty($wpaicg_embeddings_result['data']) ? $wpaicg_chat_no_answer : $wpaicg_embeddings_result['data'];
-                        $this->wpaicg_save_chat_log($wpaicg_chat_log_id, $wpaicg_chat_log_data, 'ai',$wpaicg_result['data']);
-                        wp_send_json($wpaicg_result);
-                        exit;
+                    $namespace = false;
+                    if(isset($_REQUEST['namespace']) && !empty($_REQUEST['namespace'])){
+                        $namespace = sanitize_text_field($_REQUEST['namespace']);
                     }
-                    else{
-                        $wpaicg_result['status'] = $wpaicg_embeddings_result['status'];
-                        if($wpaicg_result['status'] == 'error'){
+                    $wpaicg_embeddings_result = $this->wpaicg_embeddings_result($open_ai,$wpaicg_pinecone_api, $wpaicg_pinecone_environment, $wpaicg_message, $wpaicg_chat_embedding_top,$namespace);
+                    if($wpaicg_embeddings_result['status'] == 'empty'){
+                        $wpaicg_chat_with_embedding = false;
+                    }
+                    else {
+                        if (!$wpaicg_chat_embedding_type || empty($wpaicg_chat_embedding_type)) {
+                            $wpaicg_result['status'] = $wpaicg_embeddings_result['status'];
+                            $wpaicg_result['data'] = empty($wpaicg_embeddings_result['data']) ? $wpaicg_chat_no_answer : $wpaicg_embeddings_result['data'];
                             $wpaicg_result['msg'] = empty($wpaicg_embeddings_result['data']) ? $wpaicg_chat_no_answer : $wpaicg_embeddings_result['data'];
-                            $this->wpaicg_save_chat_log($wpaicg_chat_log_id, $wpaicg_chat_log_data, 'ai',$wpaicg_result['data']);
+                            $this->wpaicg_save_chat_log($wpaicg_chat_log_id, $wpaicg_chat_log_data, 'ai', $wpaicg_result['data']);
                             wp_send_json($wpaicg_result);
                             exit;
+                        } else {
+                            $wpaicg_result['status'] = $wpaicg_embeddings_result['status'];
+                            if ($wpaicg_result['status'] == 'error') {
+                                $wpaicg_result['msg'] = empty($wpaicg_embeddings_result['data']) ? $wpaicg_chat_no_answer : $wpaicg_embeddings_result['data'];
+                                $this->wpaicg_save_chat_log($wpaicg_chat_log_id, $wpaicg_chat_log_data, 'ai', $wpaicg_result['data']);
+                                wp_send_json($wpaicg_result);
+                                exit;
+                            } else {
+                                $wpaicg_total_tokens += $wpaicg_embeddings_result['tokens']; // Add embedding tokens
+                                $wpaicg_embedding_content = $wpaicg_embeddings_result['data'];
+                            }
+                            $wpaicg_chat_with_embedding = true;
                         }
-                        else{
-                            $wpaicg_total_tokens += $wpaicg_embeddings_result['tokens']; // Add embedding tokens
-                            $wpaicg_embedding_content = $wpaicg_embeddings_result['data'];
-                        }
-                        $wpaicg_chat_with_embedding = true;
                     }
                 }
                 if ($wpaicg_chat_remember_conversation == 'yes') {
@@ -642,6 +666,17 @@ if(!class_exists('\\WPAICG\\WPAICG_Chat')) {
                         $wpaicg_greeting_key .= '_proffesion';
                     }
                     $wpaicg_chat_greeting_message = sprintf($wpaicg_languages[$wpaicg_greeting_key], $wpaicg_chat_tone, $wpaicg_chat_proffesion . ".\n");
+                    if(!empty($wpaicg_chat_addition_text)){
+                        $site_url = site_url();
+                        $parse_url = wp_parse_url($site_url);
+                        $domain_name = isset($parse_url['host']) && !empty($parse_url['host']) ? $parse_url['host'] : '';
+                        $date = date(get_option( 'date_format'));
+                        $sitename = get_bloginfo('name');
+                        $wpaicg_chat_addition_text = str_replace('[siteurl]',$site_url, $wpaicg_chat_addition_text);
+                        $wpaicg_chat_addition_text = str_replace('[domain]',$domain_name, $wpaicg_chat_addition_text);
+                        $wpaicg_chat_addition_text = str_replace('[sitename]',$sitename, $wpaicg_chat_addition_text);
+                        $wpaicg_chat_addition_text = str_replace('[date]',$date, $wpaicg_chat_addition_text);
+                    }
                     if ($wpaicg_chat_content_aware == 'yes') {
                         if($wpaicg_chat_with_embedding && !empty($wpaicg_embedding_content)){
                             $wpaicg_greeting_key .= '_content';
@@ -683,9 +718,14 @@ if(!class_exists('\\WPAICG\\WPAICG_Chat')) {
                             $wpaicg_chat_greeting_message .= ' '.sprintf($wpaicg_languages[$wpaicg_greeting_key.'_extra'], $wpaicg_chat_addition_text);
                         }
                     }
+                    elseif($wpaicg_chat_addition && !empty($wpaicg_chat_addition_text)){
+                        $wpaicg_greeting_key .= '_content';
+                        $wpaicg_chat_greeting_message .= ' '.sprintf($wpaicg_languages[$wpaicg_greeting_key.'_extra'], $wpaicg_chat_addition_text);
+                    }
                     if(!empty($wpaicg_user_name)){
                         $wpaicg_chat_greeting_message .= '. '.$wpaicg_user_name;
                     }
+                    $wpaicg_result['greeting_message'] = $wpaicg_chat_greeting_message;
                     $wpaicg_chatgpt_messages = array();
                     $wpaicg_chatgpt_messages[] = array('role' => 'user', 'content' => html_entity_decode($wpaicg_chat_greeting_message,ENT_QUOTES ,'UTF-8'));
                     if ($wpaicg_chat_remember_conversation == 'yes') {
@@ -745,6 +785,9 @@ if(!class_exists('\\WPAICG\\WPAICG_Chat')) {
                         $wpaicg_result['status'] = 'error';
                         //$wpaicg_result['data_request'] = $wpaicg_data_request;
                         $wpaicg_result['msg'] = esc_html(trim($complete->error->message));
+                        if(empty($wpaicg_result['msg']) && isset($complete->error->code) && $complete->error->code == 'invalid_api_key'){
+                            $wpaicg_result['msg'] = 'Incorrect API key provided. You can find your API key at https://platform.openai.com/account/api-keys.';
+                        }
                         $wpaicg_result['log'] = $wpaicg_chat_log_id;
                         //$wpaicg_result['messages'] = $wpaicg_chatgpt_messages;
                         //$wpaicg_result['prompt'] = $prompt;
@@ -765,7 +808,7 @@ if(!class_exists('\\WPAICG\\WPAICG_Chat')) {
                         if(is_user_logged_in() && $wpaicg_limited_tokens){
                             WPAICG_Account::get_instance()->save_log('chat', $wpaicg_total_tokens);
                         }
-//                        $wpaicg_result['prompt'] = $prompt;
+                        //$wpaicg_result['prompt'] = $prompt;
                         $wpaicg_result['status'] = 'success';
                         $wpaicg_result['log'] = $wpaicg_chat_log_id;
                         //$wpaicg_result['data_request'] = $wpaicg_data_request;
@@ -860,7 +903,7 @@ if(!class_exists('\\WPAICG\\WPAICG_Chat')) {
             }
         }
 
-        public function wpaicg_embeddings_result($open_ai,$wpaicg_pinecone_api,$wpaicg_pinecone_environment,$wpaicg_message, $wpaicg_chat_embedding_top)
+        public function wpaicg_embeddings_result($open_ai,$wpaicg_pinecone_api,$wpaicg_pinecone_environment,$wpaicg_message, $wpaicg_chat_embedding_top, $namespace = false)
         {
             $result = array('status' => 'error','data' => '');
             if(!empty($wpaicg_pinecone_api) && !empty($wpaicg_pinecone_environment) ) {
@@ -871,6 +914,9 @@ if(!class_exists('\\WPAICG\\WPAICG_Chat')) {
                 $response = json_decode($response, true);
                 if (isset($response['error']) && !empty($response['error'])) {
                     $result['data'] = $response['error']['message'];
+                    if(empty($result['data']) && isset($response['error']['code']) && $response['error']['code'] == 'invalid_api_key'){
+                        $result['data'] = 'Incorrect API key provided. You can find your API key at https://platform.openai.com/account/api-keys.';
+                    }
                 } else {
                     $embedding = $response['data'][0]['embedding'];
                     if (!empty($embedding)) {
@@ -879,12 +925,16 @@ if(!class_exists('\\WPAICG\\WPAICG_Chat')) {
                             'Content-Type' => 'application/json',
                             'Api-Key' => $wpaicg_pinecone_api
                         );
+                        $pinecone_body = array(
+                            'vector' => $embedding,
+                            'topK' => $wpaicg_chat_embedding_top
+                        );
+                        if($namespace){
+                            $pinecone_body['namespace'] = $namespace;
+                        }
                         $response = wp_remote_post('https://' . $wpaicg_pinecone_environment . '/query', array(
                             'headers' => $headers,
-                            'body' => json_encode(array(
-                                'vector' => $embedding,
-                                'topK' => $wpaicg_chat_embedding_top
-                            ))
+                            'body' => json_encode($pinecone_body)
                         ));
                         if (is_wp_error($response)) {
                             $result['data'] = esc_html($response->get_error_message());
@@ -903,6 +953,9 @@ if(!class_exists('\\WPAICG\\WPAICG_Chat')) {
                                     $result['data'] = $data;
                                     $result['status'] = 'success';
                                 }
+                                else{
+                                    $result['status'] = 'empty';
+                                }
                             }
                             else{
                                 $result['data'] = esc_html__('Pinecone return empty','gpt3-ai-content-generator');
@@ -912,7 +965,7 @@ if(!class_exists('\\WPAICG\\WPAICG_Chat')) {
                 }
             }
             else{
-                $wpaicg_result['data'] = esc_html__('Missing PineCone Settings','gpt3-ai-content-generator');
+                $result['data'] = esc_html__('Missing PineCone Settings','gpt3-ai-content-generator');
             }
             return $result;
         }

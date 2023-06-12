@@ -31,7 +31,7 @@ class B2S_Ship_Portale {
                 }
             }
             if (!$isVideoView && in_array($portal->id, $this->isVideoNetwork)) {
-                if (!in_array($portal->id, array(1, 2, 6, 12))) {
+                if (!in_array($portal->id, array(1, 2, 3, 6, 12, 38, 39))) {
                     continue;
                 }
             }
@@ -63,7 +63,7 @@ class B2S_Ship_Portale {
                     }
                 }
                 if (in_array($portal->id, $this->allowProfil)) {
-                    if ($isVideoView && $portal->id == 1) {
+                    if ($isVideoView &&  ($portal->id == 1 || $portal->id == 3)) {
                         $html .= '';
                     } else {
                         $name = $this->networkTypeName[0];
@@ -74,12 +74,11 @@ class B2S_Ship_Portale {
                             $html .= '<a href="#" class="btn btn-' . str_replace(' ', '', strtolower(esc_attr($portal->name))) . ' btn-sm b2s-network-list-add-btn" data-auth-method="client">' . sprintf(esc_html__('Connect %s', 'blog2social'), esc_html($name)) . '</a>';
                         } else if ($portal->id == 24 && B2S_PLUGIN_USER_VERSION < 1) {
                             $html .= '<button type="button" class="btn btn-' . str_replace(' ', '', strtolower(esc_attr($portal->name))) . ' btn-sm b2s-network-list-add-btn b2s-network-list-add-btn-profeature b2s-btn-disabled b2sBusinessFeatureModalBtn" data-title="' . esc_html__('You want to connect a network profile?', 'blog2social') . '" data-type="auth-network">' . sprintf(esc_html__('Connect %s', 'blog2social'), esc_html($name)) . ' <span class="label label-success">' . esc_html__("BUSINESS", "blog2social") . '</a></button>';
+                        }else if ($portal->id == 38 && B2S_PLUGIN_USER_VERSION < 1) {
+                            $html .= '<button type="button" class="btn btn-' . str_replace(' ', '', strtolower(esc_attr($portal->name))) . ' btn-sm b2s-network-list-add-btn b2s-network-list-add-btn-profeature b2s-btn-disabled b2sProFeatureModalBtn" data-title="' . esc_html__('You want to connect a network profile?', 'blog2social') . '" data-type="auth-network">' . sprintf(esc_html__('Connect %s', 'blog2social'), esc_html($name)) . ' <span class="label label-success">' . esc_html__("PRO", "blog2social") . '</a></button>';
                         } else if ($portal->id == 12) {
                             $html .= '<button class="btn btn-' . str_replace(' ', '', strtolower(esc_attr($portal->name))) . ' btn-sm b2s-network-list-add-btn b2s-network-add-instagram-info-btn" data-b2s-auth-url="' . $b2sAuthUrl . '">' . sprintf(esc_html__('Connect %s', 'blog2social'), esc_html($name)) . '</button>';
-                            /* } else if ($portal->id == 32) {
-                              $html .= '<button onclick="wop(\'' . esc_url($b2sAuthUrl) . '&choose=profile\', \'Blog2Social Network\'); return false;" class="btn btn-sm button primary b2s-network-list-add-btn"><img class="b2s-google-image-auth" src="' . esc_url(plugins_url('/assets/images/google_auth.png', B2S_PLUGIN_FILE)) . '">' . esc_html__('Sign in with Google', 'blog2social') . '</button>';
-                             */
-                        } else if (($portal->id == 25 || $portal->id == 26 || $portal->id == 27) && B2S_PLUGIN_USER_VERSION < 1) {
+                        } else if (($portal->id == 25 || $portal->id == 26 || $portal->id == 27 || $portal->id == 39) && B2S_PLUGIN_USER_VERSION < 1) {
                             $html .= '<button type="button" class="btn btn-' . str_replace(' ', '', strtolower(esc_attr($portal->name))) . ' btn-sm b2s-network-list-add-btn b2s-network-list-add-btn-profeature b2s-btn-disabled b2sPreFeatureModalBtn" data-title="' . esc_html__('You want to connect a network profile?', 'blog2social') . '" data-type="auth-network">' . sprintf(esc_html__('Connect %s', 'blog2social'), esc_html($name)) . ' <span class="label label-success">' . esc_html__("SMART", "blog2social") . '</a></button>';
                         } else {
                             $html .= ($portal->id != 18 || (B2S_PLUGIN_USER_VERSION >= 2 && $portal->id == 18)) ? ('<button onclick="wop(\'' . esc_url($b2sAuthUrl) . '&choose=profile\', \'Blog2Social Network\'); return false;" class="btn btn-' . str_replace(' ', '', strtolower(esc_attr($portal->name))) . ' btn-sm b2s-network-list-add-btn">' . sprintf(esc_html__('Connect %s', 'blog2social'), esc_html($name)) . '</button>') : '<button type="button" class="btn btn-' . str_replace(' ', '', strtolower($portal->name)) . ' btn-sm b2s-network-list-add-btn b2s-network-list-add-btn-profeature b2s-btn-disabled b2sProFeatureModalBtn" data-title="' . esc_html__('You want to connect a network profile?', 'blog2social') . '" data-type="auth-network">' . sprintf(esc_html__('Connect %s', 'blog2social'), esc_html($name)) . ' <span class="label label-success">' . esc_html__("PRO", "blog2social") . '</a></button>';

@@ -8,16 +8,16 @@
  * registers the activation and deactivation functions, and defines a function
  * that starts the plugin.
  *
- * @link              https://gptaipower.com
+ * @link              https://aipower.org
  * @since             1.0.0
  * @package           Wp_Ai_Content_Generator
  *
  * @wordpress-plugin
- * Plugin Name:       AI Power: Complete AI Pack
- * Description:       ChatGPT, Content Writer, Auto Content Writer, ChatBot, Image Generator, Audio Converter, WooCommerce Product Writer, SEO optimizer, AI Training, Embeddings, Title Suggestions and hundreds of ready to use prompts and forms.
- * Version:           1.6.86
+ * Plugin Name:       AI Power: Complete AI Pack - Powered by GPT-4
+ * Description:       ChatGPT, Content Writer, Auto Content Writer, ChatBot, Image Generator, AutoGPT, ChatPDF, Twitter bot, Audio Converter, WooCommerce Product Writer, SEO optimizer, AI Training, Embeddings, Title Suggestions and hundreds of ready to use prompts and forms.
+ * Version:           1.7.28
  * Author:            Senol Sahin
- * Author URI:        https://gptaipower.com
+ * Author URI:        https://aipower.org
  * License:           GPL-2.0+
  * License URI:       http://www.gnu.org/licenses/gpl-2.0.txt
  * Text Domain:       gpt3-ai-content-generator
@@ -26,7 +26,7 @@
 if ( !defined( 'WPINC' ) ) {
     die;
 }
-define( 'WP_AI_CONTENT_GENERATOR_VERSION', '1.6.86' );
+define( 'WP_AI_CONTENT_GENERATOR_VERSION', '1.7.28' );
 if ( !class_exists( '\\WPAICG\\WPAICG_OpenAI' ) ) {
     require_once __DIR__ . '/includes/class-wp-ai-openai.php';
 }

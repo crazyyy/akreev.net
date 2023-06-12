@@ -222,7 +222,7 @@ class B2S_Tools {
             return ($lang == 'en') ? 'https://www.blog2social.com/en/faq/content/1/58/en/system-requirements-for-installing-blog2social.html' : 'https://www.blog2social.com/de/faq/content/1/63/de/systemvoraussetzungen-fuer-die-installation-von-blog2social.html';
         }
         if ($type == 'share_error') {
-            return ($lang == 'en') ? 'https://www.blog2social.com/en/faq/category/9/troubleshooting-for-error-messages.html' : 'https://www.blog2social.com/de/faq/index.php?action=show&cat=9';
+            return ($lang == 'en') ? 'https://www.blog2social.com/en/faq/index.php?solution_id=1205' : 'https://www.blog2social.com/de/faq/index.php?solution_id=1202';
         }
         if ($type == 'instagram_without_text') {
             return ($lang == 'en') ? 'https://www.blog2social.com/en/faq/index.php?action=artikel&cat=9&id=154&artlang=en' : 'https://www.blog2social.com/de/faq/index.php?action=artikel&cat=9&id=152&artlang=de';

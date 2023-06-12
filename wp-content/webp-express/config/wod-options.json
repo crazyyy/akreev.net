@@ -5,10 +5,10 @@
         "enable-redirection-to-webp-realizer": false,
         "base-htaccess-on-these-capability-tests": {
             "passThroughHeaderWorking": false,
-            "passThroughEnvWorking": null,
-            "modHeaderWorking": null,
-            "canRunTestScriptInWOD": null,
-            "canRunTestScriptInWOD2": null
+            "passThroughEnvWorking": true,
+            "modHeaderWorking": false,
+            "canRunTestScriptInWOD": true,
+            "canRunTestScriptInWOD2": true
         },
         "destination-extension": "set",
         "destination-folder": "mingled",
@@ -17,27 +17,27 @@
             {
                 "id": "uploads",
                 "rel-path": "wp-content/uploads",
-                "url": "https://akreev.local/wp-content/uploads"
+                "url": "https://akreev.space/wp-content/uploads"
             },
             {
                 "id": "themes",
                 "rel-path": "wp-content/themes",
-                "url": "https://akreev.local/wp-content/themes"
+                "url": "https://akreev.space/wp-content/themes"
             },
             {
                 "id": "plugins",
                 "rel-path": "wp-content/plugins",
-                "url": "https://akreev.local/wp-content/plugins"
+                "url": "https://akreev.space/wp-content/plugins"
             },
             {
                 "id": "wp-content",
                 "rel-path": "wp-content",
-                "url": "https://akreev.local/wp-content"
+                "url": "https://akreev.space/wp-content"
             },
             {
                 "id": "index",
                 "rel-path": ".",
-                "url": "https://akreev.local"
+                "url": "https://akreev.space"
             }
         ],
         "success-response": "converted"
@@ -45,12 +45,13 @@
     "webp-convert": {
         "serve-image": {
             "headers": {
-                "cache-control": false,
+                "cache-control": true,
                 "content-length": true,
                 "content-type": true,
-                "expires": false,
+                "expires": true,
                 "last-modified": true
-            }
+            },
+            "cache-control-header": "private, max-age=604800"
         },
         "fail": "original",
         "convert": {

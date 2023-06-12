@@ -38,6 +38,10 @@ if ( !class_exists( '\\WPAICG\\WPAICG_Content' ) ) {
         {
             $mime_types = ['mp3' => 'audio/mpeg','mp4' => 'video/mp4','mpeg' => 'video/mpeg','m4a' => 'audio/m4a','wav' => 'audio/wav','webm' => 'video/webm'];
             $wpaicg_result = array('status' => 'error', 'msg' => esc_html__('Something went wrong','gpt3-ai-content-generator'));
+            if(!current_user_can('wpaicg_single_content_speech')){
+                $wpaicg_result['msg'] = esc_html__('You do not have permission for this action.','gpt3-ai-content-generator');
+                wp_send_json($wpaicg_result);
+            }
             if ( ! wp_verify_nonce( $_POST['nonce'], 'wpaicg-ajax-nonce' ) ) {
                 $wpaicg_result['status'] = 'error';
                 $wpaicg_result['msg'] = WPAICG_NONCE_ERROR;
@@ -73,6 +77,9 @@ if ( !class_exists( '\\WPAICG\\WPAICG_Content' ) ) {
             $completion = json_decode($completion);
             if($completion && isset($completion->error)){
                 $wpaicg_result['msg'] = $completion->error->message;
+                if(empty($wpaicg_result['msg']) && isset($completion->error->code) && $completion->error->code == 'invalid_api_key'){
+                    $wpaicg_result['msg'] = 'Incorrect API key provided. You can find your API key at https://platform.openai.com/account/api-keys.';
+                }
                 wp_send_json($wpaicg_result);
             }
             $text_generated = trim($completion->text);
@@ -109,6 +116,10 @@ if ( !class_exists( '\\WPAICG\\WPAICG_Content' ) ) {
                 'status' => 'error',
                 'msg'    => esc_html__('Something went wrong','gpt3-ai-content-generator'),
             );
+            if(!current_user_can('wpaicg_bulk_content_csv')){
+                $wpaicg_result['msg'] = esc_html__('You do not have permission for this action.','gpt3-ai-content-generator');
+                wp_send_json($wpaicg_result);
+            }
             if ( ! wp_verify_nonce( $_POST['nonce'], 'wpaicg-ajax-nonce' ) ) {
                 $wpaicg_result['msg'] = WPAICG_NONCE_ERROR;
                 wp_send_json($wpaicg_result);
@@ -196,6 +207,10 @@ if ( !class_exists( '\\WPAICG\\WPAICG_Content' ) ) {
                 'status' => 'error',
                 'msg'    => esc_html__('Something went wrong','gpt3-ai-content-generator'),
             );
+            if(!current_user_can('wpaicg_bulk_content_editor')){
+                $wpaicg_result['msg'] = esc_html__('You do not have permission for this action.','gpt3-ai-content-generator');
+                wp_send_json($wpaicg_result);
+            }
             if (!isset($_POST['wpaicg_nonce']) || !wp_verify_nonce($_POST['wpaicg_nonce'], 'wpaicg_nonce_action')) {
                 $wpaicg_result['msg'] = WPAICG_NONCE_ERROR;
                 wp_send_json($wpaicg_result);
@@ -248,6 +263,10 @@ if ( !class_exists( '\\WPAICG\\WPAICG_Content' ) ) {
                 'status' => 'error',
                 'msg'    => esc_html__('Something went wrong','gpt3-ai-content-generator'),
             );
+            if(!current_user_can('wpaicg_bulk_content_editor')){
+                $wpaicg_result['msg'] = esc_html__('You do not have permission for this action.','gpt3-ai-content-generator');
+                wp_send_json($wpaicg_result);
+            }
             if ( ! wp_verify_nonce( $_POST['nonce'], 'wpaicg-ajax-nonce' ) ) {
                 $wpaicg_result['msg'] = WPAICG_NONCE_ERROR;
                 wp_send_json($wpaicg_result);
@@ -323,6 +342,10 @@ if ( !class_exists( '\\WPAICG\\WPAICG_Content' ) ) {
                 'status' => 'error',
                 'msg'    => esc_html__('Something went wrong','gpt3-ai-content-generator'),
             );
+            if(!current_user_can('wpaicg_bulk_content_editor')){
+                $wpaicg_result['msg'] = esc_html__('You do not have permission for this action.','gpt3-ai-content-generator');
+                wp_send_json($wpaicg_result);
+            }
             if ( ! wp_verify_nonce( $_POST['_wpnonce'], 'wpaicg_bulk_save' ) ) {
                 $wpaicg_result['msg'] = WPAICG_NONCE_ERROR;
                 wp_send_json($wpaicg_result);
@@ -527,7 +550,7 @@ if ( !class_exists( '\\WPAICG\\WPAICG_Content' ) ) {
                 $wpaicg_restart_queue = get_option('wpaicg_restart_queue','');
                 $wpaicg_try_queue = get_option('wpaicg_try_queue','');
                 if(!empty($wpaicg_restart_queue) && !empty($wpaicg_try_queue)) {
-                    $wpaicg_fix_sql = $wpdb->prepare("SELECT p.ID,(SELECT m.meta_value FROM ".$wpdb->postmeta." m WHERE m.post_id=p.ID AND m.meta_key='wpaicg_try_queue_time') as try_time FROM ".$wpdb->posts." p WHERE (p.post_status='draft' OR p.post_status='trash') AND p.post_type='wpaicg_bulk' AND p.post_modified <  NOW() - INTERVAL %d MINUTE",$wpaicg_restart_queue);
+                    $wpaicg_fix_sql = $wpdb->prepare("SELECT p.post_parent,p.ID,(SELECT m.meta_value FROM ".$wpdb->postmeta." m WHERE m.post_id=p.ID AND m.meta_key='wpaicg_try_queue_time') as try_time FROM ".$wpdb->posts." p WHERE (p.post_status='draft' OR p.post_status='trash') AND p.post_type='wpaicg_bulk' AND p.post_modified <  NOW() - INTERVAL %d MINUTE",$wpaicg_restart_queue);
                     $in_progress_posts = $wpdb->get_results($wpaicg_fix_sql);
                     if($in_progress_posts && is_array($in_progress_posts) && count($in_progress_posts)){
                         foreach($in_progress_posts as $in_progress_post){
@@ -654,6 +677,16 @@ if ( !class_exists( '\\WPAICG\\WPAICG_Content' ) ) {
                                         'ID'          => $wpaicg_single->ID,
                                         'post_status' => 'publish',
                                     ));
+                                }
+                                /*Save Last Content*/
+                                if($wpaicg_single->post_mime_type == 'sheets'){
+                                    update_option('wpaicg_cronjob_sheets_content',time());
+                                }
+                                elseif($wpaicg_single->post_mime_type == 'rss'){
+                                    update_option('wpaicg_cronjob_rss_content',time());
+                                }
+                                else{
+                                    update_option('wpaicg_cronjob_bulk_content',time());
                                 }
                             }
                         }
@@ -819,6 +852,10 @@ if ( !class_exists( '\\WPAICG\\WPAICG_Content' ) ) {
                 'status' => 'error',
                 'msg'    => esc_html__('Something went wrong','gpt3-ai-content-generator'),
             );
+            if(!current_user_can('edit_posts')){
+                $wpaicg_result['msg'] = esc_html__('You do not have permission for this action.','gpt3-ai-content-generator');
+                wp_send_json($wpaicg_result);
+            }
             if ( ! wp_verify_nonce( $_POST['nonce'], 'wpaicg-ajax-nonce' ) ) {
                 $wpaicg_result['msg'] = WPAICG_NONCE_ERROR;
                 wp_send_json($wpaicg_result);
@@ -878,6 +915,30 @@ if ( !class_exists( '\\WPAICG\\WPAICG_Content' ) ) {
                     }
                     if ( array_key_exists( 'wpaicg_pexels_size', $_POST ) ) {
                         update_post_meta( $wpaicg_post_id, 'wpaicg_pexels_size', sanitize_text_field($_POST['wpaicg_pexels_size']) );
+                    }
+                    if ( array_key_exists( 'wpaicg_pexels_enable_prompt', $_POST ) ) {
+                        update_post_meta( $wpaicg_post_id, 'wpaicg_pexels_enable_prompt', sanitize_text_field($_POST['wpaicg_pexels_enable_prompt']) );
+                    }
+                    if ( array_key_exists( 'wpaicg_pexels_custom_prompt', $_POST ) ) {
+                        update_post_meta( $wpaicg_post_id, 'wpaicg_pexels_custom_prompt', sanitize_text_field($_POST['wpaicg_pexels_custom_prompt']) );
+                    }
+                    if ( array_key_exists( 'wpaicg_pixabay_type', $_POST ) ) {
+                        update_post_meta( $wpaicg_post_id, 'wpaicg_pixabay_type', sanitize_text_field($_POST['wpaicg_pixabay_type']) );
+                    }
+                    if ( array_key_exists( 'wpaicg_pixabay_language', $_POST ) ) {
+                        update_post_meta( $wpaicg_post_id, 'wpaicg_pixabay_language', sanitize_text_field($_POST['wpaicg_pixabay_language']) );
+                    }
+                    if ( array_key_exists( 'wpaicg_pixabay_order', $_POST ) ) {
+                        update_post_meta( $wpaicg_post_id, 'wpaicg_pixabay_order', sanitize_text_field($_POST['wpaicg_pixabay_order']) );
+                    }
+                    if ( array_key_exists( 'wpaicg_pixabay_orientation', $_POST ) ) {
+                        update_post_meta( $wpaicg_post_id, 'wpaicg_pixabay_orientation', sanitize_text_field($_POST['wpaicg_pixabay_orientation']) );
+                    }
+                    if ( array_key_exists( 'wpaicg_pixabay_enable_prompt', $_POST ) ) {
+                        update_post_meta( $wpaicg_post_id, 'wpaicg_pixabay_enable_prompt', sanitize_text_field($_POST['wpaicg_pixabay_enable_prompt']) );
+                    }
+                    if ( array_key_exists( 'wpaicg_pixabay_custom_prompt', $_POST ) ) {
+                        update_post_meta( $wpaicg_post_id, 'wpaicg_pixabay_custom_prompt', sanitize_text_field($_POST['wpaicg_pixabay_custom_prompt']) );
                     }
                     if ( array_key_exists( '_wporg_add_tagline', $_POST ) ) {
                         update_post_meta( $wpaicg_post_id, '_wporg_add_tagline', sanitize_text_field($_POST['_wporg_add_tagline']) );

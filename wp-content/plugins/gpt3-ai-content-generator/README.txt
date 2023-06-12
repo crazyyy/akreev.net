@@ -1,26 +1,27 @@
-===AI Power: Complete AI Pack===
+===AI Power: Complete AI Pack - Powered by GPT-4===
 Contributors: senols
 Tags: chatgpt, gpt, openai, ai, gpt4, chatbot, speech, whisper, image generator, ai training
 Requires at least: 5.0.0
 Tested up to: 6.2
 Requires PHP: 7.4
-Stable tag: 1.6.86
+Stable tag: 1.7.28
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
  
-ChatGPT, Content Writer, Auto Content Writer, AutoGPT, Chatbot, Image Generator, AI Assistant, WooCommerce Product Writer, Audio Converter, Speech-to-Post, SEO optimizer, AI Training, Embeddings, Title Suggestions, FAQ/Knowledgebase builder and hundreds of ready to use prompts and forms.
+ChatGPT, Content Writer, Auto Content Writer, AutoGPT, PDF Chat, ChatPDF, Chatbot, Twitter bot, Image Generator, AI Assistant, WooCommerce Product Writer, Audio Converter, Speech-to-Post, SEO optimizer, AI Training, Embeddings, Title Suggestions, FAQ/Knowledgebase builder and hundreds of ready to use prompts and forms.
  
 == Description ==
 
 AI Power is a complete AI package for WordPress powered by GPT-3.5 and GPT-4. It is the most popular, WordPress-based open-source AI solution. It utilizes GPT-3.5, GPT-4, DaVinci and more to generate content, images, and forms with customizable options. It includes AI training, Chat widget, WooCommerce integration, Embeddings and more.
 
-Please read documentation here: <a href="https://gptaipower.com/">https://gptaipower.com/</a>
+Please read documentation here: [https://docs.aipower.org/](https://docs.aipower.org/)
 
 == Core Features ==
 * Content Writer
 * Auto Content Writer (Bulk)
 * Image Generator (DALL-E and Stable Diffusion 🚀🚀🚀)
 * ChatGPT - Fully customizable chat widget and chat bot with Chat logs and long term external memory.
+* PDF Chat
 * WooCommerce Product Writer
 * AI Assistant (Integrated with Gutenberg and Classic Editor)
 * AI Training
@@ -45,6 +46,8 @@ Please read documentation here: <a href="https://gptaipower.com/">https://gptaip
 * Role Manager
 * Token Sale
 * Comment Replier
+* Twitter bot
+* WooCommerce Bulk Writer
 * 40 langauge support
 
 == How to Generate OpenAI API Key ==
@@ -78,18 +81,17 @@ https://www.youtube.com/watch?v=hetYOlR-ms4
 3. English, 5 heading (no image): 58 seconds - 959 words 6,367 characters
 4. English, 3 heading + 1 image: 36 seconds - 688 words 4,878 characters
 
-== Integrations ==
+== Supported Integrations ==
 
-* OpenAI: GPT models, Whisper.
-* Yoast SEO, All In One SEO and Rank Math for SEO.
-* Pexels for image.
-* DALL-E and Stable Diffusion for Image Generator.
-* Pinecone for building content and long term external memory for chat bot.
-* WooCommerce for product writing.
-* Google Sheets.
-* RSS Feeds.
-* ElevenLabs - Text to Speech
-* Google - Text to Speech
+- OpenAI: Use GPT models and Whisper for advanced AI capabilities.
+- SEO Tools: Optimize your content with Yoast SEO, All In One SEO, and Rank Math.
+- Image Libraries: Enhance your visuals with Pexels and Pixabay integration.
+- Image Generators: Create unique images using DALL-E and Stable Diffusion.
+- Vector Databases: Build engaging content and implement long-term external memory for chatbots.
+- E-commerce: Improve product descriptions with WooCommerce integration.
+- Google Sheets: Streamline data management and organization.
+- RSS Feeds: Stay updated with the latest content from your favorite sources.
+- Text-to-Speech: Convert your text into lifelike speech with ElevenLabs and Google Text-to-Speech integrations.
 
 == Features ==
 
@@ -137,6 +139,9 @@ https://www.youtube.com/watch?v=hetYOlR-ms4
 * Comment Replier
 * ElevenLabs Text to Speech
 * Google Text to Speech
+* Pixabay integration
+* WooCommerce Bulk Writer
+* [PREMIUM] PDF chat.
 * [PREMIUM] Moderation for chat bot.
 * [PREMIUM] Ability to add keywords
 * [PREMIUM] Ability to avoid certain keywords
@@ -240,6 +245,290 @@ The PHP max execution time setting determines the maximum amount of time a PHP s
 This message is coming from OpenAI, not from our plugin. It means that you have reached the limit of your OpenAI API quota, which is determined by your plan and billing details. Our plugin works on a "bring your own API key" model, serving as a bridge between WordPress and OpenAI, so the issue is not related to the plugin itself. To resolve this issue, you'll need to check your OpenAI account and ensure that you have enough quota for your needs, or upgrade your plan if necessary.
 
 == Changelog ==
+
+= 1.7.28 =
+
+- Added an option to show / hide advanced options under Settings - AI Engine.
+
+= 1.7.27 =
+
+- Fixed embedding issue for Non-Latin languages.
+- Security improvements in various modules.
+- Added ChatGPT - Settings and Train your AI - Trainings tab to the Role Manager.
+
+= 1.7.26 =
+
+- Security improvements in AutoGPT.
+- Fixed an issue in AutoGPT queue.
+
+= 1.7.25 =
+
+- Security improvements in Audio Converter.
+
+= 1.7.24 =
+
+- Security improvements.
+
+= 1.7.23 =
+
+- Fixed an issue in AI Forms.
+
+= 1.7.22 =
+
+- Improved WooCommerce custom prompts.
+
+= 1.7.21 =
+
+- Fixed a CSS conflict with Kadence theme.
+
+= 1.7.20 =
+
+- Fixed an issue where the functions of pitch and voice speed were inversely applied in Google Voice Chat.
+
+= 1.7.19 =
+
+- Fixed an issue where an incorrect API key resulted in a non-responsive chat widget. It now returns a proper error message from OpenAI.
+- Fixed an issue where the chat widget failed to operate for Google Voice Chat if the ElevenLabs API key was empty.
+
+= 1.7.18 =
+
+- Fixed an issue with FAQ content in Content Writer when Portuguese language was selected.
+- Fixed special character issue in AI Forms.
+- Fixed special character issue in WooCommerce Custom Prompt.
+- Fixed an issue where line breaks were double when Inline mode was selected in AI forms.
+
+= 1.7.17 =
+
+- Fixed an issue causing a "must be URL" error when validating website addresses in AI Forms.
+
+= 1.7.16 =
+
+- Fixed authenticated option issue.
+- Fixed nonce verification issues.
+
+= 1.7.15 =
+
+**New**
+
+The WooCommerce Bulk Writer is here! You can now generate content for your products in bulk with a single click. See the documentationm [here](https://docs.aipower.org/docs/woocommerce#bulk-product-writer).
+
+**Improvement**
+
+You can now use **Shift + Enter** to create a line break in the chat bot.
+
+= 1.7.14 =
+
+Added documentation links for AutoGPT.
+
+= 1.7.13 =
+
+Fixed some broken links.
+
+= 1.7.12 =
+
+Added search functionality for Embeddings.
+
+Now, you can quickly access your embeddings through a search box found under the **Embeddings - Entries** and **Embeddings - Index Builder** sections.
+
+This update allows for more efficient navigation and management of your embeddings.
+
+= 1.7.11 =
+
+We've made an update to the chat bot's message input. Instead of using a text field, we have now transitioned to a textarea.
+
+This change was made for two main reasons:
+
+- The text field doesn't display a carriage return.
+- The textarea allows for the copying and pasting of large text amounts, maintaining line breaks effectively.
+
+P.S.: You might need to clear your cache for the changes to take effect.
+
+= 1.7.10 =
+
+Fixed an issue in AutoGPT - Queue tab.
+
+= 1.7.9 =
+
+Update links in the License Activation UI.
+
+= 1.7.8 =
+
+- Fixed an issue where OpenAI was not providing a clear error message when an incorrect API key was entered.
+
+= 1.7.7 =
+
+**New (Pro only)**
+
+Twitter Social Poster feature - Now automate your Twitter posts with Blog2Tweet and Twitter Writer. Define your keywords and time interval and let GPT writes your tweets.
+
+Documentation [here](https://docs.aipower.org/docs/AutoGPT/social-poster/twitter).
+
+**Enhancement**
+
+Improved keyword extraction for Pixabay and Pexels.
+
+= 1.7.6 =
+
+**New (Pro only)**
+
+You can now embed PDFs for your chat bot from backend. Documentation [here](https://docs.aipower.org/docs/embeddings#pdf-upload).
+
+**Enhancement**
+
+Chat PDF is now language aware. For example, if chat language is set to Spanish then sample questions will be in Spanish too.
+
+= 1.7.5 =
+
+- Fixed an issue where if the Pinecone index was empty, the chat bot would respond with an "I don't know" message. Now, the bot will continue to interact regardless of the index status.
+- Fixed an issue related to deleting multiple vectors.
+
+= 1.7.4 =
+
+Added more Pinecone environments. If you cant find your environment please let us know.
+
+= 1.7.3 =
+
+Added more Pinecone environments. If you cant find your environment please let us know.
+
+= 1.7.2 =
+
+Improvement: Added clear button to clear current PDF session. Documentation [here](https://docs.aipower.org/docs/ChatGPT/advanced-setup/pdfchat#clearing-the-pdf-session).
+Fix: Removed automated my ai account page creation.
+
+= 1.7.1 =
+
+**New**
+
+Introduced a new Pro feature: PDF Chat. Documentation [here](https://docs.aipower.org/docs/ChatGPT/advanced-setup/pdfchat).
+
+- Your users can now upload PDF files (up to 120 pages) directly in the chat interface.
+- Admins can set a page limit for the uploaded PDFs ranging from 1 to 120 pages.
+- Customizable success message upon successful upload of a PDF.
+- The plugin will automatically generate and display three random questions from the PDF to guide the user interaction.
+- The color of the PDF icon in the chat interface can be customized to align with your brand or preference.
+- You can view all PDFs under ChatGPT - Uploaded PDFs tab.
+
+Also..
+
+- Fixed various minor bugs and improved overall performance and stability.
+- Brought Force Refresh button back to AutoGPT.
+
+= 1.7 =
+
+More Pinecone environments have been added.
+
+= 1.6.99 =
+
+More Pinecone environments have been added.
+
+= 1.6.98 =
+
+**New**
+
+You can now select different Pinecone index for different chat bots. Documentation [here](https://docs.aipower.org/docs/ChatGPT/advanced-setup/context#index-selection)
+
+This step is the beginning of a very cool upcoming feature..
+
+= 1.6.97 =
+
+**New**
+
+- New troubleshooting tool for Embeddings. Go give it a try. It is under Embeddings - Troubleshoot tab. Tutorial will be uploaded soon.
+
+**Fix**
+
+- Fix an issue in Role Manager.
+- Default value for autorestart option in AutoGPT is now 20 minute.
+
+= 1.6.96 =
+
+**Improvement**
+
+- RSS (Pro Only): "Generate New Title" option added for RSS module in AutoGPT. Learn more [here](https://docs.aipower.org/docs/autogpt/auto-content-writer/rss#generate-new-title).
+
+**Fix**
+
+- Fixed an issue in AutoGPT where "Last Content Generation" value was missing.
+
+= 1.6.95 =
+
+- Fixed an issue in AutoGPT
+- Fixed an issue with Image Generator
+- Fixed broken links for documentation.
+
+= 1.6.94 =
+
+- Enhancement: Introducing our new Documentation page! Check it out at https://docs.aipower.org. Please note that some module help pages are still under development. Stay tuned for full coverage on all features!
+- Updated help links to the new documentation page.
+
+= 1.6.93 =
+
+- Fixed an issue in AutoGPT Dashboard.
+
+= 1.6.92 =
+
+- Improved Pexels and Pixabay search functionality by adding an option to use keywords instead of the title when searching for images through the API. To enable this, navigate to Settings > Image tab and select the "Use Keyword" option for both Pexels and Pixabay. Compare image search results by toggling this option on and off.
+- Fixed a parsing issue in AI Forms.
+- Corrected the issue of colors getting mixed up in the chatbot style tab.
+
+= 1.6.91 =
+
+- Improved Pexels and Pixabay search functionality by adding an option to use keywords instead of the title when searching for images through the API. To enable this, navigate to Settings > Image tab and select the "Use Keyword" option for both Pexels and Pixabay. Compare image search results by toggling this option on and off.
+- Fixed an issue where the Dall-E image size was not being retained after saving.
+- Fixed an issue with AI Thinking, welcome message, powered by footnote, and placeholder custom text in the chatbot.
+- Fixed a nonce issue in Embeddings.
+
+= 1.6.90 =
+
+**Added**
+
+- New tab under AutoGPT called Dashboard for monitoring deployed GPT agents
+- Agents display module names, which are clickable
+- Status indicator shows if agent is on or off based on cronjob activation
+- Last Run time displays the last time cron job ran
+- Last content generation shows the last time content was generated
+- Info button displays a modal window with code and instructions
+- Search box for filtering agents
+- Pagination with 10 agents per page
+- Integrated Role Manager to manage access
+
+= 1.6.89 =
+
+Introducing Pixabay Integration: Enhance Your Content with High-Quality Images
+
+I am excited to announce the integration of Pixabay, a leading platform for sharing stunning, royalty-free images, illustrations, and vector graphics. With this integration, you can now effortlessly access and utilize a vast library of high-quality visuals to enrich your content and captivate your audience.
+
+New fields under Settings - Image tab for Pixabay integration:
+
+* Pixabay API Key (Text field - Mandatory)
+* Language (dropdown - optional - default: en). Accepted values: cs, da, de, en, es, fr, id, it, hu, nl, no, pl, pt, ro, sk, fi, sv, tr, vi, th, bg, ru, el, ja, ko, zh
+* Image Type (dropdown - optional - default: all). Accepted values: "all", "photo", "illustration", "vector"
+* Order (dropdown - optional - default: popular). Accepted values: "popular", "latest"
+
+Read announcement [here](https://aipower.org/introducing-pixabay-integration-elevate-your-content-with-stunning-images/) 
+
+Additionally, fixed an issue where the Call to Action link was not being inserted into the article when its designated location was set as the Beginning.
+
+= 1.6.88 =
+* Fix: Fixed an issue with the AI forms where there was no breakline in some cases.
+* Fix: Fixed missing dots from sentences in AI Forms.
+* Improvement: Enabled adding "additional context" for the chat bot even when content aware is set to NO.
+* Improvement: Increased textarea size for "additional context" for a better user experience.
+* Improvement: Enabled additional context by default and added the following text: "You are a helpful AI Assistant. Please be friendly."
+* Improvement: Introduced a new dropdown menu called "Templates" at the top of the Additional Context section. Users can now select from the dropdown and have their selection appended to the additional context textarea.
+* Improvement: Implemented dynamic variables for "sitename" and "todays date" to be used in the additional context. For example you can add "Todays date is [date]" in your additional context and this will make your bot aware of the current date.
+
+You can select built-in context for your chat bot from templates. Some examples:
+
+* "Customer Support": "As a highly proficient and empathetic customer support assistant, your primary goal is to provide exceptional assistance, addressing customer concerns and inquiries in a timely and effective manner. Harness your expertise to deliver outstanding service and create a positive customer experience.",
+* "Sale Support": "As an adept and proactive sales support assistant, you are an essential part of the [sitename] team. Your expertise in sales processes, combined with exceptional interpersonal skills, enables you to facilitate seamless customer interactions, foster strong relationships, and drive business growth. Dedicate yourself to providing unparalleled support and contributing to the overall success of [sitename].",
+* "Technical Support": "As an expert technical support assistant at [sitename], you excel in troubleshooting, problem-solving, and providing top-notch assistance to customers facing technical challenges. Your extensive knowledge, combined with a strong customer-centric approach, allows you to deliver timely and effective solutions. Remember, when a customer inquires about the current date, share it with them as [date]. Stand out as a reliable and indispensable resource, contributing to the success and satisfaction of [sitename] clientele.",
+* "Social Media Support": "As a creative and engaging social media support assistant, your role is to provide prompt and personable assistance to [sitename]'s online community. Utilize your strong communication skills and social media savvy to address inquiries, offer solutions, and foster positive interactions, all while maintaining [sitename]'s brand voice and reputation. Commit to delivering exceptional experiences that bolster customer loyalty and strengthen the brand's online presence.",
+* "Product Support": "As a knowledgeable and customer-focused product support assistant for [sitename], your expertise lies in guiding customers through product-related issues, offering tailored solutions, and ensuring their satisfaction. Your deep understanding of [sitename]'s product line and dedication to customer success positions you as a valuable resource. Strive to provide exceptional support, empowering customers to fully benefit from their product experience and fostering long-lasting relationships.",
+* "Lisa": "You are a helpful AI assistant. Your name is Lisa. Your primary purpose is to provide accurate, relevant, and helpful information exclusively about the GPT AI Power WordPress plugin. If a user asks a question or initiates a discussion that is not directly related to the plugin or its features, functionalities, and usage, do not provide an answer or engage in the conversation. Instead, politely redirect the users focus back to the GPT AI Power plugin and its related content. Your expertise should be limited to the websites content, and you must not provide any information or suggestions on topics that fall outside the scope of the GPT AI Power plugin."
+
+= 1.6.87 =
+* Improvement: Migrating from gptaipower.com to aipower.org. Updated all links with the new one.
 
 = 1.6.86 =
 * Improvement: Optimized image generator for mobile use.

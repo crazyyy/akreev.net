@@ -86,8 +86,8 @@ class B2S_PostBox {
                     foreach ($result->data->auth as $a => $auth) {
                         foreach ($auth as $u => $item) {
                             if (in_array($item->networkId, $isVideoNetwork)) {
-                                if (!in_array($item->networkId, array(1, 2, 6, 12))) {
-                                    unset($result->data->auth->$a[$u]);
+                                if (!in_array($item->networkId, array(1, 2, 3, 6, 12, 38, 39))) {
+                                    unset($result->data->auth->{$a[$u]});
                                 }
                             }
                         }
@@ -158,12 +158,12 @@ class B2S_PostBox {
         }
 
         $content = '<div class="b2s-post-meta-box">
-                    <div id="b2s-server-connection-fail" class="b2s-info-error"><button class="b2s-btn-close-meta-box b2s-close-icon" data-area-id="b2s-server-connection-fail" title="close notice"></button>' . esc_html__('The connection to the server failed. Please try again! You can find more information and solutions in the', 'blog2social') . '<a target="_blank" href="' . esc_url(B2S_Tools::getSupportLink('connection_guide')) . '"> ' . esc_html__('guide for server connection', 'blog2social') . '</a>.</div>
-                    <div id="b2s-heartbeat-fail" class="b2s-info-error"><button class="b2s-btn-close-meta-box b2s-close-icon" data-area-id="b2s-heartbeat-fail" title="close notice"></button>' . esc_html__('WordPress uses heartbeats by default, Blog2Social as well. Please enable heartbeats for using Blog2Social!', 'blog2social') . $b2sHeartbeatFaqLink . ' </div>
-                    <div id="b2s-post-meta-box-state-no-publish-future-customize" class="b2s-info-error"><button class="b2s-btn-close-meta-box b2s-close-icon" data-area-id="b2s-post-meta-box-state-no-publish-future-customize" title="close notice"></button>' . esc_html__('Your post is still on draft or pending status. Please make sure that your post is published or scheduled to be published on this blog. You can then auto-post or schedule and customize your social media posts with Blog2Social.', 'blog2social') . '</div>
-                    <div id="b2s-post-meta-box-state-no-auth" class="b2s-info-error"><button class="b2s-btn-close-meta-box b2s-close-icon" data-area-id="b2s-post-meta-box-state-no-auth" title="close notice"></button>' . esc_html__('There are no social network accounts assigned to your selected network collection. Please assign at least one social network account or select another network collection.', 'blog2social') . '<a href="' . esc_url($this->b2sSiteUrl . 'wp-admin/admin.php?page=blog2social-network') . '" target="_bank">' . esc_html__('Network settings', 'blog2social') . '</a></div>
-                    <div id="b2s-post-meta-box-state-no-publish-future" class="b2s-info-error"><button class="b2s-btn-close-meta-box b2s-close-icon" data-area-id="b2s-post-meta-box-state-no-publish-future" title="close notice"></button>' . esc_html__('Your post is still on draft or pending status. Please make sure that your post is published or scheduled to be published on this blog. You can then auto-post or schedule and customize your social media posts with Blog2Social.', 'blog2social') . '</div>
-                    <div id="b2s-url-valid-warning" class="b2s-info-warning"><button class="b2s-btn-close-meta-box b2s-close-icon" data-area-id="b2s-url-valid-warning" title="close notice"></button>' . esc_html__('Notice: Please make sure, that your website address is reachable. The Social Networks do not allow postings from local installations.', 'blog2social') . '</div>
+                    <div id="b2s-server-connection-fail" class="b2s-info-error b2s-info-display-none"><button class="b2s-btn-close-meta-box b2s-close-icon" data-area-id="b2s-server-connection-fail" title="close notice"></button>' . esc_html__('The connection to the server failed. Please try again! You can find more information and solutions in the', 'blog2social') . '<a target="_blank" href="' . esc_url(B2S_Tools::getSupportLink('connection_guide')) . '"> ' . esc_html__('guide for server connection', 'blog2social') . '</a>.</div>
+                    <div id="b2s-heartbeat-fail" class="b2s-info-error b2s-info-display-none"><button class="b2s-btn-close-meta-box b2s-close-icon" data-area-id="b2s-heartbeat-fail" title="close notice"></button>' . esc_html__('WordPress uses heartbeats by default, Blog2Social as well. Please enable heartbeats for using Blog2Social!', 'blog2social') . $b2sHeartbeatFaqLink . ' </div>
+                    <div id="b2s-post-meta-box-state-no-publish-future-customize" class="b2s-info-error b2s-info-display-none"><button class="b2s-btn-close-meta-box b2s-close-icon" data-area-id="b2s-post-meta-box-state-no-publish-future-customize" title="close notice"></button>' . esc_html__('Your post is still on draft or pending status. Please make sure that your post is published or scheduled to be published on this blog. You can then auto-post or schedule and customize your social media posts with Blog2Social.', 'blog2social') . '</div>
+                    <div id="b2s-post-meta-box-state-no-auth" class="b2s-info-error b2s-info-display-none"><button class="b2s-btn-close-meta-box b2s-close-icon" data-area-id="b2s-post-meta-box-state-no-auth" title="close notice"></button>' . esc_html__('There are no social network accounts assigned to your selected network collection. Please assign at least one social network account or select another network collection.', 'blog2social') . '<a href="' . esc_url($this->b2sSiteUrl . 'wp-admin/admin.php?page=blog2social-network') . '" target="_bank">' . esc_html__('Network settings', 'blog2social') . '</a></div>
+                    <div id="b2s-post-meta-box-state-no-publish-future" class="b2s-info-error b2s-info-display-none"><button class="b2s-btn-close-meta-box b2s-close-icon" data-area-id="b2s-post-meta-box-state-no-publish-future" title="close notice"></button>' . esc_html__('Your post is still on draft or pending status. Please make sure that your post is published or scheduled to be published on this blog. You can then auto-post or schedule and customize your social media posts with Blog2Social.', 'blog2social') . '</div>
+                    <div id="b2s-url-valid-warning" class="b2s-info-warning b2s-info-display-none"><button class="b2s-btn-close-meta-box b2s-close-icon" data-area-id="b2s-url-valid-warning" title="close notice"></button>' . esc_html__('Notice: Please make sure, that your website address is reachable. The Social Networks do not allow postings from local installations.', 'blog2social') . '</div>
                     <input type="hidden" id="b2s-redirect-url-customize" name="b2s-redirect-url-customize" value="' . esc_attr($this->b2sSiteUrl . 'wp-admin/admin.php?page=blog2social-ship&postId=') . '"/>
                     <input type="hidden" id="b2s-user-last-selected-profile-id" name="b2s-user-last-selected-profile-id" value="' . esc_attr(($selectedProfileId !== false ? (int) $selectedProfileId : 0)) . '" />
                     <input type="hidden" id="b2s-home-url" name="b2s-home-url" value="' . esc_attr(get_option('home')) . '"/>
@@ -177,7 +177,6 @@ class B2S_PostBox {
                     <input type="hidden" id="b2s-post-meta-box-version" name="b2s-post-meta-box-version" value="' . esc_attr(B2S_PLUGIN_USER_VERSION) . '"/>
                     <input type="hidden" id="isOgMetaChecked" name="isOgMetaChecked" value="' . esc_attr((isset($metaSettings['og_active']) ? (int) $metaSettings['og_active'] : 0)) . '">
                     <input type="hidden" id="isCardMetaChecked" name="isCardMetaChecked" value="' . esc_attr((isset($metaSettings['card_active']) ? (int) $metaSettings['card_active'] : 0)) . '">
-                    <input type="hidden" id="b2s-logo-url" value="' . esc_url(plugins_url('/assets/images/b2s_icon.png', B2S_PLUGIN_FILE)) . '">
                     <input type="hidden" id="b2sAutoPostImportIsActive" name="autoPostImportIsActive" value="' . (($autoPostImport) ? 1 : 0) . '">
 
                     <h3 class="b2s-meta-box-headline">' . esc_html__('Custom Sharing & Scheduling', 'blog2social') . ' <a class="b2s-info-btn" data-modal-target="b2sInfoMetaBoxModalSched" href="#">' . esc_html__('Info', 'blog2social') . '</a></h3>
@@ -372,8 +371,38 @@ class B2S_PostBox {
         return $content;
     }
 
+    public function getVideoBox($postId = 0) {
+        $content = '';
+        $notice = '';
+        $url = '';
+        $canUseVideoAddon = (defined('B2S_PLUGIN_ADDON_VIDEO') && !empty(B2S_PLUGIN_ADDON_VIDEO)) ? true : false;
+        if (B2S_PLUGIN_USER_VERSION > 0 && $canUseVideoAddon && isset(B2S_PLUGIN_ADDON_VIDEO['volume_open'])) {
+            $enoughVolume = false;
+            $volume = B2S_PLUGIN_ADDON_VIDEO['volume_open'];
+            $videoMeta = wp_read_video_metadata(get_attached_file((int) $postId));
+            if (isset($videoMeta['filesize']) && is_numeric($videoMeta['filesize'])) {
+                if ($volume >= round($videoMeta['filesize'] / 1024)) {
+                    $enoughVolume = true;
+                }
+            }
+            if (!$enoughVolume) {
+                $notice = esc_html__("You don't have enough data volume left. Please top-up your data to upload your video.", 'blog2social');
+            } else {
+                $url = esc_url("admin.php?page=blog2social-ship&isVideo=1&postId=" . esc_attr($postId));
+            }
+        } else {
+            $notice = esc_html__('Unlock video add-on', 'blog2social');
+        }
+
+        if (!empty($notice)) {
+            $content .= '<div id="b2s-meta-video-box-notice" class="b2s-info-warning"><button class="b2s-btn-close-meta-box b2s-close-icon" data-area-id="b2s-meta-video-box-notice" title="close notice"></button>' . $notice . '</div>';
+        }
+        $content .= '<button id="b2s-meta-video-box-btn-customize" data-url="' . $url . '" class="b2s-btn b2s-btn-primary b2s-btn-sm b2s-center-block b2s-btn-margin-bottom-15" ' . (!empty($notice) ? 'disabled' : '') . ' >' . esc_html__('Share on video networks', 'blog2social') . '</button>';
+        return $content;
+    }
+
     public function updateInfo($postId = 0) {
-//>= V6.1 Gutenberg update Infobox
+        //>= V6.1 Gutenberg update Infobox
         $autoPostActive = false;
         $lastPostDate = '---';
         $shareCount = 0;

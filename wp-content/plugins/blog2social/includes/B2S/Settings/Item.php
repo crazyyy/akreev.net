@@ -274,7 +274,7 @@ class B2S_Settings_Item {
                 if ($networkId == 12) {
                     $content .= esc_html__('Insert white frames to show the whole image in your timeline. All image information will be shown in your timeline.', 'blog2social');
                 } else {
-                    $content .= esc_html__('The link post format displays posts title, link address and the first one or two sentences of the post. The networks scan this information from your META or OpenGraph.  PLEASE NOTE: If you want your link posts to display the selected image from the Blog2Social preview editor, please make sure you have activated the Social Meta Tags for Facebook and Twitter in your Blog2Social settings. You find these settings in the tab "Social Meta Data". If you don\'t select a specific post image, some networks display the first image detected on your page. The image links to your blog post.', 'blog2social');
+                    $content .= esc_html__('A link post will display the title of the original post, the link address, the first one or two lines of the article, and the original image linked to the post. Clicking the image will direct the user to the linked website.', 'blog2social');
                 }
                 $content .= '</div>';
                 $content .= '<div class="col-md-6 col-xs-12">';
@@ -285,7 +285,7 @@ class B2S_Settings_Item {
                 if ($networkId == 12) {
                     $content .= esc_html__('The image preview will be cropped automatically to fit the default Instagram layout for your Instagram timeline. The image will be shown uncropped when opening the preview page for your Instagram post.', 'blog2social');
                 } else {
-                    $content .= esc_html__('A photo or image post displays the selected image in the one-page preview of Blog2Social and your comment above the image. The image links to the image view on your image gallery in the respective network. Blog2Social adds the link to your post in your comment. The main benefit of photo posts is that your image is uploaded to your personal image albums or gallery. In Facebook, you can edit the albums name with a description of your choice.', 'blog2social');
+                    $content .= esc_html__('An image post will display the cover image of the linked website or post and add it to the library of the selected social media networks. Blog2Social will automatically include a link to the website in the text field of the social media post. You can select a custom link for each network.', 'blog2social');
                 }
                 $content .= '</div>';
                 $content .= '</div>';

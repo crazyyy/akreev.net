@@ -119,11 +119,11 @@ $draftIncompleteModal = false;
 
 
                             </div>
-                            <?php require_once B2S_PLUGIN_DIR . 'views/b2s/html/sidebar.ship.php'; ?>
+                            <?php require_once B2S_PLUGIN_DIR . 'views/b2s/html/sidebar.ship.php'; //NOTE Sidebar.ship.php ?>
 
                             <div class="clearfix"></div>
 
-                            <div id="b2s-wrapper" class="b2s-wrapper-content">
+                            <div id="b2s-wrapper" class="b2s-wrapper-content"> 
                                 <div id="b2s-sidebar-wrapper" class="sidebar-default">
                                     <ul class="sidebar-nav b2s-sidbar-wrapper-nav-ul">
                                         <li class="btn-toggle-menu">
@@ -142,7 +142,7 @@ $draftIncompleteModal = false;
                                                     $mandantData = $navbar->getData();
                                                     ?>
 
-                                                    <h3> 
+                                                    <h3><?php // NOTE Video Accounts (Add more...) (right site) ?>
                                                         <?php if (!$isVideo) { ?>
                                                             <?php echo esc_html(count($mandantData['auth'])); ?> <?php esc_html_e('Social Accounts', 'blog2social') ?>
                                                         <?php } else { ?>
@@ -155,7 +155,7 @@ $draftIncompleteModal = false;
 
                                         <li class="sidebar-brand">
                                             <div class="form-group">
-                                                <?php
+                                                <?php // Video Schedule
                                                 echo wp_kses($navbar->getSelectMandantHtml($mandantData['mandanten']), array(
                                                     'select' => array(
                                                         'class' => array()
@@ -212,6 +212,7 @@ $draftIncompleteModal = false;
                                                     'data-network-tos-group-id' => array(),
                                                     'data-network-display-name' => array(),
                                                     'data-meta-type' => array(),
+                                                    'scheduler-days' => array(),
                                                 ),
                                                 'img' => array(
                                                     'alt' => array(),
@@ -405,7 +406,7 @@ $draftIncompleteModal = false;
                                         <div class="modal-body">
                                             <?php
                                             $portale = new B2S_Ship_Portale();
-                                            echo wp_kses($portale->getItemHtml($mandantData['portale'], $isVideo), array(
+                                            echo wp_kses($portale->getItemHtml($mandantData['portale'], $isVideo), array( //NOTE VIDEO
                                                 'ul' => array(),
                                                 'li' => array(
                                                     'data-mandant-default-id' => array(),

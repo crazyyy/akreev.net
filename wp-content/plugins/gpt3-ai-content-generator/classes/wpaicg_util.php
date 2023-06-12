@@ -122,13 +122,25 @@ if(!class_exists('\\WPAICG\\WPAICG_Util')) {
                 if(is_string($key)){
                     $capability .= '_'.$key;
                 }
+                if($capability == 'wpaicg_finetune_fine-tunes'){
+                    $capability = 'wpaicg_finetune_file-tunes';
+                }
                 if(current_user_can($capability) || in_array('administrator', (array)wp_get_current_user()->roles)){
                     $url = admin_url('admin.php?page='.$prefix);
                     if(is_string($key)){
                         $url .= '&action='.$key;
                     }
                     ?>
-                    <a class="nav-tab<?php echo $key === $selected ? ' nav-tab-active':''?>" href="<?php echo esc_html($url)?>"><?php echo esc_html($menu);?></a>
+                    <a class="nav-tab<?php echo $key === $selected ? ' nav-tab-active':''?>" href="<?php echo esc_html($url)?>">
+                        <?php
+                        echo esc_html($menu);
+                        if($key == 'pdf' && $prefix == 'wpaicg_embeddings' && !$this->wpaicg_is_pro()){
+                            ?>
+                            <span style="color: #000;padding: 2px 5px;font-size: 12px;background:#ffba00;border-radius: 2px;"><?php echo esc_html__('Pro','gpt3-ai-content-generator')?></span>
+                            <?php
+                        }
+                        ?>
+                    </a>
                     <?php
                 }
             }

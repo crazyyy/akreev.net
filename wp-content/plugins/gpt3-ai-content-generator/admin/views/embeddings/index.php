@@ -23,7 +23,6 @@ if(empty($wpaicg_pinecone_api) && empty($wpaicg_pinecone_environment) && $wpaicg
     box-shadow: rgba(99, 99, 99, 0.2) 0px 2px 8px 0px;
 }
 </style>
-<p class="wpaicg_notice_text_rw"><?php echo sprintf(esc_html__('Love our plugin? Support us with a quick review: %s[Write a Review]%s - Thank you! ❤️ 😊','gpt3-ai-content-generator'),'<a href="https://wordpress.org/support/plugin/gpt3-ai-content-generator/reviews/#new-post" target="_blank">','</a>')?></p>
 <div class="wrap fs-section">
     <h2 class="nav-tab-wrapper">
         <?php
@@ -33,8 +32,10 @@ if(empty($wpaicg_pinecone_api) && empty($wpaicg_pinecone_environment) && $wpaicg
         \WPAICG\wpaicg_util_core()->wpaicg_tabs('wpaicg_embeddings', array(
             'content' => esc_html__('Content Builder','gpt3-ai-content-generator'),
             'logs' => esc_html__('Entries','gpt3-ai-content-generator'),
+            'pdf' => esc_html__('PDF','gpt3-ai-content-generator'),
             'builder' => esc_html__('Index Builder','gpt3-ai-content-generator'),
-            'settings' => esc_html__('Settings','gpt3-ai-content-generator')
+            'settings' => esc_html__('Settings','gpt3-ai-content-generator'),
+            'troubleshoot' => esc_html__('Troubleshoot','gpt3-ai-content-generator'),
         ), $wpaicg_action);
         if(!$wpaicg_action || $wpaicg_action == 'content'){
             $wpaicg_action = '';
@@ -55,6 +56,16 @@ elseif($wpaicg_action == 'settings'){
 }
 elseif($wpaicg_action == 'builder'){
     include __DIR__.'/builder.php';
+}
+elseif($wpaicg_action == 'pdf') {
+    if (\WPAICG\wpaicg_util_core()->wpaicg_is_pro()) {
+        include WPAICG_PLUGIN_DIR . 'lib/views/pdf/index.php';
+    } else {
+        include __DIR__ . '/pdf.php';
+    }
+}
+elseif($wpaicg_action == 'troubleshoot'){
+    include __DIR__.'/troubleshoot.php';
 }
 ?>
 </div>

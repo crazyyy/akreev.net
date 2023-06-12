@@ -1,0 +1,1 @@
+Redirect failed even though rewriting has been proven to work. Strange!

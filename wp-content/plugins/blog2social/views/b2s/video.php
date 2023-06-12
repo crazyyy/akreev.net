@@ -154,7 +154,7 @@ $canUseVideoAddon = (defined('B2S_PLUGIN_ADDON_VIDEO') && !empty(B2S_PLUGIN_ADDO
                                     <?php if (!$canUseVideoAddon) { ?>
                                         <div class="row">
                                             <div class="col-md-3">                                     
-                                                <div class="b2s-progress-bar" data-percent="0" data-custom-text="<?php echo esc_attr("You still have<br>of 0GB left", "blog2social") ?>" data-duration="2000"></div>
+                                                <div class="b2s-progress-bar" data-percent="0" data-custom-text="<?php echo esc_attr("You have 0GB <br>of 0GB left", "blog2social") ?>" data-duration="2000"></div>
                                             </div>
                                             <div class="col-md-9">
                                                 <h4><?php esc_html_e("You have reached the limit of your free video trial period", 'blog2social') ?></h4>                                            

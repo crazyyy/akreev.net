@@ -311,7 +311,7 @@ class B2S_Heartbeat {
 
     private function deleteUserSchedPost() {
         global $wpdb;
-        $sql = "SELECT posts.id, posts.v2_id, user.token FROM {$wpdb->prefix}b2s_posts as posts LEFT JOIN {$wpdb->prefix}b2s_user AS user on posts.blog_user_id = user.blog_user_id WHERE hook_action = %d AND  post_for_approve = %d LIMIT 500";
+        $sql = "SELECT posts.id, posts.v2_id, user.token, posts.post_format, posts.upload_video_token FROM {$wpdb->prefix}b2s_posts as posts LEFT JOIN {$wpdb->prefix}b2s_user AS user on posts.blog_user_id = user.blog_user_id WHERE hook_action = %d AND  post_for_approve = %d LIMIT 500";
         $sendData = $wpdb->get_results($wpdb->prepare($sql, 3, 0), ARRAY_A);
         if (is_array($sendData) && !empty($sendData) && isset($sendData[0])) {
             foreach ($sendData as $k => $value) {
@@ -335,7 +335,7 @@ class B2S_Heartbeat {
 
     private function deleteUserPublishPost() {
         global $wpdb;
-        $sql = "SELECT posts.id, user.token FROM {$wpdb->prefix}b2s_posts as posts LEFT JOIN {$wpdb->prefix}b2s_user AS user on posts.blog_user_id = user.blog_user_id WHERE hook_action = %d AND post_for_approve = %d LIMIT 500";
+        $sql = "SELECT posts.id, user.token, posts.sched_details_id, posts.hide FROM {$wpdb->prefix}b2s_posts as posts LEFT JOIN {$wpdb->prefix}b2s_user AS user on posts.blog_user_id = user.blog_user_id WHERE hook_action = %d AND post_for_approve = %d LIMIT 500";
         $sendData = $wpdb->get_results($wpdb->prepare($sql, 4, 0), ARRAY_A);
         if (is_array($sendData) && !empty($sendData) && isset($sendData[0])) {
             foreach ($sendData as $k => $value) {
@@ -352,6 +352,15 @@ class B2S_Heartbeat {
                     $data = array('hook_action' => '4');
                     $where = array('id' => $id);
                     $wpdb->update($wpdb->prefix . 'b2s_posts', $data, $where, array('%d'), array('%d'));
+
+                //if not failed and delete flag hide = 2 is set, delete completely
+                } else if(isset($value['hide']) && (int) $value['hide'] == 2){
+                    if(isset($value['id']) && (int) $value['id'] > 0){
+                        $wpdb->delete($wpdb->prefix . 'b2s_posts', array('id' => $value['id']), array('%d'));
+                        if( isset($value["sched_details_id"]) && (int) $value["sched_details_id"] > 0){
+                            $wpdb->delete($wpdb->prefix . 'b2s_posts_sched_details', array('id' => $value['sched_details_id']), array('%d'));
+                        }
+                    }
                 }
             }
         }

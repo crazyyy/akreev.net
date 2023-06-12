@@ -79,8 +79,8 @@ class Ajax_Get {
                             foreach ($result->data->auth as $a => $auth) {
                                 foreach ($auth as $u => $item) {
                                     if (in_array($item->networkId, $isVideoNetwork)) {
-                                        if (!in_array($item->networkId, array(1, 2, 6, 12))) {
-                                            unset($result->data->auth->$a[$u]);
+                                        if (!in_array($item->networkId, array(1, 2, 6, 12, 38, 39))) {
+                                            unset($result->data->auth->{$a[$u]});
                                         }
                                     }
                                 }
@@ -244,6 +244,13 @@ class Ajax_Get {
                         echo json_encode(array('result' => false, 'reason' => 'invalid_video', 'content' => (isset($isValid['content']) ? $isValid['content'] : ''), 'networkId' => (int) $_POST['networkId'], 'networkAuthId' => (int) $_POST['networkAuthId']));
                         wp_die();
                     }
+
+                    // NOTE check if it's a reel
+                    if(isset($isValid['canReel']['result']) && !empty($isValid['canReel']['result']) && $isValid['canReel']['result'] === true) {
+                        $canReel = array('result' => true);
+                    } else {
+                        $canReel = array('result' => false, 'content' => $isValid['canReel']['content']);
+                    }
                 }
 
                 $userLang = isset($_POST['userLang']) ? trim(sanitize_text_field($_POST['userLang'])) : strtolower(substr(B2S_LANGUAGE, 0, 2));
@@ -279,7 +286,7 @@ class Ajax_Get {
                     }
                 }
 
-                $item = new B2S_Ship_Item((int) $_POST['postId'], $userLang, $selSchedDate, $b2sPostType, $relayCount, $isVideoMode);
+                $item = new B2S_Ship_Item((int) $_POST['postId'], $userLang, $selSchedDate, $b2sPostType, $relayCount, $isVideoMode, $canReel);
                 echo json_encode(array('result' => true, 'networkAuthId' => (int) $_POST['networkAuthId'], 'networkType' => (int) $_POST['networkType'], 'networkId' => (int) $_POST['networkId'], 'content' => $item->getItemHtml((object) $itemData, true, $b2sDraftData), 'draft' => !empty($b2sDraftData), 'draftActions' => $b2sDraftData));
             } else {
                 echo json_encode(array('result' => false));
@@ -814,8 +821,8 @@ class Ajax_Get {
                 foreach ($result->data->auth as $a => $auth) {
                     foreach ($auth as $u => $item) {
                         if (in_array($item->networkId, $isVideoNetwork)) {
-                            if (!in_array($item->networkId, array(1, 2, 6, 12))) {
-                                unset($result->data->auth->$a[$u]);
+                            if (!in_array($item->networkId, array(1, 2, 6, 12, 38, 39))) {
+                                unset($result->data->auth->{$a[$u]});
                             }
                         }
                     }
