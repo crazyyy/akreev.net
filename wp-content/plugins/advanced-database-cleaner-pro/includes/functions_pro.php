@@ -4,20 +4,27 @@
 	$default_order_by contains the default column for ORDER BY
 	$search_key is the column name in which we will search if the user choose the first radio in the form
 	$search_value is the column name in which we will search if the user choose the second radio in the form
-	args by WP: paged, order_by, order, 
+	args by WP: paged, order_by, order,
 	args be aDBc: per_page, s, in
  */
-function aDBc_get_search_sql_arg($search_in_key, $search_in_value){
+function aDBc_get_search_sql_arg( $search_in_key, $search_in_value) {
 
 		// Prepare LIKE sql clause
 		$search_like = "";
-		if(!empty($_GET['s']) && trim($_GET['s']) != ""){
-			$search = esc_sql(sanitize_text_field($_GET['s']));
-			$in = $search_in_key;
-			if(!empty($_GET['in'])){
+
+		if ( ! empty( $_GET['s'] ) && trim( $_GET['s'] ) != "" ) {
+
+			$search = esc_sql( sanitize_text_field( $_GET['s'] ) );
+			$in 	= $search_in_key;
+
+			if ( ! empty( $_GET['in'] ) ) {
+
 				$in = ($_GET['in'] == "key") ? $search_in_key : $search_in_value;
+
 			}
+
 			$search_like = " AND $in LIKE '%{$search}%'";
+
 		}
 
 		return $search_like;
@@ -100,7 +107,7 @@ function aDBc_filter_results_in_all_items_array(&$aDBc_all_items, $aDBc_tables_n
 				unset($aDBc_all_items[$name]);
 			}
 		}
-		
+
 
 	}else{
 
@@ -121,7 +128,7 @@ function aDBc_filter_results_in_all_items_array(&$aDBc_all_items, $aDBc_tables_n
 				$array_names = $aDBc_tables_name_to_optimize;
 			}else{
 				$array_names = $aDBc_tables_name_to_repair;
-			}			
+			}
 		}
 
 		// Filter according to autoload
@@ -129,7 +136,7 @@ function aDBc_filter_results_in_all_items_array(&$aDBc_all_items, $aDBc_tables_n
 		if($filter_on_autoload){
 			$autoload_param = esc_sql($_GET['autoload']);
 		}
-		
+
 		// Filter according to belongs_to
 		$filter_on_belongs_to = !empty($_GET['belongs_to']) && $_GET['belongs_to'] != "all";
 		if($filter_on_belongs_to){
@@ -150,12 +157,12 @@ function aDBc_filter_results_in_all_items_array(&$aDBc_all_items, $aDBc_tables_n
 					array_push($names_to_delete, $item_name);
 				}
 			}
-			
+
 			if($filter_on_autoload){
 				if($item_info['sites'][1]['autoload'] != $autoload_param){
 					array_push($names_to_delete, $item_name);
 				}
-			}			
+			}
 
 			if($filter_on_belongs_to){
 				$belongs_to_value = explode("(", $item_info['belongs_to'], 2);
@@ -164,7 +171,7 @@ function aDBc_filter_results_in_all_items_array(&$aDBc_all_items, $aDBc_tables_n
 				if($belongs_to_value != $belongs_to_param){
 					array_push($names_to_delete, $item_name);
 				}
-			}			
+			}
 
 		}
 
@@ -218,7 +225,7 @@ function aDBc_new_run_search_for_items(){
 	}
 
 	/***************************************************************************************************************************************
-	* This function can be called by two different buttons: 
+	* This function can be called by two different buttons:
 	* (1) The normal scan button, (2) the "Apply" button represented by "#doaction" and "#doaction2"
 	* In the case the call comes from (1), we will scan all items from scratch, unless the user selected to scan only "uncategorized" items
 	* In case the call comes from (2), we will scan only checked items and append results to the results file
@@ -281,7 +288,7 @@ function aDBc_new_run_search_for_items(){
 		* This section prepares files to run a new search. If aDBc_temp_last_iteration_ already exists, this means that we have
 		* started a search and not finish it yet, just skip this section then
 		***********************************************************************************************************************/
-		if(empty($iteration)){
+		if ( empty( $iteration ) ) {
 
 			/*-----------------------------------------------------------------------
 			Load items that will be scanned
@@ -369,7 +376,7 @@ function aDBc_new_run_search_for_items(){
 			update_option("aDBc_temp_total_files_" . $items_type, ($aDBc_total_files * 2), "no");
 			$aDBc_total_files = $aDBc_total_files * 2;
 
-			// If the user wants to run full scan, delete the results file first. Otheriwse, just append results 
+			// If the user wants to run full scan, delete the results file first. Otheriwse, just append results
 			if($aDBc_scan_type == "scan_all" && file_exists($path_file_categorization)){
 				unlink($path_file_categorization);
 			}
@@ -405,39 +412,54 @@ function aDBc_new_run_search_for_items(){
 			fclose($myfile_categorization);
 			fclose($myfile_to_categorize);
 
-		}else{
+		} else {
 
 			/**********************************************************************************************************************
 			* If we continue after timeout, we will do some adjustments
-			***********************************************************************************************************************/			
+			***********************************************************************************************************************/
 
 			// Get the list of items that should be scanned
-			$myfile_to_categorize = fopen($path_file_to_categorize, "r");
-			while(($item = fgets($myfile_to_categorize)) !== false){
-				if(!empty(trim($item)))
-					$items_to_search_for[trim($item)] = array('belongs_to' => '', 'maybe_belongs_to' => '');
+			// xxx always test to see fopen has returned resource! otherwise false is returned!
+			$myfile_to_categorize = fopen( $path_file_to_categorize, "r" );
+
+			while ( ( $item = fgets( $myfile_to_categorize ) ) !== false ) {
+
+				$item = trim( $item );
+
+				if ( ! empty( $item ) )
+
+					$items_to_search_for[$item] = array('belongs_to' => '', 'maybe_belongs_to' => '');
 			}
+
 			fclose($myfile_to_categorize);
 
 			// In $items_to_search_for, mark all items that are already categorized as ok to save time in iteration 1
-			$myfile_categorization = fopen($path_file_categorization, "r");
-			while(($item = fgets($myfile_categorization)) !== false){
-				$item_name = explode(":", trim($item), 2);
-				$item_name = str_replace("+=+", ":", $item_name[0]);
-				if(array_key_exists($item_name, $items_to_search_for)){
+			$myfile_categorization = fopen( $path_file_categorization, "r" );
+
+			while ( ( $item = fgets( $myfile_categorization ) ) !== false ) {
+
+				$item_name = explode( ":", trim( $item ), 2 );
+				$item_name = str_replace( "+=+", ":", $item_name[0] );
+
+				if ( array_key_exists( $item_name, $items_to_search_for ) ) {
+
 					$items_to_search_for[$item_name]['belongs_to'] = "ok";
+
 				}
+
 				array_push($items_already_categorized, $item_name);
+
 			}
+
 			fclose($myfile_categorization);
 
 		}
 
 		/**********************************************************************************************************************
-		* 
+		*
 		* We proceed to iteration through all files, items....
 		*
-		***********************************************************************************************************************/	
+		***********************************************************************************************************************/
 
 		// Count total items in memory
 		$total_items_in_memory 	= count($items_to_search_for);
@@ -521,7 +543,7 @@ function aDBc_new_run_search_for_items(){
 						continue;
 					}
 
-					// Before scaning the item, we test if the item has not been already categorized 
+					// Before scaning the item, we test if the item has not been already categorized
 					if(array_key_exists($item_name, $items_to_search_for) && $items_to_search_for[$item_name]['belongs_to'] != "ok"){
 						// If exact match found
 						if(strpos($aDBc_file_content, $item_name) !== false){
@@ -550,7 +572,7 @@ function aDBc_new_run_search_for_items(){
 
 			}
 
-			// If we have not categorized all items in iteration 1, we should execute iteration 2	
+			// If we have not categorized all items in iteration 1, we should execute iteration 2
 			if($processed_items < $total_items_in_memory){
 				$aDBc_iteration = 2;
 				$aDBc_file_line = 1;
@@ -666,7 +688,7 @@ function aDBc_new_run_search_for_items(){
 						if($aDBc_maybe_belongs_to_info[2] != "100"){
 							$belongs_to .= " (".$aDBc_maybe_belongs_to_info[2]."%)";
 						}
-						$type = $aDBc_maybe_belongs_to_info[1];	
+						$type = $aDBc_maybe_belongs_to_info[1];
 
 					}else if(!empty($aDBc_maybe_belongs_to_parts[1])){
 
@@ -740,7 +762,7 @@ function aDBc_new_run_search_for_items(){
 		// Create an option in database to show a message that the search has finished and let users opt for double check against our server
 		update_option("aDBc_last_search_ok_" . $items_type, "1", "no");
 
-		// Let know shutdown function to not load (because the shutdown function loads after a script has finished without needing timeout error)
+		// Let know shutdown function to not load (because the shutdown function loads always after a script has finished, even without timeout error)
 		$aDBc_search_has_finished = "yes";
 
 		// Always die in functions echoing ajax content
@@ -763,13 +785,15 @@ function aDBc_stop_search(){
 
 		fopen(ADBC_UPLOAD_DIR_PATH_TO_ADBC . "/stop_scan_" . $items_type . ".txt", "a");
 
+		// xxx, close the file?
+
 		// Always die in functions echoing ajax content
 		wp_die();
 	}
 }
 
 /**************************************************************************
-* This function deletes all temps options and files of a scan process 
+* This function deletes all temps options and files of a scan process
 ***************************************************************************/
 function aDBc_delete_temp_options_files_of_scan($items_type){
 
@@ -792,7 +816,7 @@ function aDBc_delete_temp_options_files_of_scan($items_type){
 }
 
 /**************************************************************************
-* This function is executed if timeout is reached 
+* This function is executed if timeout is reached
 ***************************************************************************/
 function aDBc_shutdown_due_to_timeout(){
 
@@ -801,12 +825,12 @@ function aDBc_shutdown_due_to_timeout(){
 	if($aDBc_search_has_finished == "no"){
 
 		// Stores the item type we are dealing with: tables, options or tasks
-		global $item_type_for_shutdown;		
+		global $item_type_for_shutdown;
 
 		// Stores the last line that have been processed
 		global $aDBc_item_line;
 		// Stores the last line that have been reached
-		global $aDBc_file_line;		
+		global $aDBc_file_line;
 		// Stores the iteration number: either 1 or 2
 		global $aDBc_iteration;
 
@@ -862,7 +886,7 @@ function aDBc_search_for_partial_match($aDBc_item_name, $aDBc_file_content, $fil
 
 	// If aDBc_item_part1 appears in the file content
 	if(strpos($aDBc_file_content, $aDBc_item_part1) !== false){
-		
+
 		$aDBc_maybe_belongs_to_info_part1 = explode("|", $aDBc_maybe_belongs_to_parts[0]);
 		$aDBc_maybe_best_score_found = empty($aDBc_maybe_belongs_to_info_part1[2]) ? $aDBc_percent1 : $aDBc_maybe_belongs_to_info_part1[2];
 		// Search for all combinations starting from the beginning of the item name
@@ -1030,12 +1054,12 @@ function aDBc_search_for_partial_match($aDBc_item_name, $aDBc_file_content, $fil
 
 			if(is_string($decoded_results)){
 
-				// If the returned result is string, therefore wen conclude that an error has occured
-				if($decoded_results == "invalid_license" || 
-					$decoded_results == "error_invalid_call_0" || 
-					$decoded_results == "error_invalid_call_1" || 
-					substr($decoded_results, 0, 13) === "limit_reached" || 
-					substr($decoded_results, 0, 4) === "wait" || 
+				// If the returned result is string, therefore we conclude that an error has occured
+				if($decoded_results == "invalid_license" ||
+					$decoded_results == "error_invalid_call_0" ||
+					$decoded_results == "error_invalid_call_1" ||
+					substr($decoded_results, 0, 13) === "limit_reached" ||
+					substr($decoded_results, 0, 4) === "wait" ||
 					$decoded_results == "service_unavailable"){
 
 					// We update aDBc_last_search_ok_x variable and set value = returned error
@@ -1104,14 +1128,14 @@ function aDBc_search_for_partial_match($aDBc_item_name, $aDBc_file_content, $fil
 											$sure_about_it = 1;
 											$total_correction_by_server++;
 											break;
-										}										
+										}
 									}
 
 									// Test if the item belongs indeed to an installed plugin/theme with "0" identifier
 									if($sure_about_it == 0){
 										foreach($different_corrections as $correction){
 											$correction = explode(":", $correction);
-											// Test if item belongs to WordPress						
+											// Test if item belongs to WordPress
 											if($correction[0] == "w"){
 												fwrite($aDBc_temp_scan_corrections, $columns[0] . ":w:w" . "\n");
 												$sure_about_it = 1;
@@ -1137,7 +1161,7 @@ function aDBc_search_for_partial_match($aDBc_item_name, $aDBc_file_content, $fil
 									if($sure_about_it == 0){
 										// For orphaned items, return the list of plugins/themes to which the item may be belonging
 										if(trim($columns[2]) == "o"){
-											fwrite($aDBc_temp_scan_corrections, $columns[0] . ":" . $columns[1] . ":" . $columns[2] . ":" . $aDBc_server_results[$item_name] . "\n");											
+											fwrite($aDBc_temp_scan_corrections, $columns[0] . ":" . $columns[1] . ":" . $columns[2] . ":" . $aDBc_server_results[$item_name] . "\n");
 										}
 										// For items with %, just return the line as it is
 										if(strpos($columns[1], '%') !== false){
@@ -1156,8 +1180,8 @@ function aDBc_search_for_partial_match($aDBc_item_name, $aDBc_file_content, $fil
 		// xxx Delete old file and rename new file "items_2.txt" to "items.txt"
 		rename(ADBC_UPLOAD_DIR_PATH_TO_ADBC . "/" . $items_type . ".txt", ADBC_UPLOAD_DIR_PATH_TO_ADBC . "/" . $items_type . "_3.txt");
 		rename(ADBC_UPLOAD_DIR_PATH_TO_ADBC . "/" . $items_type . "_2.txt", ADBC_UPLOAD_DIR_PATH_TO_ADBC . "/" . $items_type . ".txt");
-		rename(ADBC_UPLOAD_DIR_PATH_TO_ADBC . "/" . $items_type . "_3.txt", ADBC_UPLOAD_DIR_PATH_TO_ADBC . "/" . $items_type . "_2.txt");	
-						
+		rename(ADBC_UPLOAD_DIR_PATH_TO_ADBC . "/" . $items_type . "_3.txt", ADBC_UPLOAD_DIR_PATH_TO_ADBC . "/" . $items_type . "_2.txt");
+
 					}
 				}
 
@@ -1245,7 +1269,7 @@ function aDBc_get_msg_double_check($items_type){
 	$msg .= sprintf( __('The process of scanning %s has finished with success!', 'advanced-database-cleaner'), $items_type);
 	$msg .= "<br/><span style='color:#E97F31'>";
 	//$msg .= "<b>" . __('However, we HIGHLY recommend to double check your local scan results against our server database results to increase the accuracy', 'advanced-database-cleaner') . "</b></span>";
-	// xxx correct url in read more. 
+	// xxx correct url in read more.
 	//$msg .= " <a href='#'>[" . __('Read more here', 'advanced-database-cleaner') . "]</a>";
 	// Test if curl in installed before showing the button to double check. If curl is not installed, we add a warning
 	/*if(in_array ('curl', get_loaded_extensions())){
@@ -1259,7 +1283,7 @@ function aDBc_get_msg_double_check($items_type){
 	// Get the current URI
 	/*$aDBc_new_URI = $_SERVER['REQUEST_URI'];
 	$aDBc_new_URI = add_query_arg('ignore-double-check-' . $items_type, '0', $aDBc_new_URI);
-	$msg .= "<p id='aDBc_double_check_ignore_link'><a href='".$aDBc_new_URI."'>". __('Not now. Just hide this!','advanced-database-cleaner') . "</a></p>";*/
+	$msg .= "<p id='aDBc_double_check_ignore_link'><a href='". esc_url( $aDBc_new_URI ) . "'>". __('Not now. Just hide this!','advanced-database-cleaner') . "</a></p>";*/
 	$msg .= "</div>";
 
 	delete_option("aDBc_last_search_ok_" . $items_type);
@@ -1405,11 +1429,11 @@ function aDBc_refresh_categorization_file_after_delete($names_deleted, $items_ty
 	// Get the file path
 	$path_file_categorization = ADBC_UPLOAD_DIR_PATH_TO_ADBC . "/" . $items_type . ".txt";
 
-	// Test if there are any items that have been deleted to prevent waisting time && moreover the file exists
+	// Test if there are any items that have been deleted to prevent wasting time && moreover the file exists
 	if(count($names_deleted) > 0 && file_exists($path_file_categorization)){
 
 		$file_categorization = fopen($path_file_categorization, "r");
-	
+
 		// Prepare an array containing new file info
 		$array_new_file = array();
 
@@ -1480,6 +1504,7 @@ function aDBc_get_correction_info_for_orphaned_items($json_info){
 	$info_array = json_decode($json_info, true);
 
 	// If array contains 0 elements, return empty string (this situation should not happen, just to be sure...)
+	// xxx test if $info_array is countable
 	if(count($info_array) == 0)
 		return "";
 
@@ -1523,8 +1548,9 @@ function aDBc_edit_categorization_of_items($items_type, $new_belongs_to, $send_d
 		// Prepare an array containing new categorizations
 		$items_correction_array = array();
 		while(($item = fgets($path_items_manually)) !== false) {
-			if(!empty(trim($item))){
-				$items_correction_array[trim($item)] = $belongs_to;
+			$item = trim($item);
+			if(!empty($item)){
+				$items_correction_array[$item] = $belongs_to;
 			}
 		}
 
@@ -1536,8 +1562,9 @@ function aDBc_edit_categorization_of_items($items_type, $new_belongs_to, $send_d
 		if(file_exists($path_to_scan_file)){
 			$scan_file = fopen($path_to_scan_file, "r");
 			while(($item = fgets($scan_file)) !== false) {
-				if(!empty(trim($item))){
-					$columns = explode(":", trim($item), 2);
+				$item = trim($item);
+				if(!empty($item)){
+					$columns = explode(":", $item, 2);
 					// We replace +=+ by :
 					$item_name = str_replace("+=+", ":", $columns[0]);
 					array_push($scanned_items_array, $item_name);

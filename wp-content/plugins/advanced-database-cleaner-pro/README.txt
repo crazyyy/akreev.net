@@ -4,8 +4,8 @@ Donate Link: https://www.sigmaplugin.com/donation
 Tags: clean, clean up, cleanup, database, optimize, performance, speed, optimizing, clean-up, orphan, orphaned, tables, options
 Requires at least: 3.1.0
 Requires PHP: 5.0
-Tested up to: 5.5
-Stable tag: 3.1.7
+Tested up to: 6.1
+Stable tag: 3.2.2
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -63,27 +63,32 @@ If you have been using WordPress for a while, then you should think absolutely a
 
 = By using the ADC plugin, you will =
 
-* <strong>Get and overview:</strong> The plugin will help you get an overview of what is happening in your database. It will report all unused/orphaned items that should be cleaned, it will give you the number of tables/options/tasks you have, etc. This way, you can control your database if anything goes wrong
+* <strong>Get an overview:</strong> The plugin will help you get an overview of what is happening in your database. It will report all unused/orphaned items that should be cleaned, it will give you the number of tables/options/tasks you have, etc. This way, you can control your database if anything goes wrong
 
 * <strong>Save time:</strong> You can specify what items should be cleaned/optimized/repaired, what is the number of days' data to keep and the cleanup/optimization/reparation frequency. The plugin will then automate the process to run automatically based on your settings
 
 * <strong>Save space:</strong> By deleting unused/orphaned items, you will save space in your database and make quicker backups since the file of your backup will be smaller
 
-= Pro Features [(Official website)](https://sigmaplugin.com/downloads/wordpress-advanced-database-cleaner) =
+= Pro Features (<a href="https://sigmaplugin.com/downloads/wordpress-advanced-database-cleaner">Official website</a>) =
 Do you know that even after deleting a plugin/theme from your WordPress website, some of its leftovers may remain in your database? Such as orphan options, orphan tables, and orphan cron tasks. As you may know, not all plugins/themes care about the housekeeping of your WordPress database. As long as you are removing plugins/themes, leftovers will be accumulated in your database and will influence your website performance. The Pro version of Advanced Database Cleaner will help you remove all those leftovers and perform a deep database clean up. In the pro version you can:
 
 * Classify options according to their "creator". They can be either: plugins options, themes options or WP core options
-* Detect and delete orphan options. Your 'wp_options' table may be full of orphaned options and therefore can impact the performance of loading data from it, which may lead to a slow website. Cleanup orphaned options is then important
+* Detect and delete orphan options. Your 'wp_options' table may be full of orphaned options and therefore can impact the performance of loading data from it, which may lead to a slow website. Clean up orphaned options is then important
 * Classify tables according to their "creator". They can be either: plugins tables, themes tables or WP core tables
 * Detect and delete orphan tables. As for options, you may also have some orphaned tables that were created by plugins/themes you are not using anymore. Clean up orphaned tables will decrease the size of your database
 * Classify all cron tasks (cron jobs) according to their "creator". They can be either: plugins cron tasks, themes cron tasks or WP core tasks
-* Detect and delete orphan cron tasks. After you uninstall a plugin/theme, some of its cron tasks may still be active making WordPress calling unknown functions. using the pro version, you can detect and clean orphaned tasks
+* Detect and delete orphan cron jobs. After you uninstall a plugin/theme, some of its cron tasks may still be active making WordPress calling unknown functions. using the pro version, you can detect and clean orphaned tasks
 * Search & filter options, filter tables and filter cron tasks based on several criteria such as the "name", "creator", "value", etc.
 * Get premium support: we will provide quick support as well as any technical answers to help you clean up your database efficiently
 
 = Translations =
 
 You are welcome to contribute to the plugin translation via the [WordPress translation website](https://translate.wordpress.org/projects/wp-plugins/advanced-database-cleaner).
+
+= Thanks To =
+
+* [Fabio Fava](https://profiles.wordpress.org/fabiofava) for translating the plugin to pt_BR
+* [Julio Potier](https://profiles.wordpress.org/juliobox) for the security remarks
 
 == Installation ==
 
@@ -134,6 +139,29 @@ This section describes how to install the plugin. In general, there are 3 ways t
 8. Overview and settings page
 
 == Changelog ==
+
+= 3.2.2 - 22/02/2023 =
+- Security fix: when saving the settings
+- Fix: changing the 'autoload' of an option may sometimes result in it being created twice
+- Fix: activating both the free and pro versions together causes compatibility issues
+- Tweak: enhancing some blocks of code to use Ajax
+- Tweak: better handling the use of the WP_List_Table class
+- Tweak (PRO): enhancing the license page + the update process of the plugin
+- Compatibility: Tested with the latest version of WordPress 6.1.1
+
+= 3.2.1 - 24/06/2022 =
+- Security fix: enhancing the security of the plugin by escaping some URLs before outputting them
+
+= 3.2.0 - 16/06/2022 =
+- Fix: fixing the error 'Fatal error: Can't use function return value in write context'
+- Fix: fixing the Warning: count(): Parameter must be an array or an object that implements Countable
+- Tweak: correcting of some typos and grammar
+- Tweak: deleting some useless data from "overview & settings" tab
+- Tweak: enhancing the CSS code, the plugin is responsive now and can be used in small screens
+- Tweak: enhancing some blocks of PHP code
+- New: adding “delete filter” for custom cleanup elements in “general cleanup” tab
+- Info: since we have changed a lot of CSS code, please refresh your browser cache or click "Ctrl + F5"
+- Info: great feature will be added to the next version
 
 = 3.1.7 - 21/01/2022 =
 - Tweak: Enhancing the security of the plugin

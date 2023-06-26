@@ -1,379 +1,378 @@
 <?php
 
-/*
-Plugin Name: Sample Plugin
-Plugin URI: http://pippinsplugins.com/
-Description: Illustrates how to include an updater in your plugin for EDD Software Licensing
-Author: Pippin Williamson
-Author URI: http://pippinsplugins.com
-Version: 1.0
-License: GNU General Public License v2.0 or later
-License URI: http://www.gnu.org/licenses/gpl-2.0.html
+/**
+* For further details please visit:
+* http://docs.easydigitaldownloads.com/article/383-automatic-upgrades-for-wordpress-plugins
 */
 
-/***************************************************************************************************************************
-* For further details please visit http://docs.easydigitaldownloads.com/article/383-automatic-upgrades-for-wordpress-plugins
-***************************************************************************************************************************/
 
-// this is the URL our updater / license checker pings. This should be the URL of the site with EDD installed
-define( 'ADBC_EDD_STORE_URL', 'https://sigmaplugin.com' ); // you should use your own CONSTANT name, and be sure to replace it throughout this file
+define( 'ADBC_EDD_STORE_URL', 'https://sigmaplugin.com' );
 
-// the download ID for the product in Easy Digital Downloads
-define( 'ADBC_EDD_ITEM_ID', 10); // you should use your own CONSTANT name, and be sure to replace it throughout this file
+define( 'ADBC_EDD_ITEM_ID', 10 );
 
-// the name of your product. This should match the download name in EDD exactly
-define( 'ADBC_EDD_ITEM_NAME', 'WordPress Advanced Database Cleaner' ); // you should use your own CONSTANT name, and be sure to replace it in this file
+define( 'ADBC_EDD_ITEM_NAME', 'WordPress Advanced Database Cleaner' );
 
-// The name of the settings page for the license input to be displayed
-define( 'ADBC_EDD_PLUGIN_LICENSE_PAGE', 'advanced_db_cleaner&aDBc_tab=license' );
+if ( ! class_exists( 'ADBC_EDD_SL_Plugin_Updater' ) ) {
 
-if(!class_exists('ADBC_EDD_SL_Plugin_Updater')){
 	// load our custom updater
-	include(dirname(__FILE__) . '/ADBC_EDD_SL_Plugin_Updater.php');
+	include dirname( __FILE__ ) . '/ADBC_EDD_SL_Plugin_Updater.php';
+
 }
 
-function aDBc_edd_sl_plugin_updater(){
+/**
+ * Initialize the updater. Hooked into `init` to work with the
+ * wp_version_check cron job, which allows auto-updates.
+ */
+function aDBc_edd_sl_plugin_updater() {
+
+	// To support auto-updates, this needs to run during the wp_version_check cron job for privileged users.
+	$doing_cron = defined( 'DOING_CRON' ) && DOING_CRON;
+
+	if ( ! current_user_can( 'manage_options' ) && ! $doing_cron ) {
+		return;
+	}
 
 	// retrieve our license key from the DB
-	$license_key = trim(get_option('aDBc_edd_license_key'));
+	$license_key = trim( get_option( 'aDBc_edd_license_key' ) );
 
 	// setup the updater
 	$edd_updater = new ADBC_EDD_SL_Plugin_Updater( ADBC_EDD_STORE_URL, ADBC_MAIN_PLUGIN_FILE_PATH, array(
-			'version' 	=> ADBC_PLUGIN_VERSION,     // current version number
-			'license' 	=> $license_key,            // license key (used get_option above to retrieve from DB)
-			'item_id' 	=> ADBC_EDD_ITEM_ID,       	// ID of the product
-			'item_name' => ADBC_EDD_ITEM_NAME,      // name of the product
-			'author'  	=> 'Younes JFR.', 			// author of this plugin
-			'beta'    	=> false,
+			'version' => ADBC_PLUGIN_VERSION,
+			'license' => $license_key,
+			'item_id' => ADBC_EDD_ITEM_ID,
+			'author'  => 'Younes JFR.',
+			'beta'    => false,
 		)
 	);
 
 }
-add_action('admin_init', 'aDBc_edd_sl_plugin_updater', 0);
+add_action( 'init', 'aDBc_edd_sl_plugin_updater' );
 
-/**************************************************************************
-* the code below is just a standard options page. Substitute with your own.
-**************************************************************************/
+/**
+ * License page
+ *
+ * @return void
+ */
 function aDBc_edd_license_page() {
-	$license = get_option( 'aDBc_edd_license_key' );
-	$status  = get_option( 'aDBc_edd_license_status' );
-	// When the user activates the license, hide it by stars like passwords
-	if(!empty(trim($license)) && $status !== false && $status == 'valid'){
-		$license_key_hidden = substr(trim($license), 0, 4) . "************************" . substr(trim($license), -4);
-	}else{
-		$license_key_hidden = esc_attr($license);
+
+	$license = get_option('aDBc_edd_license_key');
+	$status  = get_option('aDBc_edd_license_status');
+
+	if ( $status !== false && $status == 'valid' ) {
+
+		$license_key_hidden 	= substr( $license, 0, 4 ) . "************************" . substr( $license, -4 );
+		$license_status 	  	= __( 'Active', 'advanced-database-cleaner' );
+		$color 	  				= "color:green";
+		$activate_btn_style     = "display:none";
+		$deactivate_btn_style   = "";
+		$input_disabled			= " disabled";
+
+	} else {
+
+		$license_key_hidden 	= "";
+		$license_status 		= __( 'Inactive', 'advanced-database-cleaner' );
+		$color 	  				= "color:red";
+		$activate_btn_style     = "";
+		$deactivate_btn_style   = "display:none";
+		$input_disabled			= "";
+
 	}
-	?>
-	<form method="post" action="options.php">
+?>
 
-		<?php settings_fields('aDBc_edd_license'); ?>
+	<div class="aDBc-content-max-width aDBc-padding-20">
 
-		<table style="font-size:15px;text-align:left;" cellspacing="20px">
-			<tr>
-				<td>
-					<b><?php _e('Enter your license key', 'advanced-database-cleaner'); ?></b>
-				</td>
-				<td>
-					<input id="aDBc_edd_license_key" name="aDBc_edd_license_key" type="text" class="regular-text" value="<?php echo $license_key_hidden; ?>" />
-				</td>
-				<td>
-					<input type="submit" name="submit" id="submit" class="button button-primary" value="<?php _e('Save new license key', 'advanced-database-cleaner'); ?>"  />
-					<?php //submit_button(); ?>
-				</td>
-			</tr>
+		<div class="aDBc-license-container">
 
-			<?php if(false !== $license){ ?>
-			<tr>
-				<td>
-					<b><?php _e('Activate license', 'advanced-database-cleaner'); ?></b>
-				</td>
-				<td>
+			<div class="aDBc-status-box">
 
-					<?php if( $status !== false && $status == 'valid' ) { ?>
-						<span style="color:green;font-size:13px; background:#eee;padding:4px 8px;vertical-align:middle;border:1px solid #f1f1f1"><b><?php _e('Active', 'advanced-database-cleaner'); ?></b></span>
-						<?php wp_nonce_field( 'aDBc_edd_nonce', 'aDBc_edd_nonce' ); ?>
-						<input style="vertical-align:middle" type="submit" class="button-secondary" name="aDBc_edd_license_deactivate" value="<?php _e('Deactivate license', 'advanced-database-cleaner'); ?>"/>
-					<?php } else { ?>
-						<span style="color:red;font-size:13px; background:#f9f9f9;padding:4px 8px;vertical-align:middle;border:1px solid #f1f1f1"><b><?php _e('Inactive', 'advanced-database-cleaner'); ?></b></span>
-						<?php wp_nonce_field( 'aDBc_edd_nonce', 'aDBc_edd_nonce' ); ?>
-						<input style="vertical-align:middle" type="submit" class="button-secondary" name="aDBc_edd_license_activate" value="<?php _e('Activate license', 'advanced-database-cleaner'); ?>"/>
-					<?php } ?>
+				<div class="aDBc-div-status">
 
-				</td>
-			</tr>
-			<?php } ?>
-		</table>
+					<span class="aDBc-license-status-label"><?php _e( 'Status:', 'advanced-database-cleaner' ); ?></span>
 
-	</form>
-	<?php
+					<span id="aDBc_license_status" style="<?php echo $color; ?>" class="aDBc-license-status">
+
+						<?php echo $license_status ?>
+
+					</span>
+
+				</div>
+
+				<div id="aDBc_check_license_btn" style="<?php echo $deactivate_btn_style; ?>" class="aDBc-check-license-btn">
+
+					<a>
+
+						<span class="dashicons dashicons-update-alt"></span>
+
+						<?php _e( 'Check status', 'advanced-database-cleaner' ); ?>
+
+					</a>
+
+				</div>
+
+				<div class="aDBc-license-account">
+
+					<a href="https://sigmaplugin.com/login?utm_source=license_tab&utm_medium=adbc_plugin&utm_campaign=plugins" target="_blank">
+
+						<span class="dashicons dashicons-admin-users aDBc-license-icon"></span>
+
+						<?php _e( 'My account', 'advanced-database-cleaner' ); ?>
+
+					</a>
+
+				</div>
+
+			</div>
+
+			<div class="aDBc-license-box">
+
+				<input id="aDBc_license_key_input" class="aDBc-license-key-input" placeholder="<?php _e( 'License key', 'advanced-database-cleaner' ); ?>" type="text" value="<?php echo $license_key_hidden; ?>" <?php echo $input_disabled; ?>/>
+
+				<div id="aDBc_activate_license_btn" style="<?php echo $activate_btn_style; ?>" class="aDBc-license-btn">
+
+					<span class="dashicons dashicons-admin-links aDBc-license-icon"></span>
+
+					<?php _e( 'Activate license', 'advanced-database-cleaner' ); ?>
+
+				</div>
+
+				<div id="aDBc_deactivate_license_btn" style="<?php echo $deactivate_btn_style; ?>" class="aDBc-license-btn">
+
+					<span class="dashicons dashicons-editor-unlink aDBc-license-icon"></span>
+
+					<?php _e( 'Deactivate license', 'advanced-database-cleaner' ); ?>
+
+				</div>
+
+			</div>
+
+		</div>
+
+	</div>
+
+<?php
+
 }
 
-function aDBc_edd_register_option() {
-	// creates our settings in the options table
-	register_setting('aDBc_edd_license', 'aDBc_edd_license_key', 'aDBc_edd_sanitize_license');
-}
-add_action('admin_init', 'aDBc_edd_register_option');
+/**
+ * Activate/deactivate/check the license key.
+ *
+ * @return void
+ */
+function aDBc_license_actions_callback() {
 
-function aDBc_edd_sanitize_license( $new ) {
-	$old = get_option( 'aDBc_edd_license_key' );
-	if( $old && $old != $new ) {
-		delete_option( 'aDBc_edd_license_status' ); // new license has been entered, so must reactivate
+	// Check nonce and user capabilities
+	if ( false === check_ajax_referer( 'aDBc_nonce', 'security', false ) || ! current_user_can( 'administrator' ) )
+
+		wp_send_json_error( __( 'Security check failed!', 'advanced-database-cleaner' ) );
+
+	// Get button action
+	$aDBc_edd_action = sanitize_text_field( $_REQUEST['aDBc_edd_action'] );
+
+	switch ( $aDBc_edd_action ) {
+
+		case 'aDBc_activate_license_btn':
+
+			$license 	= trim( sanitize_text_field( $_REQUEST['license_key'] ) );
+			$edd_action = "activate_license";
+			break;
+
+		case 'aDBc_deactivate_license_btn':
+
+			$license 	= trim( get_option( 'aDBc_edd_license_key' ) );
+			$edd_action = "deactivate_license";
+			break;
+
+		case 'aDBc_check_license_btn':
+
+			$license 	= trim( get_option( 'aDBc_edd_license_key' ) );
+			$edd_action = "check_license";
+			break;
+
+		default:
+
+			wp_send_json_error( __( 'Cannot proceed!', 'advanced-database-cleaner' ) );
+			break;
 	}
-	return $new;
-}
 
-/************************************************
-* this illustrates how to activate a license key
-************************************************/
+	if ( false === $license || empty( $license ) )
 
-function aDBc_edd_activate_license() {
+		wp_send_json_error( __( 'Empty license field!', 'advanced-database-cleaner' ) );
 
-	// listen for our activate button to be clicked
-	if( isset( $_POST['aDBc_edd_license_activate'] ) ) {
+	// Data to send in our API request
+	$api_params = array(
+		'edd_action'  => $edd_action,
+		'license'     => $license,
+		'item_id'     => ADBC_EDD_ITEM_ID,
+		'item_name'   => rawurlencode( ADBC_EDD_ITEM_NAME ),
+		'url'         => home_url(),
+		'environment' => function_exists( 'wp_get_environment_type' ) ? wp_get_environment_type() : 'production',
+	);
 
-		// run a quick security check
-	 	if( ! check_admin_referer( 'aDBc_edd_nonce', 'aDBc_edd_nonce' ) )
-			return; // get out if we didn't click the Activate button
+	// Call the custom API
+	$response = wp_remote_post(
+		ADBC_EDD_STORE_URL,
+		array(
+			'timeout'   => 15,
+			'sslverify' => false,
+			'body'      => $api_params,
+		)
+	);
 
-		// retrieve the license from the database
-		$license = trim( get_option( 'aDBc_edd_license_key' ) );
+	// make sure the response came back okay
+	if ( is_wp_error( $response ) || 200 !== wp_remote_retrieve_response_code( $response ) ) {
 
+		if ( is_wp_error( $response ) ) {
 
-		// data to send in our API request
-		$api_params = array(
-			'edd_action' => 'activate_license',
-			'license'    => $license,
-			'item_id' 	 => ADBC_EDD_ITEM_ID,
-			'item_name'  => urlencode( ADBC_EDD_ITEM_NAME ), // the name of our product in EDD
-			'url'        => home_url()
-		);
-
-		// Call the custom API.
-		$response = wp_remote_post( ADBC_EDD_STORE_URL, array( 'timeout' => 15, 'sslverify' => false, 'body' => $api_params ) );
-
-		// make sure the response came back okay
-		if ( is_wp_error( $response ) || 200 !== wp_remote_retrieve_response_code( $response ) ) {
-
-			if ( is_wp_error( $response ) ) {
-				$message = $response->get_error_message();
-			} else {
-				$message = __('An error occurred, please try again.', 'advanced-database-cleaner');
-			}
+			wp_send_json_error( $response->get_error_message() );
 
 		} else {
 
-			$license_data = json_decode( wp_remote_retrieve_body( $response ) );
-
-			if ( false === $license_data->success ) {
-
-				switch( $license_data->error ) {
-
-					case 'expired' :
-
-						$message = sprintf(
-							__('Your license key expired on %s.', 'advanced-database-cleaner'),
-							date_i18n( get_option( 'date_format' ), strtotime( $license_data->expires, current_time( 'timestamp' ) ) )
-						);
-						break;
-
-					case 'disabled' :
-					case 'revoked' :
-
-						$message = __('Your license key has been disabled.', 'advanced-database-cleaner');
-						break;
-
-					case 'missing' :
-
-						$message = __('Invalid license key', 'advanced-database-cleaner');
-						break;
-
-					case 'invalid' :
-					case 'site_inactive' :
-
-						$message = __('Your license is not active for this URL.', 'advanced-database-cleaner');
-						break;
-
-					case 'item_name_mismatch' :
-
-						$message = sprintf( __('This appears to be an invalid license key for %s.', 'advanced-database-cleaner'), ADBC_EDD_ITEM_NAME);
-						break;
-
-					case 'no_activations_left':
-
-						$message = __('Your license key has reached its activation limit.', 'advanced-database-cleaner');
-						break;
-
-					default :
-
-						$message = __('An error occurred, please try again.', 'advanced-database-cleaner');
-						break;
-				}
-
-			}
+			wp_send_json_error( __( 'An error occurred, please try again.', 'advanced-database-cleaner' ) );
 
 		}
+	}
 
-		// Check if anything passed on a message constituting a failure
-		if ( ! empty( $message ) ) {
-			$base_url = admin_url( 'admin.php?page=' . ADBC_EDD_PLUGIN_LICENSE_PAGE );
-			$redirect = add_query_arg( array( 'sl_activation' => 'false', 'message' => urlencode( $message ) ), $base_url );
+	$license_data = json_decode( wp_remote_retrieve_body( $response ) );
 
-			wp_redirect( $redirect );
-			exit();
+	if ( $edd_action == "activate_license" ) {
+
+		if ( false === $license_data->success ) {
+
+			switch ( $license_data->error ) {
+
+				case 'expired':
+					$message = sprintf(
+						/* translators: the license key expiration date */
+						__( 'Your license key expired on %s.', 'advanced-database-cleaner' ),
+						date_i18n( get_option( 'date_format' ), strtotime( $license_data->expires, current_time( 'timestamp' ) ) )
+					);
+					break;
+
+				case 'disabled':
+				case 'revoked':
+					$message = __( 'Your license key has been disabled.', 'advanced-database-cleaner' );
+					break;
+
+				case 'missing':
+					$message = __( 'Invalid license.', 'advanced-database-cleaner' );
+					break;
+
+				case 'invalid':
+				case 'site_inactive':
+					$message = __( 'Your license is not active for this URL.', 'advanced-database-cleaner' );
+					break;
+
+				case 'item_name_mismatch':
+					/* translators: the plugin name */
+					$message = sprintf( __( 'This appears to be an invalid license key for %s.', 'advanced-database-cleaner' ), ADBC_EDD_ITEM_NAME );
+					break;
+
+				case 'no_activations_left':
+					$message = __( 'Your license key has reached its activation limit.', 'advanced-database-cleaner' );
+					break;
+
+				default:
+					$message = __( 'An error has occurred, please try again.', 'advanced-database-cleaner' );
+					break;
+			}
+
+			wp_send_json_error( sanitize_text_field( $message ) );
+
 		}
 
 		// $license_data->license will be either "valid" or "invalid"
+		if ( 'valid' === $license_data->license ) {
 
-		update_option('aDBc_edd_license_status', $license_data->license);
-		wp_redirect(admin_url('admin.php?page=' . ADBC_EDD_PLUGIN_LICENSE_PAGE));
-		exit();
-	}
-}
-add_action('admin_init', 'aDBc_edd_activate_license');
+			update_option( 'aDBc_edd_license_key', $license, 'no' );
+			update_option( 'aDBc_edd_license_status', $license_data->license, 'no' );
+			wp_send_json_success( __( 'Activated!', 'advanced-database-cleaner' ) );
 
+		} else {
 
-/***********************************************
-* Illustrates how to deactivate a license key.
-* This will decrease the site count
-***********************************************/
+			wp_send_json_error( __( 'License cannot be activated.', 'advanced-database-cleaner' ) );
 
-function aDBc_edd_deactivate_license() {
-
-	// listen for our activate button to be clicked
-	if( isset( $_POST['aDBc_edd_license_deactivate'] ) ) {
-
-		// run a quick security check
-	 	if( ! check_admin_referer( 'aDBc_edd_nonce', 'aDBc_edd_nonce' ) )
-			return; // get out if we didn't click the Activate button
-
-		// retrieve the license from the database
-		$license = trim( get_option( 'aDBc_edd_license_key' ) );
-
-		// data to send in our API request
-		$api_params = array(
-			'edd_action' => 'deactivate_license',
-			'license'    => $license,
-			'item_id' 	 => ADBC_EDD_ITEM_ID,
-			'item_name'  => urlencode( ADBC_EDD_ITEM_NAME ), // the name of our product in EDD
-			'url'        => home_url()
-		);
-
-		// Call the custom API.
-		$response = wp_remote_post( ADBC_EDD_STORE_URL, array( 'timeout' => 15, 'sslverify' => false, 'body' => $api_params ) );
-
-		// make sure the response came back okay
-		if ( is_wp_error( $response ) || 200 !== wp_remote_retrieve_response_code( $response ) ) {
-
-			if ( is_wp_error( $response ) ) {
-				$message = $response->get_error_message();
-			} else {
-				$message = __('An error occurred, please try again.', 'advanced-database-cleaner');
-			}
-
-			$base_url = admin_url( 'admin.php?page=' . ADBC_EDD_PLUGIN_LICENSE_PAGE );
-			$redirect = add_query_arg( array( 'sl_activation' => 'false', 'message' => urlencode( $message ) ), $base_url );
-
-			wp_redirect( $redirect );
-			exit();
 		}
 
-		// decode the license data
-		$license_data = json_decode( wp_remote_retrieve_body( $response ) );
+	} else if ( $edd_action == "check_license" ) {
+
+		// $license_data->license will be either "valid" or "invalid"
+		if ( 'valid' === $license_data->license ) {
+
+			wp_send_json_success( __( 'Your license is valid.', 'advanced-database-cleaner' ) );
+
+		} else {
+
+			wp_send_json_error( __( 'Your license is no longer valid.', 'advanced-database-cleaner' ) );
+
+		}
+
+	} else if ( $edd_action == "deactivate_license" ) {
 
 		// $license_data->license will be either "deactivated" or "failed"
-		if( $license_data->license == 'deactivated' ) {
-			delete_option( 'aDBc_edd_license_status' );
-			delete_option( 'aDBc_edd_license_key' );
-		}
+		if ( 'deactivated' === $license_data->license ) {
 
-		wp_redirect( admin_url( 'admin.php?page=' . ADBC_EDD_PLUGIN_LICENSE_PAGE ) );
-		exit();
+			delete_option( 'aDBc_edd_license_key' );
+			delete_option( 'aDBc_edd_license_status' );
+			wp_send_json_success( __( 'Deactivated!', 'advanced-database-cleaner' ) );
+
+		} else {
+
+			wp_send_json_error( __( 'License cannot be deactivated, please try again.', 'advanced-database-cleaner' ) );
+
+		}
+	}
+
+	// If we are here, maybe un anknonw error occured
+	wp_send_json_error( __( 'Unknown error occurred, please try again.', 'advanced-database-cleaner' ) );
+
+}
+
+/**
+ * Checks if a license has been activated
+ *
+ * @return bool true if activated, false if not
+ */
+function aDBc_edd_is_license_activated() {
+
+	$license_status = trim( get_option( 'aDBc_edd_license_status') );
+
+	if ( $license_status == 'valid' ) {
+
+		return true;
+
+	} else {
+
+		return false;
 
 	}
 }
-add_action('admin_init', 'aDBc_edd_deactivate_license');
 
-/***********************************************
-* Deactivate a license key after uninstall.
-* This will descrease the site count
-***********************************************/
+/**
+ * Deactivate a license key after uninstall. This will descrease the site count
+ *
+ * @return void
+ */
 function aDBc_edd_deactivate_license_after_uninstall() {
 
-	// retrieve the license from the database
-	$license = trim( get_option( 'aDBc_edd_license_key' ) );
+	$license = trim( sanitize_text_field( get_option( 'aDBc_edd_license_key' ) ) );
 
 	// data to send in our API request
 	$api_params = array(
-		'edd_action'=> 'deactivate_license',
-		'license' 	=> $license,
-		'item_id' 	=> ADBC_EDD_ITEM_ID,
-		'item_name' => urlencode( ADBC_EDD_ITEM_NAME ), // the name of our product in EDD
-		'url'       => home_url()
+		'edd_action'  => 'deactivate_license',
+		'license' 	  => $license,
+		'item_id' 	  => ADBC_EDD_ITEM_ID,
+		'item_name'   => rawurlencode( ADBC_EDD_ITEM_NAME ),
+		'url'         => home_url(),
+		'environment' => function_exists( 'wp_get_environment_type' ) ? wp_get_environment_type() : 'production',
 	);
 
 	// Call the custom API.
-	$response = wp_remote_post( ADBC_EDD_STORE_URL, array( 'timeout' => 15, 'sslverify' => false, 'body' => $api_params ) );
-}
-
-/*********************************************************************************************
-* this illustrates how to check if a license key is still valid the updater does this for you, 
-* so this is only needed if you want to do something custom
-*********************************************************************************************/
-function aDBc_edd_check_license(){
-	global $wp_version;
-	$license = trim(get_option('aDBc_edd_license_key'));
-	$api_params = array(
-		'edd_action' 	=> 'check_license',
-		'license' 		=> $license,
-		'item_id' 		=> ADBC_EDD_ITEM_ID,
-		'item_name' 	=> urlencode( ADBC_EDD_ITEM_NAME ),
-		'url'       	=> home_url()
+	$response = wp_remote_post(
+		ADBC_EDD_STORE_URL,
+		array(
+			'timeout' => 15,
+			'sslverify' => false,
+			'body' => $api_params
+		)
 	);
-	// Call the custom API.
-	$response = wp_remote_post(ADBC_EDD_STORE_URL, array('timeout' => 15, 'sslverify' => false, 'body' => $api_params));
-	if(is_wp_error($response))
-		return false;
-	$license_data = json_decode(wp_remote_retrieve_body($response));
-	if($license_data->license == 'valid'){
-		echo 'valid'; exit;
-		// this license is still valid
-	}else{
-		echo 'invalid'; exit;
-		// this license is no longer valid
-	}
-}
-
-/********************************************************************************************************
- * This is a means of catching errors from the activation method above and displaying it to the customer
- *******************************************************************************************************/
-function aDBc_edd_admin_notices(){
-	if(isset($_GET['sl_activation']) && ! empty($_GET['message'])){
-		switch($_GET['sl_activation']){
-			case 'false':
-				$message = urldecode($_GET['message']);
-				?>
-				<div class="error">
-					<p><?php echo $message; ?></p>
-				</div>
-				<?php
-				break;
-			case 'true':
-			default:
-				// Developers can put a custom success message here for when activation is successful if they way.
-				break;
-		}
-	}
-}
-add_action('admin_notices', 'aDBc_edd_admin_notices');
-
-/*****************************************************************************************
-* Check if a license is activated
-*****************************************************************************************/
-function aDBc_edd_is_license_activated(){
-	$license_status = trim( get_option( 'aDBc_edd_license_status'));
-	if($license_status == 'valid'){
-		return true;
-	}else{
-		return false;
-	}
 }

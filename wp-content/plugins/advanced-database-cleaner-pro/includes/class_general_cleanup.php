@@ -1,21 +1,24 @@
 <?php
+
+// Style ok, code not yet
+
 class ADBC_Clean_DB_List extends WP_List_Table {
 
-	private $aDBc_message = "";
-	private $aDBc_class_message = "updated";
-	private $aDBc_elements_to_display = array();
-	private $aDBc_total_elements_to_clean = 0;	
+	private $aDBc_message 					= "";
+	private $aDBc_class_message 			= "updated";
+	private $aDBc_elements_to_display 		= array();
+	private $aDBc_total_elements_to_clean 	= 0;
 
     /**
      * Constructor
      */
     function __construct(){
-		
+
         parent::__construct(array(
             'singular'  => __('Element', 'advanced-database-cleaner'),		//singular name of the listed records
             'plural'    => __('Elements', 'advanced-database-cleaner'),	//plural name of the listed records
             'ajax'      => false	//does this table support ajax?
-		));	
+		));
 
 		$this->aDBc_prepare_elements_to_clean();
 		$this->aDBc_print_page_content();
@@ -56,12 +59,12 @@ class ADBC_Clean_DB_List extends WP_List_Table {
 				$keep_value = $settings['keep_last'];
 				$keep_value[$sanitized_item_keep_to_edit] = intval($sanitized_keep_input);
 			}
-			$settings['keep_last'] = $keep_value;	
+			$settings['keep_last'] = $keep_value;
 			update_option('aDBc_settings', $settings, "no");
 
 			// Test if the items belongs to a scheduled task. If so, show msg differently
 			$aDBc_schedules = get_option('aDBc_clean_schedule');
-			$aDBc_schedules = is_array($aDBc_schedules) ? $aDBc_schedules : array();			
+			$aDBc_schedules = is_array($aDBc_schedules) ? $aDBc_schedules : array();
 			$msg_keep_last = __("The 'keep last' value saved successfully!", "advanced-database-cleaner");
 			foreach($aDBc_schedules as $hook_name => $hook_params){
 				$lits_of_elements = $hook_params['elements_to_clean'];
@@ -88,9 +91,9 @@ class ADBC_Clean_DB_List extends WP_List_Table {
 		$aDBc_schedules = is_array($aDBc_schedules) ? $aDBc_schedules : array();
 
 		foreach($aDBc_unused_elements as $element_type => $element_info){
-			// Count total unused elements. DO not take into account transient with expiration and not expiring transients because they are not intended to be cleaned
-			if($element_type != "transients-with-expiration" && $element_type != "transients-with-no-expiration")
-				$this->aDBc_total_elements_to_clean += $element_info['count'];
+
+			// Count total unused elements
+			$this->aDBc_total_elements_to_clean += $element_info['count'];
 
 			// If the item is scheduled, show green image, otherwise show grey one. Select also the text to show next green image
 			$scheduled_img_name = "grey_clock.svg";
@@ -99,24 +102,21 @@ class ADBC_Clean_DB_List extends WP_List_Table {
 				$lits_of_elements = $hook_params['elements_to_clean'];
 				if(in_array ($element_type, $lits_of_elements)){
 					$scheduled_img_name = "green_clock.svg";
-					$item_scheduled_in .=  "<div style='background:#f1f5f5;color:#000;border-radius:1px;padding:3px;margin:2px'>" . $hook_name . "</div>";
+					$item_scheduled_in .=  "<div class='aDBc-scheduled-in-row'>" . $hook_name . "</div>";
 				}
 			}
 			if(empty($item_scheduled_in)){
-				$aDBc_scheduled = "<img style='width:20px' alt='-' src='".ADBC_PLUGIN_DIR_PATH . "/images/" . $scheduled_img_name . "'/>";
+				$aDBc_scheduled = "<img style='width:17px' alt='-' src='".ADBC_PLUGIN_DIR_PATH . "/images/" . $scheduled_img_name . "'/>";
 			}else{
 				$aDBc_scheduled = "<span class='aDBc-tooltips-headers'>
-								<img class='aDBc-info-image' style='width:20px' alt='-' src='".ADBC_PLUGIN_DIR_PATH . "/images/" . $scheduled_img_name . "'/><span style='width:190px'>" . __('Scheduled in:','advanced-database-cleaner') . $item_scheduled_in . "</span></span>";
+								<img class='aDBc-info-image' style='width:17px' alt='-' src='".ADBC_PLUGIN_DIR_PATH . "/images/" . $scheduled_img_name . "'/><span style='width:190px'>" . __('Scheduled in:','advanced-database-cleaner') . $item_scheduled_in . "</span></span>";
 			}
 
 			if($element_info['count'] > 0){
 				$color = "red";
-				if($element_type == "transients-with-expiration" || $element_type == "transients-with-no-expiration"){
-					$color = "#999";
-				}
 				$aDBc_count = "<font color='$color' style='font-weight:bold'>" . $element_info['count'] . "</font>";
 				$aDBc_new_URI = add_query_arg('aDBc_view', $element_type, $aDBc_new_URI);
-				$aDBc_see = "<a href='$aDBc_new_URI'><img width='20px' alt='view' src='".ADBC_PLUGIN_DIR_PATH . '/images/see.svg'."'/></a>";
+				$aDBc_see = "<a href='" . esc_url( $aDBc_new_URI ) . "'><img width='20px' alt='view' src='".ADBC_PLUGIN_DIR_PATH . '/images/see.svg'."'/></a>";
 			}else{
 				$aDBc_count = "<font color='#ccc' style='font-weight:bold'>0</font>";
 				$aDBc_see = "<img width='20px' alt='-' src='".ADBC_PLUGIN_DIR_PATH . '/images/nothing_to_see.svg'."'/>";
@@ -134,37 +134,37 @@ class ADBC_Clean_DB_List extends WP_List_Table {
 				}
 			}
 			// If the item can have keep_last, then prepare it, otherwise echo N/A
-			if($element_type == "revision" || 
-				$element_type == "auto-draft" || 
-				$element_type == "trash-posts" || 
-				$element_type == "moderated-comments" || 
-				$element_type == "spam-comments" || 
-				$element_type == "trash-comments" || 
-				$element_type == "pingbacks" || 
+			if($element_type == "revision" ||
+				$element_type == "auto-draft" ||
+				$element_type == "trash-posts" ||
+				$element_type == "moderated-comments" ||
+				$element_type == "spam-comments" ||
+				$element_type == "trash-comments" ||
+				$element_type == "pingbacks" ||
 				$element_type == "trackbacks"){
 
 					$save_button = __('Save','advanced-database-cleaner');
 
-					$keep_info = "<span id='aDBc_keep_label_$element_type'>" . $keep_number . " " . __('days','advanced-database-cleaner') .  " | </span>" . "<a id='aDBc_edit_keep_$element_type' class='aDBc_keep_link'>Edit</a>";
+					$keep_info = "<span id='aDBc_keep_label_$element_type'>" . $keep_number . " " . __('days','advanced-database-cleaner') .  " | </span>" . "<a id='aDBc_edit_keep_$element_type' class='aDBc-keep-link'>Edit</a>";
 
 					$keep_info .= "<form action='' method='post'>
 						<input type='hidden' name='aDBc_item_keep_to_edit' value='$element_type'>
-						<input id='aDBc_keep_input_$element_type' class='aDBc_keep_input' name='aDBc_keep_input' value='$keep_number'/>
-						<input id='aDBc_keep_button_$element_type' class='aDBc_keep_button button-primary' type='submit'  value='$save_button' style='display: none;'/>
-						<a id='aDBc_keep_cancel_$element_type' class='aDBc_keep_cancel_link'> " . __('Cancel','advanced-database-cleaner')  . "</a></form>";
+						<input id='aDBc_keep_input_$element_type' class='aDBc-keep-input' name='aDBc_keep_input' value='$keep_number'/>
+						<input id='aDBc_keep_button_$element_type' class='aDBc-keep-button button-primary' type='submit'  value='$save_button' style='display:none'/>
+						<a id='aDBc_keep_cancel_$element_type' class='aDBc-keep-cancel-link'> " . __('Cancel','advanced-database-cleaner')  . "</a></form>";
 			}else{
 				$keep_info = __('N/A','advanced-database-cleaner') ;
 			}
-			
-			
-			if($element_type == "revision"){ 
+
+
+			if($element_type == "revision"){
 
 			}else if($element_type == "revision"){
 				$keep_info = __('N/A','advanced-database-cleaner') ;
-			}			
+			}
 
 			array_push($this->aDBc_elements_to_display, array(
-				'element_to_clean' 	=> "<a href='". $element_info['URL_blog'] ."' target='_blank' class='aDBc_info_icon'>&nbsp;</a>" . $element_info['name'],
+				'element_to_clean' 	=> "<a href='". $element_info['URL_blog'] ."' target='_blank' class='aDBc-info-icon'>&nbsp;</a>" . $element_info['name'],
 				'count' 			=> $aDBc_count,
 				'view'   			=> $aDBc_see,
 				'scheduled'   		=> $aDBc_scheduled,
@@ -178,17 +178,17 @@ class ADBC_Clean_DB_List extends WP_List_Table {
 	}
 
 	/** WP: Get columns */
-	function get_columns(){
+	function get_columns() {
 
 		$aDBc_scheduled_toolip = "<span class='aDBc-tooltips-headers'>
 									<img class='aDBc-info-image' src='".  ADBC_PLUGIN_DIR_PATH . '/images/information2.svg' . "'/>
 									<span>" . __('Indicates if you have selected the item to be cleaned automatically on a scheduled task. A green image indicates that the item is scheduled while a grey image indicated the opposite.','advanced-database-cleaner') ." </span>
 								  </span>";
-
+	
 		$aDBc_keep_last_toolip = "<span class='aDBc-tooltips-headers'>
 									<img class='aDBc-info-image' src='".  ADBC_PLUGIN_DIR_PATH . '/images/information2.svg' . "'/>
 									<span>" . __('Keep the last x days’ data from being displayed, and therefore from being cleaned. The plugin will always show only data older than the number of days you have specified.','advanced-database-cleaner') ." </span>
-								  </span>";	
+								  </span>";
 
 		$columns = array(
 			'cb'        		=> '<input type="checkbox" />',
@@ -222,13 +222,13 @@ class ADBC_Clean_DB_List extends WP_List_Table {
 	/** WP: Get columns that should be hidden */
     function get_hidden_columns(){
 		return array('type');
-    }	
+    }
 
 	/** WP: Column default */
 	function column_default($item, $column_name){
 		switch($column_name){
 			case 'element_to_clean':
-			case 'count':	
+			case 'count':
 			case 'view':
 			case 'scheduled':
 			case 'keep':
@@ -312,46 +312,68 @@ class ADBC_Clean_DB_List extends WP_List_Table {
 					// Print the elements to clean
 					$this->display();
 					?>
+
 				</form>
 			</div>
 			<div class="aDBc-right-box">
 
-				<div style="text-align:center">
-					<?php if($this->aDBc_total_elements_to_clean == 0){ ?>
-						<img width="58px" src="<?php echo ADBC_PLUGIN_DIR_PATH . '/images/db_clean.svg'?>"/>
-						<div class="aDBc-text-status-db"><?php _e('Your database is clean!','advanced-database-cleaner'); ?></div>
-					<?php } else { ?>
-						<img width="55px" src="<?php echo ADBC_PLUGIN_DIR_PATH . '/images/warning.svg'?>"/>
-						<div class="aDBc-text-status-db"><b><?php echo $this->aDBc_total_elements_to_clean; ?></b> <?php _e('Element(s) can be cleaned!','advanced-database-cleaner'); ?></div>		
-					<?php }  ?>
-				</div>
-
-				<div class="aDBc-schedule-box" style="text-align:center">
-
-					<img width="60px" src="<?php echo ADBC_PLUGIN_DIR_PATH . '/images/alarm-clock.svg'?>"/>
+				<div class="aDBc-right-box-content" style="text-align:center">
 
 					<?php
-					$aDBc_schedules = get_option('aDBc_clean_schedule');
-					$aDBc_schedules = is_array($aDBc_schedules) ? $aDBc_schedules : array();
 
-					// Count schedules available
-					$count_schedules = count($aDBc_schedules);
-					echo "<div class='aDBc-schedule-text'><b>" . $count_schedules ."</b> " .__('Cleanup schedule(s) set','advanced-database-cleaner') . "</div>";
+					if ( $this->aDBc_total_elements_to_clean == 0 ) {
 
-					foreach($aDBc_schedules as $hook_name => $hook_params){
+					?>
+						<img width="58px" src="<?php echo ADBC_PLUGIN_DIR_PATH . '/images/db_clean.svg'?>"/>
+						<div class="aDBc-text-status-db"><?php _e( 'Your database is clean!', 'advanced-database-cleaner' ); ?></div>
+
+					<?php
+
+					} else {
+
+					?>
+						<img width="55px" src="<?php echo ADBC_PLUGIN_DIR_PATH . '/images/warning.svg'?>"/>
+						<div class="aDBc-text-status-db">
+							<b><?php echo $this->aDBc_total_elements_to_clean; ?></b> <?php _e('Element(s) can be cleaned!','advanced-database-cleaner'); ?>
+						</div>
+
+					<?php
+					}
+					?>
+
+				</div>
+
+				<div class="aDBc-right-box-content">
+
+					<div style="text-align:center">
+						<img width="60px" src="<?php echo ADBC_PLUGIN_DIR_PATH . '/images/alarm-clock.svg'?>"/>
+
+						<?php
+						$aDBc_schedules = get_option( 'aDBc_clean_schedule' );
+						$aDBc_schedules = is_array( $aDBc_schedules ) ? $aDBc_schedules : array();
+
+						// Count schedules available
+						$count_schedules = count( $aDBc_schedules );
+						echo "<div class='aDBc-schedule-text'><b>" . $count_schedules ."</b> " .__('Cleanup schedule(s) set','advanced-database-cleaner') . "</div>";
+						?>
+					</div>
+
+					<?php
+					foreach ( $aDBc_schedules as $hook_name => $hook_params ) {
+
 						echo "<div class='aDBc-schedule-hook-box'>";
-						echo "<b>".__('Name','advanced-database-cleaner') . "</b> : " . $hook_name;
+						echo "<b>" . __( 'Name', 'advanced-database-cleaner' ) . "</b> : " . $hook_name;
 						echo "</br>";
 
 						// We convert hook name to a string because the arg maybe only a digit!
-						$timestamp = wp_next_scheduled("aDBc_clean_scheduler", array($hook_name . ''));
+						$timestamp = wp_next_scheduled( "aDBc_clean_scheduler", array( $hook_name . '' ) );
 						if($timestamp){
 							$next_run = get_date_from_gmt(date('Y-m-d H:i:s', $timestamp), 'M j, Y - H:i');
 						}else{
 							$next_run = "---";
 						}
 						echo "<b>".__('Next run','advanced-database-cleaner') . "</b> : " . $next_run . "</br>";
-						
+
 						$repeat = $hook_params['repeat'];
 						switch($repeat){
 							case "once" :
@@ -371,7 +393,7 @@ class ADBC_Clean_DB_List extends WP_List_Table {
 								break;
 							case "monthly" :
 								$repeat = __('Monthly','advanced-database-cleaner');
-								break;									
+								break;
 						}
 
 						echo "<b>".__('Frequency','advanced-database-cleaner') . "</b> : " . $repeat . "</br>";
@@ -386,32 +408,37 @@ class ADBC_Clean_DB_List extends WP_List_Table {
 
 					?>
 
-						<span style="border-radius: 4px;font-size:11px;background:#f0f5fa;padding:2px 4px;float:right;margin-top:4px">
-							<a href="<?php echo $aDBc_new_URI ?>" style="text-decoration:none;margin-right:3px">
-							<?php _e('Edit','advanced-database-cleaner') ?>
-							</a> | 
-							<form action="" method="post" style="float:right;margin-left:3px">
+						<span class="aDBc-edit-delete-schedule">
+
+							<a href="<?php echo esc_url( $aDBc_new_URI ) ?>" class="aDBc-edit-schedule-link">
+								<?php _e( 'Edit', 'advanced-database-cleaner' ); ?>
+							</a>
+							|
+							<form action="" method="post" class="aDBc-delete-schedule-link">
 								<input type="hidden" name="aDBc_delete_schedule" value="<?php echo $hook_name ?>" />
-								<input class="aDBc-submit-link" type="submit" value="<?php _e('Delete','advanced-database-cleaner') ?>" /> 
+								<input class="aDBc-submit-link" type="submit" value="<?php _e('Delete','advanced-database-cleaner') ?>" />
 								<?php wp_nonce_field('delete_cleanup_schedule_nonce', 'delete_cleanup_schedule_nonce') ?>
 							</form>
-						</span>
-						</div>
 
+						</span>
+
+						</div>
 					<?php
 
 					}
 
 					$aDBc_new_URI = $_SERVER['REQUEST_URI'];
 					$aDBc_new_URI = add_query_arg('aDBc_view', 'add_cleanup_schedule', $aDBc_new_URI);
-					?>	
+					?>
 
-					<a href="<?php echo $aDBc_new_URI ?>" id="aDBc_add_schedule" style="margin-top:20px;width:100%" class="button-primary">
-					<?php _e('Add new schedule','advanced-database-cleaner'); ?>
-					</a>					
+					<a href="<?php echo esc_url( $aDBc_new_URI ) ?>" id="aDBc_add_schedule" class="button-primary aDBc-add-new-schedule">
+						<?php _e('Add new schedule','advanced-database-cleaner'); ?>
+					</a>
 
 				</div>
-			</div>		
+
+			</div>
+
 			<div class="aDBc-clear-both"></div>
 		</div>
 

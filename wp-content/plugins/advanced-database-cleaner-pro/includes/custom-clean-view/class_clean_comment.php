@@ -7,7 +7,7 @@ class ADBC_Clean_Comment extends WP_List_Table {
 	private $aDBc_elements_to_display = array();
 	private $aDBc_type_to_clean = "";
 	private $aDBc_plural_title = "";
-	private $aDBc_column_comment_name = "";	
+	private $aDBc_column_comment_name = "";
 	private $aDBc_sql_get_elements = "";
 	private $aDBc_custom_sql_args = "";
 	private $aDBc_search_sql_arg = "";
@@ -68,14 +68,20 @@ class ADBC_Clean_Comment extends WP_List_Table {
 		}
 
 		// Prepare additional sql args if any: per page, LIMIT, OFFSET, etc.
-		$this->aDBc_search_sql_arg 				= aDBc_get_search_sql_arg("comment_author", "comment_content");
-		$this->aDBc_order_by_sql_arg 			= aDBc_get_order_by_sql_arg("comment_ID");
+
+		if ( ADBC_PLUGIN_PLAN == "pro" ) {
+
+			$this->aDBc_search_sql_arg 			= aDBc_get_search_sql_arg( "comment_author", "comment_content" );
+
+		}
+
+		$this->aDBc_order_by_sql_arg 			= aDBc_get_order_by_sql_arg( "comment_ID" );
 		$this->aDBc_limit_offset_sql_arg 		= aDBc_get_limit_offset_sql_args();
 
         parent::__construct(array(
-            'singular'  => $aDBc_singular,		//singular name of the listed records
-            'plural'    => $this->aDBc_plural_title,	//plural name of the listed records
-            'ajax'      => false	//does this table support ajax?
+            'singular'  => $aDBc_singular,
+            'plural'    => $this->aDBc_plural_title,
+            'ajax'      => false
 		));
 
 		$this->aDBc_prepare_elements_to_clean();
@@ -193,7 +199,7 @@ class ADBC_Clean_Comment extends WP_List_Table {
 			return array('site_id');
 		}
     }
-	
+
 	function get_sortable_columns() {
 
 		$sortable_columns = array(
@@ -206,7 +212,7 @@ class ADBC_Clean_Comment extends WP_List_Table {
 		}else{
 			return $sortable_columns;
 		}
-	}	
+	}
 
 	/** WP: Prepare items to display */
 	function prepare_items() {

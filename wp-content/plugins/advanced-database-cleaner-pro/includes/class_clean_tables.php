@@ -31,32 +31,40 @@ class ADBC_Tables_List extends WP_List_Table {
 	private $aDBc_search_has_finished_msg = "";
 
 	// Holds msg that will be shown if folder adbc_uploads cannot be created by the plugin (This is verified after clicking on scan button)
-	private $aDBc_permission_adbc_folder_msg = "";		
+	private $aDBc_permission_adbc_folder_msg = "";
 
     function __construct(){
 
         parent::__construct(array(
-            'singular'  => __('Table', 'advanced-database-cleaner'),		//singular name of the listed records
-            'plural'    => __('Tables', 'advanced-database-cleaner'),	//plural name of the listed records
-            'ajax'      => false	//does this table support ajax?
+            'singular'  => __('Table', 'advanced-database-cleaner'),
+            'plural'    => __('Tables', 'advanced-database-cleaner'),
+            'ajax'      => false
 		));
 
 		$this->aDBc_prepare_and_count_tables();
 		$this->aDBc_print_page_content();
     }
 
-	/** Prepare tables to display and count tables for each category */
-	function aDBc_prepare_and_count_tables(){
+	/** Prepare items */
+	function aDBc_prepare_and_count_tables() {
 
-		// If the search has finished, show a msg success to users + button to double check results against our server database
-		$this->aDBc_search_has_finished_msg = aDBc_get_msg_double_check("tables");
+		if ( ADBC_PLUGIN_PLAN == "pro" ) {
 
-		// Verify if the adbc_uploads cannot be created
-		$adbc_folder_permission = get_option("aDBc_permission_adbc_folder_needed");
-		if(!empty($adbc_folder_permission)){
-			$this->aDBc_permission_adbc_folder_msg = sprintf(__('The plugin needs to create the following directory "%1$s" to save the scan results but this was not possible automatically. Please create that directory manually and set correct permissions so it can be writable by the plugin.','advanced-database-cleaner'), ADBC_UPLOAD_DIR_PATH_TO_ADBC);
-			// Once we display the msg, we delete that option from DB
-			delete_option("aDBc_permission_adbc_folder_needed");
+			// If the search has finished, show a msg success to users + button to double check results against our server database
+			$this->aDBc_search_has_finished_msg = aDBc_get_msg_double_check( "tables" );
+
+			// Verify if the adbc_uploads cannot be created
+			$adbc_folder_permission = get_option( "aDBc_permission_adbc_folder_needed" );
+
+			if ( ! empty( $adbc_folder_permission ) ) {
+
+				$this->aDBc_permission_adbc_folder_msg = sprintf( __( 'The plugin needs to create the following directory "%1$s" to save the scan results but this was not possible automatically. Please create that directory manually and set correct permissions so it can be writable by the plugin.','advanced-database-cleaner' ), ADBC_UPLOAD_DIR_PATH_TO_ADBC );
+
+				// Once we display the msg, we delete that option from DB
+				delete_option( "aDBc_permission_adbc_folder_needed" );
+
+			}
+
 		}
 
 		// Test if user wants to delete a scheduled task
@@ -79,26 +87,30 @@ class ADBC_Tables_List extends WP_List_Table {
 		}
 
 		// Verify if the user wants to edit the categorization of a table. This block test comes from edit_item_categorization.php
-		if(isset($_POST['aDBc_cancel'])){
+		if ( ADBC_PLUGIN_PLAN == "pro" ) {
 
-			// If the user cancels the edit, remove the temp file
-			if(file_exists(ADBC_UPLOAD_DIR_PATH_TO_ADBC . "/tables_manually_correction_temp.txt"))
-				unlink(ADBC_UPLOAD_DIR_PATH_TO_ADBC . "/tables_manually_correction_temp.txt");
+			if ( isset( $_POST['aDBc_cancel'] ) ) {
 
-		}else if(isset($_POST['aDBc_correct'])){
+				// If the user cancels the edit, remove the temp file
+				if ( file_exists( ADBC_UPLOAD_DIR_PATH_TO_ADBC . "/tables_manually_correction_temp.txt" ) )
+					unlink( ADBC_UPLOAD_DIR_PATH_TO_ADBC . "/tables_manually_correction_temp.txt" );
 
-			// Get the new belongs to of items
-			$new_belongs_to = $_POST['new_belongs_to'];
+			} else if ( isset( $_POST['aDBc_correct'] ) ) {
 
-			// Get value of checkbox to see if user wants to send correction to the server
-			if(isset($_POST['aDBc_send_correction_to_server'])){
-				$this->aDBc_message = aDBc_edit_categorization_of_items("tables", $new_belongs_to, 1);
-			}else{
-				$this->aDBc_message = aDBc_edit_categorization_of_items("tables", $new_belongs_to, 0);
+				// Get the new belongs to of items
+				$new_belongs_to = $_POST['new_belongs_to'];
+
+				// Get value of checkbox to see if user wants to send correction to the server
+				if ( isset( $_POST['aDBc_send_correction_to_server'] ) ) {
+					$this->aDBc_message = aDBc_edit_categorization_of_items( "tables", $new_belongs_to, 1 );
+				} else {
+					$this->aDBc_message = aDBc_edit_categorization_of_items( "tables", $new_belongs_to, 0 );
+				}
+
+				// Remove the temp file
+				if ( file_exists( ADBC_UPLOAD_DIR_PATH_TO_ADBC . "/tables_manually_correction_temp.txt" ) )
+					unlink( ADBC_UPLOAD_DIR_PATH_TO_ADBC . "/tables_manually_correction_temp.txt" );
 			}
-			// Remove the temp file
-			if(file_exists(ADBC_UPLOAD_DIR_PATH_TO_ADBC . "/tables_manually_correction_temp.txt"))
-				unlink(ADBC_UPLOAD_DIR_PATH_TO_ADBC . "/tables_manually_correction_temp.txt");
 		}
 
 		// Process bulk action if any before preparing tables to display
@@ -171,11 +183,11 @@ class ADBC_Tables_List extends WP_List_Table {
 		$aDBc_belongs_to_toolip = "<span class='aDBc-tooltips-headers'>
 									<img class='aDBc-info-image' src='".  ADBC_PLUGIN_DIR_PATH . '/images/information2.svg' . "'/>
 									<span>" . __('Indicates the creator of the table: either a plugin, a theme or WordPress itself. If not sure about the creator, an estimation (%) will be displayed. The higher the percentage is, the more likely that the table belongs to that creator.','advanced-database-cleaner') ." </span>
-								  </span>";	
+								  </span>";
 		$columns = array(
 			'cb'          		=> '<input type="checkbox" />',
-			'table_prefix' 		=> __('Prefix','advanced-database-cleaner'),
 			'table_name' 		=> __('Table name','advanced-database-cleaner'),
+			'table_prefix' 		=> __('Prefix','advanced-database-cleaner'),
 			'table_rows' 		=> __('Rows','advanced-database-cleaner'),
 			'table_size' 		=> __('Size','advanced-database-cleaner'),
 			'table_lost' 		=> __('Lost','advanced-database-cleaner'),
@@ -188,15 +200,17 @@ class ADBC_Tables_List extends WP_List_Table {
 	function get_sortable_columns() {
 
 		$sortable_columns = array(
-			'table_name'   		=> array('table_name',false),
-			'table_rows'    	=> array('table_rows',false),
-			'table_size'    	=> array('table_size',false),
-			'site_id'    		=> array('site_id',false)
+
+			'table_name'   		=> array( 'table_name', false ),
+			'table_rows'    	=> array( 'table_rows', false ),
+			'table_size'    	=> array( 'table_size', false ),
+			'site_id'    		=> array( 'site_id', false )
+
 		);
 
 		return $sortable_columns;
-	}	
-	
+	}
+
 	/** WP: Prepare items to display */
 	function prepare_items() {
 		$columns 	= $this->get_columns();
@@ -218,67 +232,112 @@ class ADBC_Tables_List extends WP_List_Table {
 	}
 
 	/** WP: Get columns that should be hidden */
-    function get_hidden_columns(){
+    function get_hidden_columns() {
+
 		// If MU, nothing to hide, else hide Side ID column
-		if(function_exists('is_multisite') && is_multisite()){
-			return array('table_prefix','table_lost');
-		}else{
-			return array('table_prefix','table_lost', 'site_id');
+		if ( function_exists( 'is_multisite' ) && is_multisite() ) {
+
+			return array( 'table_prefix', 'table_lost' );
+
+		} else {
+
+			return array( 'table_prefix', 'table_lost', 'site_id' );
+
 		}
     }
 
 	/** WP: Column default */
-	function column_default($item, $column_name){
-		switch($column_name){
+	function column_default( $item, $column_name ) {
+
+		switch ( $column_name ) {
+
 			case 'table_name':
+
 				$prefix_and_name = $item['table_prefix'] . $item[$column_name];
-				$return_name = "<span style='font-weight:bold;'>" . $item['table_prefix'] . "</span>" . $item[$column_name] ;
-				if($item['table_lost'] > 0 && in_array($prefix_and_name, $this->aDBc_tables_name_to_optimize)){
-					$lost = aDBc_get_size_from_bytes($item['table_lost']);
-					$return_name .= "<br/><span style='color:red;font-size:12px'><b>".__('Lost space','advanced-database-cleaner')."</b></span><span style='font-size:12px'> : " . $lost . "</span> <span style='color:grey'> (" .  __('to optimize','advanced-database-cleaner') . ")</span>";
+
+				$return_name = "<span class='aDBc-bold'>" . $item['table_prefix'] . "</span>" . $item[$column_name];
+
+				if ( $item['table_lost'] > 0 && in_array( $prefix_and_name, $this->aDBc_tables_name_to_optimize ) ) {
+
+					$lost = aDBc_get_size_from_bytes( $item['table_lost'] );
+
+					$return_name .= "<br/>";
+					$return_name .= "<span class='aDBc-lost-space'>" . __( 'Lost space', 'advanced-database-cleaner' ) . "</span>";
+					$return_name .= "<span style='font-size:12px'> : " . $lost . "</span>";
+					$return_name .= "<span style='color:grey'> (" .  __( 'to optimize', 'advanced-database-cleaner' ) . ")</span>";
+
 				}
-				if(in_array($prefix_and_name, $this->aDBc_tables_name_to_repair)){
-					$return_name .= "<br/><span style='color:red;font-size:12px'><b>".__('Corrupted!','advanced-database-cleaner')."</b></span><span style='color:grey'> (" .  __('to repair','advanced-database-cleaner') . ")</span>";
+
+				if ( in_array( $prefix_and_name, $this->aDBc_tables_name_to_repair ) ) {
+
+					$return_name .= "<br/>";
+					$return_name .= "<span class='aDBc-corrupted'>" . __( 'Corrupted!', 'advanced-database-cleaner' ) . "</span>";
+					$return_name .= "<span style='color:grey'> (" .  __( 'to repair', 'advanced-database-cleaner' ) . ")</span>";
+
 				}
+
 				return $return_name;
 				break;
+
 			case 'table_size':
-				return aDBc_get_size_from_bytes($item['table_size']);
+
+				return aDBc_get_size_from_bytes( $item['table_size'] );
 				break;
+
 			case 'table_lost':
-				return aDBc_get_size_from_bytes($item['table_lost']);
+
+				return aDBc_get_size_from_bytes( $item['table_lost'] );
 				break;
-			case 'table_prefix':				
+
+			case 'table_prefix':
 			case 'table_rows':
 			case 'site_id':
 			case 'table_belongs_to':
+
 			  return $item[$column_name];
+
 			default:
-			  return print_r($item, true) ; //Show the whole array for troubleshooting purposes
+
+			  return print_r( $item, true ) ; //Show the whole array for troubleshooting purposes
+
 		}
 	}
 
 	/** WP: Column cb for check box */
-	function column_cb($item) {
-		return sprintf('<input type="checkbox" name="aDBc_elements_to_process[]" value="%s" />', $item['table_prefix']."|".$item['table_name']);
+	function column_cb( $item ) {
+
+		return sprintf( '<input type="checkbox" name="aDBc_elements_to_process[]" value="%s" />', $item['table_prefix'] . "|" . $item['table_name'] );
+
 	}
 
 	/** WP: Get bulk actions */
 	function get_bulk_actions() {
+
 		$actions = array(
-			'scan_selected' 		=> __('Scan selected tables','advanced-database-cleaner'),
-			'edit_categorization' 	=> __('Edit categorization','advanced-database-cleaner'),
-			'optimize'  			=> __('Optimize','advanced-database-cleaner'),
-			'repair'    			=> __('Repair','advanced-database-cleaner'),
-			'empty'    				=> __('Empty rows','advanced-database-cleaner'),
-			'delete'    			=> __('Delete','advanced-database-cleaner')
+			'scan_selected' 		=> __( 'Scan selected tables', 'advanced-database-cleaner' ),
+			'edit_categorization' 	=> __( 'Edit categorization', 'advanced-database-cleaner' ),
+			'optimize'  			=> __( 'Optimize', 'advanced-database-cleaner' ),
+			'repair'    			=> __( 'Repair', 'advanced-database-cleaner' ),
+			'empty'    				=> __( 'Empty rows', 'advanced-database-cleaner' ),
+			'delete'    			=> __( 'Delete', 'advanced-database-cleaner' )
 		);
+
+		if ( ADBC_PLUGIN_PLAN == "free" ) {
+
+			unset( $actions['scan_selected'] );
+			unset( $actions['edit_categorization'] );
+
+		}
+
 		return $actions;
+
 	}
 
 	/** WP: Message to display when no items found */
 	function no_items() {
-		_e('No tables found!','advanced-database-cleaner');
+
+		_e( 'No tables found!', 'advanced-database-cleaner' );
+
 	}
 
 	/** WP: Process bulk actions */
@@ -311,14 +370,20 @@ class ADBC_Tables_List extends WP_List_Table {
 					$table_info 	= explode("|", $table);
 					$table_prefix 	= sanitize_html_class($table_info[0]);
 					$table_name 	= sanitize_text_field($table_info[1]);
-					// We delete some characters we believe they should not appear in the name: & < > = # ( ) [ ] { } ? " ' 
-					$table_name 	= preg_replace("/[&<>=#\(\)\[\]\{\}\?\"\' ]/", '', $table_name);					
+					// We delete some characters we believe they should not appear in the name: & < > = # ( ) [ ] { } ? " '
+					$table_name 	= preg_replace("/[&<>=#\(\)\[\]\{\}\?\"\' ]/", '', $table_name);
 					if($wpdb->query("DROP TABLE " . $table_prefix . $table_name)){
 						array_push($names_deleted, $table_name);
 					}
 				}
+
 				// After deleting tables, delete names also from file categorization
-				aDBc_refresh_categorization_file_after_delete($names_deleted, 'tables');
+				// xxx (should I add this as well to options & crons?)
+				if ( ADBC_PLUGIN_PLAN == "pro" ) {
+
+					aDBc_refresh_categorization_file_after_delete($names_deleted, 'tables');
+
+				}
 
 				// Update the message to show to the user
 				$this->aDBc_message = __('Selected tables cleaned successfully!', 'advanced-database-cleaner');
@@ -331,7 +396,7 @@ class ADBC_Tables_List extends WP_List_Table {
 					$table_info 	= explode("|", $table);
 					$table_prefix 	= sanitize_html_class($table_info[0]);
 					$table_name 	= sanitize_text_field($table_info[1]);
-					// We delete some characters we believe they should not appear in the name: & < > = # ( ) [ ] { } ? " ' 
+					// We delete some characters we believe they should not appear in the name: & < > = # ( ) [ ] { } ? " '
 					$table_name 	= preg_replace("/[&<>=#\(\)\[\]\{\}\?\"\' ]/", '', $table_name);
 					$wpdb->query("OPTIMIZE TABLE " . $table_prefix . $table_name);
 				}
@@ -346,7 +411,7 @@ class ADBC_Tables_List extends WP_List_Table {
 					$table_info 	= explode("|", $table);
 					$table_prefix 	= sanitize_html_class($table_info[0]);
 					$table_name 	= sanitize_text_field($table_info[1]);
-					// We delete some characters we believe they should not appear in the name: & < > = # ( ) [ ] { } ? " ' 
+					// We delete some characters we believe they should not appear in the name: & < > = # ( ) [ ] { } ? " '
 					$table_name 	= preg_replace("/[&<>=#\(\)\[\]\{\}\?\"\' ]/", '', $table_name);
 					$wpdb->query("TRUNCATE TABLE " . $table_prefix . $table_name);
 				}
@@ -362,7 +427,7 @@ class ADBC_Tables_List extends WP_List_Table {
 					$table_info 	= explode("|", $table);
 					$table_prefix 	= sanitize_html_class($table_info[0]);
 					$table_name 	= sanitize_text_field($table_info[1]);
-					// We delete some characters we believe they should not appear in the name: & < > = # ( ) [ ] { } ? " ' 
+					// We delete some characters we believe they should not appear in the name: & < > = # ( ) [ ] { } ? " '
 					$table_name 	= preg_replace("/[&<>=#\(\)\[\]\{\}\?\"\' ]/", '', $table_name);
 					$query_result 	= $wpdb->get_results("REPAIR TABLE " . $table_prefix . $table_name);
 					foreach($query_result as $row){
@@ -390,8 +455,8 @@ class ADBC_Tables_List extends WP_List_Table {
 					foreach($_POST['aDBc_elements_to_process'] as $table) {
 						$table_info = explode("|", $table);
 						$table_name = sanitize_text_field($table_info[1]);
-						// We delete some characters we believe they should not appear in the name: & < > = # ( ) [ ] { } ? " ' 
-						$table_name = preg_replace("/[&<>=#\(\)\[\]\{\}\?\"\' ]/", '', $table_name);	
+						// We delete some characters we believe they should not appear in the name: & < > = # ( ) [ ] { } ? " '
+						$table_name = preg_replace("/[&<>=#\(\)\[\]\{\}\?\"\' ]/", '', $table_name);
 						fwrite($aDBc_path_items, $table_name . "\n");
 					}
 					fclose($aDBc_path_items);
@@ -419,160 +484,267 @@ class ADBC_Tables_List extends WP_List_Table {
 		<div class="aDBc-content-max-width">
 
 		<?php
-		// If tables_manually_correction_temp.txt exist, this means that user want to edit categorization
-		if(file_exists(ADBC_UPLOAD_DIR_PATH_TO_ADBC . '/tables_manually_correction_temp.txt')){
+
+		// If tables_manually_correction_temp.txt exist, this means that user want to edit categorization.
+
+		if ( ADBC_PLUGIN_PLAN == "pro" && file_exists( ADBC_UPLOAD_DIR_PATH_TO_ADBC . '/tables_manually_correction_temp.txt' ) ) {
 
 			include_once 'edit_item_categorization.php';
 
-		// If not, we print the tables normally
-		}else{
+		} else {
 
+			// If not, we print the tables normally
 			// Print a notice/warning according to each type of tables
-			if($_GET['aDBc_cat'] == 'o' && $this->aDBc_tables_categories_info['o']['count'] > 0){
-				echo '<div class="aDBc-box-warning-orphan">' . __('Tables below seem to be orphan! However, please delete only those you are sure to be orphan!','advanced-database-cleaner') . '</div>';
-			}else if(($_GET['aDBc_cat'] == 'all' || $_GET['aDBc_cat'] == 'u') && $this->aDBc_tables_categories_info['u']['count'] > 0){
-				echo '<div class="aDBc-box-info">' . __('Some of your tables are not categorized yet! Please click on the button below to categorize them!','advanced-database-cleaner') . '</div>';
-			} ?>
+			if ( ADBC_PLUGIN_PLAN == "pro" ) {
+
+				if($_GET['aDBc_cat'] == 'o' && $this->aDBc_tables_categories_info['o']['count'] > 0){
+					echo '<div class="aDBc-box-warning-orphan">' . __('Tables below seem to be orphan! However, please delete only those you are sure to be orphan!','advanced-database-cleaner') . '</div>';
+				}else if(($_GET['aDBc_cat'] == 'all' || $_GET['aDBc_cat'] == 'u') && $this->aDBc_tables_categories_info['u']['count'] > 0){
+					echo '<div class="aDBc-box-info">' . __('Some of your tables are not categorized yet! Please click on the button below to categorize them!','advanced-database-cleaner') . '</div>';
+				}
+
+			}
+
+		?>
 
 			<div class="aDBc-clear-both" style="margin-top:15px"></div>
 
 			<!-- Code for "run new search" button + Show loading image -->
-			<div style="float:left;">
-				<?php 
-				if($this->aDBc_which_button_to_show == "new_search" ){
-					$aDBc_search_text  		= __('Scan tables','advanced-database-cleaner');
-				}else{
-					$aDBc_search_text  		= __('Continue scannig ...','advanced-database-cleaner');
+			<div style="float:left">
+
+				<?php
+				if ( $this->aDBc_which_button_to_show == "new_search" ) {
+					$aDBc_search_text  	= __( 'Scan tables', 'advanced-database-cleaner' );
+				} else {
+					$aDBc_search_text  	= __( 'Continue scannig ...', 'advanced-database-cleaner' );
 				}
 				?>
 
-				<!-- This hidden input is used by ajax to know which item type we are dealing with -->
+				<!-- Hidden input used by ajax to know which item type we are dealing with -->
 				<input type="hidden" id="aDBc_item_type" value="tables"/>
-				<?php 
-				// These hidden inputs are used by ajax to see if we should execute scanning process automatically by ajax after reloading a page
+
+				<?php
+				// These hidden inputs are used by ajax to see if we should execute scanning automatically after reloading a page
 				$iteration = get_option("aDBc_temp_last_iteration_tables");
 				?>
 				<input type="hidden" id="aDBc_iteration" value="<?php echo $iteration; ?>"/>
 				<input type="hidden" id="aDBc_count_uncategorized" value="<?php echo $this->aDBc_tables_categories_info['u']['count']; ?>"/>
 				<input type="hidden" id="aDBc_count_all_items" value="<?php echo $this->aDBc_tables_categories_info['all']['count']; ?>"/>
 
-				<input id="aDBc_new_search_button" type="submit" class="aDBc-run-new-search" value="<?php echo $aDBc_search_text; ?>"  name="aDBc_new_search_button" />
+				<?php
+
+				if ( ADBC_PLUGIN_PLAN == "pro" ) {
+
+				?>
+
+					<input id="aDBc_new_search_button" type="submit" class="aDBc-run-new-search" value="<?php echo $aDBc_search_text; ?>"  name="aDBc_new_search_button" />
+
+				<?php
+
+				} else {
+
+				?>
+
+					<div class="aDBc-premium-tooltip">
+
+						<input id="aDBc_new_search_button" type="submit" class="aDBc-run-new-search" value="<?php echo $aDBc_search_text; ?>"  name="aDBc_new_search_button" style="opacity:0.5" disabled />
+
+						<span style="width:390px" class="aDBc-premium-tooltiptext">
+
+							<?php _e('Please <a href="?page=advanced_db_cleaner&aDBc_tab=premium">upgrade</a> to Pro to categorize and detect orphaned tables','advanced-database-cleaner') ?>
+
+						</span>
+
+					</div>
+
+				<?php
+				}
+				?>
 
 			</div>
 
-			<!-- Print numbers of tables found in each category -->
+			<!-- Print numbers of items found in each category -->
 			<div class="aDBc-category-counts">
+
 				<?php
+
 				$aDBc_new_URI = $_SERVER['REQUEST_URI'];
-				// Remove the paged parameter to start always from the first page when selecting a new category of tables
-				$aDBc_new_URI = remove_query_arg('paged', $aDBc_new_URI);
-				$iterations = 0;
-				foreach($this->aDBc_tables_categories_info as $abreviation => $category_info){
-					$iterations++;
-					$aDBc_new_URI = add_query_arg('aDBc_cat', $abreviation, $aDBc_new_URI);?>
-					<span class="<?php echo $abreviation == $_GET['aDBc_cat'] ? 'aDBc-selected-category' : ''?>" style="<?php echo $abreviation == $_GET['aDBc_cat'] ? 'border-bottom: 1px solid ' . $category_info['color'] : '' ?>">
 
-						<?php
-						$aDBc_link_style = "color:" . $category_info['color'];
-						$aDBc_category_info_count = "(". $category_info['count'] . ")";
-						?>
+				// Remove the paged parameter to start always from the first page when selecting a new category
+				$aDBc_new_URI = remove_query_arg( 'paged', $aDBc_new_URI );
 
-						<span class="aDBc_premium_tooltip">
-							<a href="<?php echo $aDBc_new_URI; ?>" class="aDBc-category-counts-links" style="<?php echo $aDBc_link_style ; ?>">
+				foreach ( $this->aDBc_tables_categories_info as $abreviation => $category_info ) {
+
+					$aDBc_new_URI 		= add_query_arg( 'aDBc_cat', $abreviation, $aDBc_new_URI );
+					$selected_color 	= $abreviation == $_GET['aDBc_cat'] ? $category_info['color'] : '#eee';
+					$aDBc_link_style 	= "color:" . $category_info['color'];
+					$aDBc_count 		= $category_info['count'];
+
+					if ( ADBC_PLUGIN_PLAN == "free" && $abreviation != "all" && $abreviation != "u" ) {
+
+						$aDBc_new_URI 		= "";
+						$aDBc_link_style 	= $aDBc_link_style . ";cursor:default;pointer-events:none";
+						$aDBc_count 		= "-";
+
+					}
+
+				?>
+					<span class="<?php echo $abreviation == $_GET['aDBc_cat'] ? 'aDBc-selected-category' : ''?>">
+
+						<span class="aDBc-premium-tooltip aDBc-category-span">
+
+							<a href="<?php echo esc_url( $aDBc_new_URI ); ?>" class="aDBc-category-counts-links" style="<?php echo $aDBc_link_style ?>">
+
 								<span><?php echo $category_info['name']; ?></span>
-								<span><?php echo $aDBc_category_info_count ;?></span>
+
 							</a>
+
+							<div class="aDBc-category-total" style="border:1px solid <?php echo $selected_color ?>; border-bottom:3px solid <?php echo $selected_color ?>;">
+
+								<span style="color:#000"><?php echo $aDBc_count ?></span>
+
+							</div>
+
+							<?php
+							if ( ADBC_PLUGIN_PLAN == "free" && $abreviation != "all" && $abreviation != "u" ) {
+							?>
+
+								<span style="width:150px" class="aDBc-premium-tooltiptext">
+
+									<?php _e( 'Available in Pro version!', 'advanced-database-cleaner' ); ?>
+
+								</span>
+
+							<?php
+							}
+							?>
+
 						</span>
 
 					</span>
-					<?php
-					if($iterations < 6){
-						echo '<span class="aDBc-category-separator">|</span>';
-					}
-				}?>
+
+				<?php
+				}
+				?>
+
 			</div>
 
 			<div class="aDBc-clear-both"></div>
 
-			<div id="aDBc_progress_container">
-				<div style="background:#ccc;width:100%;height:20px">
-					<div id="aDBc-progress-bar" class="aDBc_progress-bar"></div>
+			<div id="aDBc-progress-container">
+
+				<div class="aDBc-progress-background">
+					<div id="aDBc-progress-bar" class="aDBc-progress-bar"></div>
 				</div>
-				<a id="aDBc_stop_scan" href="#" style="color:red"><?php _e('Stop the scan','advanced-database-cleaner') ?></a>
-				<span id="aDBc_stopping_msg" style="display: none;"><?php _e('Stopping...','advanced-database-cleaner') ?></span>				
+
+				<a id="aDBc_stop_scan" href="#" style="color:red">
+					<?php _e('Stop the scan','advanced-database-cleaner') ?>
+				</a>
+
+				<span id="aDBc_stopping_msg" style="display:none">
+					<?php _e('Stopping...','advanced-database-cleaner') ?>
+				</span>
+
 			</div>
 
 			<?php include_once 'header_page_filter.php'; ?>
 
 			<div class="aDBc-clear-both"></div>
 
-			<form id="aDBc_form" action="" method="post">	
+			<form id="aDBc_form" action="" method="post">
 				<div class="aDBc-left-content">
 					<?php
-					// Print the tables
 					$this->display();
 					?>
 				</div>
 			</form>
 
-			<div class="aDBc-right-box">	
-				<div style="text-align:center">
-					<?php if($this->aDBc_total_tables_to_optimize == 0 && $this->aDBc_total_tables_to_repair == 0){ ?>
-						<img width="58px" src="<?php echo ADBC_PLUGIN_DIR_PATH . '/images/db_clean.svg'?>"/>
-						<div class="aDBc-text-status-db"><?php _e('Your database is optimized!','advanced-database-cleaner'); ?></div>
-					<?php } else {
+			<div class="aDBc-right-box">
 
-							// Add link to numbers of tables that should be optimized
-							$aDBc_new_URI = $_SERVER['REQUEST_URI'];
-							$aDBc_new_URI = remove_query_arg(array('paged', 's', 'belongs_to'), $aDBc_new_URI);
-							$aDBc_new_URI = add_query_arg('t_type', 'optimize', $aDBc_new_URI);
-							$aDBc_new_URI = add_query_arg('aDBc_cat', 'all', $aDBc_new_URI);
-							?>
-
-						<img width="55px" src="<?php echo ADBC_PLUGIN_DIR_PATH . '/images/warning.svg'?>"/>
-
-						<?php if($this->aDBc_total_tables_to_optimize > 0){ ?>
-							<div class="aDBc-text-status-db">
-								<b><a href="<?php echo $aDBc_new_URI; ?>"><?php echo $this->aDBc_total_tables_to_optimize; ?></a></b> <?php _e('table(s) should be optimized!','advanced-database-cleaner'); ?>
-							</div>
-							<div>
-							<?php 
-								$aDBc_table_size = aDBc_get_size_from_bytes($this->aDBc_total_lost);
-								echo __('You can save around','advanced-database-cleaner') . " : " . $aDBc_table_size; 
-							?>
-							</div>
-						<?php } ?>
-
-						<?php if($this->aDBc_total_tables_to_repair > 0){
-							$aDBc_new_URI = add_query_arg('t_type', 'repair', $aDBc_new_URI);
-						?>
-							<div class="aDBc-text-status-db" style="<?php echo $this->aDBc_total_tables_to_optimize > 0 ? 'padding-top:10px;margin-top:10px;border-top:1px dashed grey' : ''; ?>">
-								<b><a href="<?php echo $aDBc_new_URI; ?>"><?php echo $this->aDBc_total_tables_to_repair; ?></a></b> <?php _e('table(s) should be repaired!','advanced-database-cleaner'); ?>
-							</div>
-						<?php } ?>							
-
-					<?php }  ?>
-				</div>
-
-				<div class="aDBc-schedule-box" style="text-align:center">
-
-					<img width="60px" src="<?php echo ADBC_PLUGIN_DIR_PATH . '/images/alarm-clock.svg'?>"/>
+				<div class="aDBc-right-box-content" style="text-align:center">
 
 					<?php
-					$aDBc_schedules = get_option('aDBc_optimize_schedule');
-					$aDBc_schedules = is_array($aDBc_schedules) ? $aDBc_schedules : array();
 
-					// Count schedules available
-					$count_schedules = count($aDBc_schedules);
-					echo "<div class='aDBc-schedule-text'><b>" . $count_schedules ."</b> " .__('optimize schedule(s) set','advanced-database-cleaner') . "</div>";
+					if ( $this->aDBc_total_tables_to_optimize == 0 && $this->aDBc_total_tables_to_repair == 0 ) {
 
-					foreach($aDBc_schedules as $hook_name => $hook_params){
+					?>
+						<img width="58px" src="<?php echo ADBC_PLUGIN_DIR_PATH . '/images/db_clean.svg'?>"/>
+						<div class="aDBc-text-status-db"><?php _e( 'Your database is optimized!', 'advanced-database-cleaner' ); ?></div>
+
+					<?php
+
+					} else {
+
+						// Add link to numbers of tables that should be optimized/repaired
+						$aDBc_new_URI = $_SERVER['REQUEST_URI'];
+						$aDBc_new_URI = remove_query_arg( array( 'paged', 's', 'belongs_to' ), $aDBc_new_URI );
+						$aDBc_new_URI = add_query_arg( 'aDBc_cat', 'all', $aDBc_new_URI );
+					?>
+						<img width="55px" src="<?php echo ADBC_PLUGIN_DIR_PATH . '/images/warning.svg'?>"/>
+
+						<?php
+						if ( $this->aDBc_total_tables_to_optimize > 0 ) {
+
+							$aDBc_new_URI = add_query_arg( 't_type', 'optimize', $aDBc_new_URI );
+
+						?>
+							<div class="aDBc-text-status-db">
+								<b><a href="<?php echo esc_url( $aDBc_new_URI ); ?>"><?php echo $this->aDBc_total_tables_to_optimize; ?></a></b>
+								<?php _e( 'table(s) should be optimized!', 'advanced-database-cleaner' ); ?>
+							</div>
+
+							<div>
+								<?php
+								$aDBc_table_size = aDBc_get_size_from_bytes( $this->aDBc_total_lost );
+								echo __( 'You can save around', 'advanced-database-cleaner' ) . " : " . $aDBc_table_size;
+								?>
+							</div>
+
+						<?php
+						}
+
+						if ( $this->aDBc_total_tables_to_repair > 0 ) {
+
+							$aDBc_new_URI 	= add_query_arg( 't_type', 'repair', $aDBc_new_URI );
+							$to_repair_css 	= $this->aDBc_total_tables_to_optimize > 0 ? "aDBc-to-repair-section" : "";
+
+						?>
+							<div class="aDBc-text-status-db <?php echo $to_repair_css; ?>">
+								<b><a href="<?php echo esc_url( $aDBc_new_URI ); ?>"><?php echo $this->aDBc_total_tables_to_repair; ?></a></b>
+								<?php _e( 'table(s) should be repaired!', 'advanced-database-cleaner' ); ?>
+							</div>
+
+						<?php
+						}
+					}
+					?>
+
+				</div>
+
+				<div class="aDBc-right-box-content">
+
+					<div style="text-align:center">
+						<img width="60px" src="<?php echo ADBC_PLUGIN_DIR_PATH . '/images/alarm-clock.svg'?>"/>
+
+						<?php
+						$aDBc_schedules = get_option( 'aDBc_optimize_schedule' );
+						$aDBc_schedules = is_array( $aDBc_schedules ) ? $aDBc_schedules : array();
+
+						// Count schedules available
+						$count_schedules = count( $aDBc_schedules );
+						echo "<div class='aDBc-schedule-text'><b>" . $count_schedules ."</b> " .__('optimize schedule(s) set','advanced-database-cleaner') . "</div>";
+						?>
+					</div>
+
+					<?php
+					foreach ( $aDBc_schedules as $hook_name => $hook_params ) {
+
 						echo "<div class='aDBc-schedule-hook-box'>";
-						echo "<b>".__('Name','advanced-database-cleaner') . "</b> : " . $hook_name;
+						echo "<b>" . __( 'Name', 'advanced-database-cleaner' ) . "</b> : " . $hook_name;
 						echo "</br>";
 
 						// We convert hook name to a string because the arg maybe only a digit!
-						$timestamp = wp_next_scheduled("aDBc_optimize_scheduler", array($hook_name . ''));
+						$timestamp = wp_next_scheduled( "aDBc_optimize_scheduler", array( $hook_name . '' ) );
 						if($timestamp){
 							$next_run = get_date_from_gmt(date('Y-m-d H:i:s', $timestamp), 'M j, Y - H:i');
 						}else{
@@ -604,7 +776,7 @@ class ADBC_Tables_List extends WP_List_Table {
 								break;
 							case "monthly" :
 								$repeat = __('Monthly','advanced-database-cleaner');
-								break;									
+								break;
 						}
 
 						echo "<b>".__('Frequency','advanced-database-cleaner') . "</b> : " . $repeat . "</br>";
@@ -617,16 +789,20 @@ class ADBC_Tables_List extends WP_List_Table {
 
 					?>
 
-						<span class="aDBc-edit-schedule">
-							<a href="<?php echo $aDBc_new_URI ?>" style="text-decoration:none;margin-right:3px">
-							<?php _e('Edit','advanced-database-cleaner') ?>
-							</a> | 
-							<form action="" method="post" style="float:right;margin-left:3px">
+						<span class="aDBc-edit-delete-schedule">
+
+							<a href="<?php echo esc_url( $aDBc_new_URI ); ?>" class="aDBc-edit-schedule-link">
+								<?php _e( 'Edit', 'advanced-database-cleaner' ); ?>
+							</a>
+							|
+							<form action="" method="post" class="aDBc-delete-schedule-link">
 								<input type="hidden" name="aDBc_delete_schedule" value="<?php echo $hook_name ?>" />
 								<input class="aDBc-submit-link" type="submit" value="<?php _e('Delete','advanced-database-cleaner') ?>" />
 								<?php wp_nonce_field('delete_optimize_schedule_nonce', 'delete_optimize_schedule_nonce') ?>
 							</form>
+
 						</span>
+
 						</div>
 					<?php
 
@@ -634,11 +810,11 @@ class ADBC_Tables_List extends WP_List_Table {
 
 					$aDBc_new_URI = $_SERVER['REQUEST_URI'];
 					$aDBc_new_URI = add_query_arg('aDBc_view', 'add_optimize_schedule', $aDBc_new_URI);
-					?>	
+					?>
 
-					<a href="<?php echo $aDBc_new_URI ?>" id="aDBc_add_schedule" style="margin-top:20px;width:100%" class="button-primary">
-					<?php _e('Add new schedule','advanced-database-cleaner'); ?>
-					</a>					
+					<a href="<?php echo esc_url( $aDBc_new_URI ); ?>" id="aDBc_add_schedule" class="button-primary aDBc-add-new-schedule">
+						<?php _e('Add new schedule','advanced-database-cleaner'); ?>
+					</a>
 
 				</div>
 
