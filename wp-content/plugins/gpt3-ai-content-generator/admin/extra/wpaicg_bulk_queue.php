@@ -6,7 +6,7 @@ if(isset($_GET['sub_action']) && sanitize_text_field($_GET['sub_action']) == 'de
     if(!wp_verify_nonce($_GET['_wpnonce'], 'wpaicg_delete_'.$wpaicg_delete_id)){
         die(esc_html__('Nonce verification failed','gpt3-ai-content-generator'));
     }
-    $wpdb->delete($wpdb->posts,array('post_type' => 'wpaicg_tracking', 'ID' => $wpaicg_delete_id));
+    $wpdb->delete($wpdb->posts,array('ID' => $wpaicg_delete_id));
     $wpdb->delete($wpdb->posts,array('post_type' => 'wpaicg_bulk', 'post_parent' => $wpaicg_delete_id));
     /*Search Twitter Bot*/
     $wpaicg_twitter_track = $wpdb->get_row($wpdb->prepare("SELECT * FROM {$wpdb->postmeta} WHERE meta_key=%s AND meta_value=%d", 'wpaicg_twitter_track', $wpaicg_delete_id));

@@ -39,6 +39,16 @@ if(!class_exists('\\WPAICG\\WPAICG_Util')) {
             return $activated;
         }
 
+        public function wpaicg_random($length = 10) {
+            $characters = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
+            $charactersLength = strlen($characters);
+            $randomString = '';
+            for ($i = 0; $i < $length; $i++) {
+                $randomString .= $characters[rand(0, $charactersLength - 1)];
+            }
+            return $randomString;
+        }
+
         public function wpaicg_is_pro()
         {
             return wpaicg_gacg_fs()->is_plan__premium_only( 'pro' );

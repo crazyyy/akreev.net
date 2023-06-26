@@ -165,19 +165,19 @@ if(!class_exists('\\WPAICG\\WPAICG_Hook')) {
             $wpaicg_include_footer = (isset($wpaicg_chat_widget['footer_text']) && !empty($wpaicg_chat_widget['footer_text'])) ? 5 : 0;
             ?>
             <style>
-                .wpaicg_toc h2{
+                .toc_post_list h2{
                     margin-bottom: 20px;
                 }
-                .wpaicg_toc{
+                .toc_post_list{
                     list-style: none;
                     margin: 0 0 30px 0!important;
                     padding: 0!important;
                 }
-                .wpaicg_toc li{}
-                .wpaicg_toc li ul{
+                .toc_post_list li{}
+                .toc_post_list li ul{
                     list-style: decimal;
                 }
-                .wpaicg_toc a{}
+                .toc_post_list a{}
                 .wpaicg_chat_widget{
                     position: fixed;
                 }
@@ -408,19 +408,19 @@ if(!class_exists('\\WPAICG\\WPAICG_Hook')) {
         {
             ?>
             <style>
-                .wp-block .wpaicg_toc h2{
+                .wp-block .toc_post_list h2{
                     margin-bottom: 20px;
                 }
-                .wp-block .wpaicg_toc{
+                .wp-block .toc_post_list{
                     list-style: none;
                     margin: 0 0 30px 0!important;
                     padding: 0!important;
                 }
-                .wp-block .wpaicg_toc li{}
-                .wp-block .wpaicg_toc li ul{
+                .wp-block .toc_post_list li{}
+                .wp-block .toc_post_list li ul{
                     list-style: decimal;
                 }
-                .wp-block .wpaicg_toc a{}
+                .wp-block .toc_post_list a{}
                 .wpaicg-chat-shortcode-type,.wpaicg-chatbox-type{
                     position: relative;
                 }
@@ -540,6 +540,8 @@ if(!class_exists('\\WPAICG\\WPAICG_Hook')) {
                     min-height: 100px;
                     background: #fff;
                     border-radius: 5px;
+                    max-height: 500px;
+                    overflow-y: auto;
                 }
                 .wpaicg_modal_head_second {
                     min-height: 30px;

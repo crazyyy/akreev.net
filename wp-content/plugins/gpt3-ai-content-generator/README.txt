@@ -4,7 +4,7 @@ Tags: chatgpt, gpt, openai, ai, chatbot, speech, whisper, image generator, gpt4
 Requires at least: 5.0.0
 Tested up to: 6.2
 Requires PHP: 7.4
-Stable tag: 1.7.35
+Stable tag: 1.7.37
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
  
@@ -247,6 +247,26 @@ This message is coming from OpenAI, not from our plugin. It means that you have 
 Note: You can view non-Minified JS files [here](https://github.com/aipowerorg/Non-Minified-JS-Files).
 
 == Changelog ==
+
+= 1.7.37 =
+
+- Fixed an issue in AI Forms.
+- The model for ChatPDF questions has been updated from gpt-3.5-turbo to gpt-3.5-turbo-16k.
+
+= 1.7.36 =
+
+**Enhancements**
+
+In this release, we have made some performance and SEO improvements.
+
+- Instead of using 'wpaicg' in HTML tags, we now generate a random prefix to remove our plugin's footprint from your content. This enhancement is beneficial for SEO.
+- The loading of pdf.worker.js now only occurs when ChatPDF is being used.
+
+**Fixes**
+
+- Fixed the issue of automatic scrolling in the user role window.
+- Fixed the environment URL in Pinecone to validate the API key.
+- Fixed a bug with AutoGPT - Queue task deletion.
 
 = 1.7.35 =
 

@@ -624,7 +624,8 @@ if ( !class_exists( '\\WPAICG\\WPAICG_Content' ) ) {
                                 }
                                 // Fix empty image
                                 $wpaicg_content = str_replace("__WPAICG_IMAGE__", '', $wpaicg_content);
-
+                                // change heading id
+                                $wpaicg_content = str_replace('wpaicgheading',wpaicg_util_core()->wpaicg_random(),$wpaicg_content);
                                 $wpaicg_post_data = array(
                                     'post_title'   => $wpaicg_single->post_title,
                                     'post_author'  => $wpaicg_single->post_author,

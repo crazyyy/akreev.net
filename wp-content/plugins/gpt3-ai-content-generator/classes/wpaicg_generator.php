@@ -497,7 +497,7 @@ if(!class_exists('\\WPAICG\\WPAICG_Generator')) {
                         $value = str_replace( '\\', '', $value );
                         $value = trim( $value );
                         // we will add h tag if the user wants to
-                        $wpaicg_heading_id = 'wpaicg-'.sanitize_title($value);
+                        $wpaicg_heading_id = sanitize_title($value).'-wpaicgheading';
                         $this->wpaicg_toc_list[] = $value;
                         if ( $this->wpaicg_heading_tag == "h1" ) {
                             $result = "<h1 id=\"$wpaicg_heading_id\">" . $value . "</h1>" . $wpaicg_response;
@@ -546,7 +546,7 @@ if(!class_exists('\\WPAICG\\WPAICG_Generator')) {
                                 $wpaicg_toc_list_new[] = $wpaicg_toc_item;
                             }
                             $this->wpaicg_toc_list = $wpaicg_toc_list_new;
-                            $wpaicg_introduction_id = 'wpaicg-' . sanitize_title($this->introduction);
+                            $wpaicg_introduction_id = sanitize_title($this->introduction).'-wpaicgheading';
                             $wpaicg_response = '<' . $this->wpaicg_intro_title_tag . ' id="' . $wpaicg_introduction_id . '">' . $this->introduction . '</' . $this->wpaicg_intro_title_tag . '>' . $wpaicg_response;
                         }
                         $this->wpaicg_result['content'] = $wpaicg_response . $this->wpaicg_result['content'];
@@ -580,7 +580,7 @@ if(!class_exists('\\WPAICG\\WPAICG_Generator')) {
                     else{
                         $wpaicg_response = $wpaicg_request['data'];
                         $this->wpaicg_toc_list[] = $this->faq_heading;
-                        $wpaicg_faq_id = 'wpaicg-'.sanitize_title($this->faq_heading);
+                        $wpaicg_faq_id = sanitize_title($this->faq_heading).'-wpaicgheading';
                         $wpaicg_response = "<h2 id=\"$wpaicg_faq_id\">" . $this->faq_heading . "</h2>" . $wpaicg_response;
                         $this->wpaicg_result['content'] = $this->wpaicg_result['content'].$wpaicg_response;
                         $this->wpaicg_result['status'] = 'success';
@@ -614,7 +614,7 @@ if(!class_exists('\\WPAICG\\WPAICG_Generator')) {
                         $wpaicg_response = $wpaicg_request['data'];
                         if(!$this->hide_conclusion) {
                             $this->wpaicg_toc_list[] = $this->conclusion;
-                            $wpaicg_conclusion_id = 'wpaicg-' . sanitize_title($this->conclusion);
+                            $wpaicg_conclusion_id = sanitize_title($this->conclusion).'-wpaicgheading';
                             $wpaicg_response = '<' . $this->wpaicg_conclusion_title_tag . ' id="' . $wpaicg_conclusion_id . '">' . $this->conclusion . '</' . $this->wpaicg_conclusion_title_tag . '>' . $wpaicg_response;
                         }
                         $this->wpaicg_result['content'] = $this->wpaicg_result['content'].$wpaicg_response;
@@ -758,13 +758,13 @@ if(!class_exists('\\WPAICG\\WPAICG_Generator')) {
                     }
                 }
                 if($this->wpaicg_toc && is_array($this->wpaicg_toc_list) && count($this->wpaicg_toc_list)){
-                    $wpaicg_table_content = '<ul class="wpaicg_toc"><li>';
+                    $wpaicg_table_content = '<ul class="toc_post_list"><li>';
                     if($this->wpaicg_toc_title !== ''){
                         $wpaicg_table_content .= '<'.$this->wpaicg_toc_title_tag.'>'.$this->wpaicg_toc_title.'</'.$this->wpaicg_toc_title_tag.'>';
                     }
                     $wpaicg_table_content .= '<ul>';
                     foreach($this->wpaicg_toc_list as $wpaicg_toc_item){
-                        $wpaicg_toc_item_id = 'wpaicg-'.sanitize_title($wpaicg_toc_item);
+                        $wpaicg_toc_item_id = sanitize_title($wpaicg_toc_item).'-wpaicgheading';
                         $wpaicg_table_content .= '<li><a href="#'.$wpaicg_toc_item_id.'">'.$wpaicg_toc_item.'</a></li>';
                     }
                     $wpaicg_table_content .= '</ul>';
