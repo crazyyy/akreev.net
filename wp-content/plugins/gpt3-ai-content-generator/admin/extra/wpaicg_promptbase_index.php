@@ -54,7 +54,7 @@ foreach($wpaicg_meta_keys as $wpaicg_meta_key){
         ).") as  ".$wpaicg_meta_key;
 }
 //$sql .= " FROM ".$wpdb->posts." p WHERE p.post_type = 'wpaicg_prompt' AND p.post_status='publish' ORDER BY p.post_date DESC";
-$sql .= $wpdb->prepare(" FROM ".$wpdb->posts." p WHERE p.post_type = 'wpaicg_prompt' AND p.post_status='publish' ORDER BY p.post_date DESC");
+$sql .= " FROM ".$wpdb->posts." p WHERE p.post_type = 'wpaicg_prompt' AND p.post_status='publish' ORDER BY p.post_date DESC";
 $wpaicg_custom_prompts = $wpdb->get_results($sql,ARRAY_A);
 if($wpaicg_custom_prompts && is_array($wpaicg_custom_prompts) && count($wpaicg_custom_prompts)){
     foreach ($wpaicg_custom_prompts as $wpaicg_custom_prompt){
@@ -351,6 +351,7 @@ $allowed_tags = array_merge( $kses_defaults, $svg_args );
                     <strong class="wpaicg-d-block mb-5"><?php echo esc_html__('Engine','gpt3-ai-content-generator')?></strong>
                     <select name="engine" class="wpaicg-w-100 wpaicg-create-prompt-engine" required>
                         <option value="gpt-3.5-turbo">gpt-3.5-turbo</option>
+                        <option value="gpt-3.5-turbo-16k">gpt-3.5-turbo-16k</option>
                         <?php
                         foreach($wpaicg_models as $wpaicg_model){
                             echo '<option value="' . esc_html($wpaicg_model) . '">' . esc_html($wpaicg_model) . '</option>';
@@ -699,6 +700,7 @@ endif;
                         <strong><?php echo esc_html__('Engine','gpt3-ai-content-generator')?>: </strong>
                         <select name="engine">
                             <option value="gpt-3.5-turbo">gpt-3.5-turbo</option>
+                            <option value="gpt-3.5-turbo-16k">gpt-3.5-turbo-16k</option>
                             <?php
                             foreach($wpaicg_models as $wpaicg_model){
                                 if($wpaicg_model == 'text-davinci-003') {

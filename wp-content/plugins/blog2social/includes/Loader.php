@@ -1082,6 +1082,7 @@ class B2S_Loader {
             'VIDEO_DATA_VOLUME_LIMIT' => esc_html__('Your addon data volume has exceeded. You can order a new data volume for your license.', 'blog2social'),
             'BLOGPOST_NOT_PUBLISHED' => esc_html__('Your blog post was not available for the network at the time of publishing.', 'blog2social'),
             'EXISTS_RELAY' => esc_html__('You have already retweeted this post.', 'blog2social'),
+            'DEPRECATED_AUTH_NETWORK_2' => sprintf(__('Please follow the new instructions to reestablish the connection with your Twitter account. Please see the following <a target="_blank" href="%s">guide</a>.', 'blog2social'), esc_url(B2S_Tools::getSupportLink('deprecated_auth_network_2'))),
             'DEPRECATED_NETWORK_8' => esc_html__('This XING API is no longer supported by XING. Please connect your XING accounts with the new XING interface to reschedule your posts.', 'blog2social'),
             'IMAGE_FOR_CURATION' => esc_html__('An image is required to post on this social network.', 'blog2social'), // special for content curation V.5.0.0
             'LINK_FOR_CURATION' => esc_html__('To share social media posts on Reddit or Diigo, a link is required.', 'blog2social'), // special for content curation V.6.0.0

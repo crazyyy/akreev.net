@@ -2,7 +2,8 @@
 if ( ! defined( 'ABSPATH' ) ) exit;
 $flag = true;
 $errors = '';
-
+wp_enqueue_script('wp-color-picker');
+wp_enqueue_style('wp-color-picker');
 
 if ( isset( $_POST['wpaicg_submit'] ) ) {
     check_admin_referer('wpaicg_setting_save');
@@ -281,6 +282,11 @@ $wpaicg_custom_models = array_merge(array('text-davinci-003','text-curie-001','t
         }
     });
 </script>
+<style>
+    .wp-picker-holder{
+        position: absolute;
+    }
+</style>
 <div class="wpcgai_container">
     <div id="wpcgai_tabs">
         <form action="" method="post">

@@ -173,6 +173,7 @@ class EmailLogsTab {
         add_action( 'wp_mail_logging_email_logs_tab_display_after', [ $this, 'product_education_wp_mail_smtp' ] );
         add_filter( 'admin_body_class', [ $this, 'add_admin_body_class' ] );
         add_action( 'wp_mail_logging_admin_tab_content', [ $this, 'display_tab_content' ] );
+        add_filter( 'wp_mail_logging_jquery_confirm_localized_strings', [ $this, 'jquery_confirm_localized_string' ] );
     }
 
     /**
@@ -534,21 +535,30 @@ class EmailLogsTab {
      * Add admin body class for WP Mail Logging logs page.
      *
      * @since 1.11.0
+     * @deprecated 1.12.0 We are now adding this class in all the WP Mail Logging pages.
      *
-     * @param $classes Space-separated list of CSS classes.
+     * @param string $classes Space-separated list of CSS classes.
      *
      * @return string
      */
     public function add_admin_body_class( $classes ) {
 
-        global $wp_logging_list_page;
+        return $classes;
+    }
 
-        $current_screen = get_current_screen();
+    /**
+     * The localised strings for the jQuery confirm dialog.
+     *
+     * @since 1.12.0
+     *
+     * @param array $strings Localized strings.
+     *
+     * @return mixed
+     */
+    public function jquery_confirm_localized_string( $strings ) {
 
-        if ( empty( $current_screen ) || ! is_a( $current_screen, 'WP_Screen' ) || $current_screen->id !== $wp_logging_list_page ) {
-            return $classes;
-        }
+        $strings['delete_log_confirm_msg'] = esc_html__( 'Are you sure you want to delete this log?', 'wp-mail-logging' );
 
-        return $classes . ' wp-mail-logging-admin-page';
+        return $strings;
     }
 }

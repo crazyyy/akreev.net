@@ -63,7 +63,7 @@ $totalPage         = ceil($total / $items_per_page);
             if($wpaicg_log->source > 0){
                 $source = get_the_title($wpaicg_log->source);
             }
-            if($wpaicg_ai_model === 'gpt-3.5-turbo') {
+            if($wpaicg_ai_model === 'gpt-3.5-turbo' || $wpaicg_ai_model === 'gpt-3.5-turbo-16k') {
                 $wpaicg_estimated = 0.002 * $wpaicg_usage_token / 1000;
             }
             if($wpaicg_ai_model === 'gpt-4') {

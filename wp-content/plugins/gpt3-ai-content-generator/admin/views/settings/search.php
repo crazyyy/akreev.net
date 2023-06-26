@@ -104,3 +104,8 @@ $wpaicg_pinecone_environment = get_option('wpaicg_pinecone_environment','');
     endif;
     ?>
 </div>
+<script>
+    jQuery(document).ready(function ($){
+        $('.wpaicgchat_color').wpColorPicker();
+    })
+</script>

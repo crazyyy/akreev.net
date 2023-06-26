@@ -1,7 +1,7 @@
 <?php
 if ( ! defined( 'ABSPATH' ) ) exit;
 $wpaicg_custom_models = get_option('wpaicg_custom_models',[]);
-$wpaicg_custom_models = array_merge(array('text-davinci-003','gpt-3.5-turbo','text-curie-001','text-babbage-001','text-ada-001','gpt-4','gpt-4-32k'),$wpaicg_custom_models);
+$wpaicg_custom_models = array_merge(array('text-davinci-003','gpt-3.5-turbo','gpt-3.5-turbo-16k','text-curie-001','text-babbage-001','text-ada-001','gpt-4','gpt-4-32k'),$wpaicg_custom_models);
 $openai = new \WPAICG\WPAICG_OpenAI();
 $openai->openai();
 $wpaicg_parameters = array(
@@ -83,7 +83,7 @@ if(isset($selected_template) && !empty($selected_template)){
         </select>
     </div>
     <div id="gpt4-notice" class="wpaicg-form-field" style="display:none;">
-        <p style="color: red;"><?php echo sprintf(esc_html__('This works best with gpt-4 and gpt-3.5-turbo. Please note that GPT-4 is currently in limited beta, which means that access to the GPT-4 API from OpenAI is available only through a waiting list and is not open to everyone yet. You can sign up for the waiting list at %shere%s.','gpt3-ai-content-generator'),'<a href="https://openai.com/waitlist/gpt-4-api" target="_blank">','</a>')?></p>
+        <p style="color: red;"><?php echo sprintf(esc_html__('This works best with gpt-4 and gpt-3.5-turbo and gpt-3.5-turbo-16k. Please note that GPT-4 is currently in limited beta, which means that access to the GPT-4 API from OpenAI is available only through a waiting list and is not open to everyone yet. You can sign up for the waiting list at %shere%s.','gpt3-ai-content-generator'),'<a href="https://openai.com/waitlist/gpt-4-api" target="_blank">','</a>')?></p>
     </div>
     <?php
     foreach(array('temperature','max_tokens','top_p','best_of','frequency_penalty','presence_penalty') as $item){

@@ -351,7 +351,7 @@ if(!class_exists('\\WPAICG\\WPAICG_Chat')) {
                     $wpaicg_user_aware = isset($wpaicg_chat_widget['user_aware']) ? $wpaicg_chat_widget['user_aware'] : 'no';
                     $wpaicg_token_limit_message = isset($wpaicg_chat_widget['limited_message']) ? $wpaicg_chat_widget['limited_message'] : $wpaicg_token_limit_message;
                     $wpaicg_save_request = isset($wpaicg_chat_widget['log_request']) && $wpaicg_chat_widget['log_request'] ? true : false;
-                    if(is_user_logged_in() && $wpaicg_chat_widget['user_limited'] && $wpaicg_chat_widget['user_tokens'] > 0){
+                    if(is_user_logged_in() && isset($wpaicg_chat_widget['user_limited']) && $wpaicg_chat_widget['user_limited'] && $wpaicg_chat_widget['user_tokens'] > 0){
                         $wpaicg_limited_tokens = true;
                         $wpaicg_limited_tokens_number = $wpaicg_chat_widget['user_tokens'];
                     }
@@ -753,7 +753,7 @@ if(!class_exists('\\WPAICG\\WPAICG_Chat')) {
                         $prompt = $wpaicg_chat_greeting_message. "\n".$wpaicg_human_name.": " . $wpaicg_message . "\nAI: ";
                         $wpaicg_chatgpt_messages[] = array('role' => 'user','content' => $wpaicg_message);
                     }
-                    if($wpaicg_ai_model === 'gpt-3.5-turbo' || $wpaicg_ai_model == 'gpt-4' || $wpaicg_ai_model == 'gpt-4-32k'){
+                    if($wpaicg_ai_model === 'gpt-3.5-turbo' || $wpaicg_ai_model === 'gpt-3.5-turbo-16k' || $wpaicg_ai_model == 'gpt-4' || $wpaicg_ai_model == 'gpt-4-32k'){
                         $wpaicg_data_request = [
                             'model' => $wpaicg_ai_model,
                             'messages' => $wpaicg_chatgpt_messages,
@@ -794,7 +794,7 @@ if(!class_exists('\\WPAICG\\WPAICG_Chat')) {
                         //$wpaicg_result['chat_embedding'] = $wpaicg_chat_embedding;
                         //$wpaicg_result['chat_embedding_type'] = $wpaicg_chat_embedding_type;
                     } else {
-                        if($wpaicg_ai_model === 'gpt-3.5-turbo' || $wpaicg_ai_model == 'gpt-4-32k' || $wpaicg_ai_model == 'gpt-4'){
+                        if($wpaicg_ai_model === 'gpt-3.5-turbo' || $wpaicg_ai_model === 'gpt-3.5-turbo-16k' || $wpaicg_ai_model == 'gpt-4-32k' || $wpaicg_ai_model == 'gpt-4'){
                             $wpaicg_result['data'] = $complete->choices[0]->message->content;
                         }
                         else {

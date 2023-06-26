@@ -15,7 +15,7 @@
  * @wordpress-plugin
  * Plugin Name:       AI Power: Complete AI Pack - Powered by GPT-4
  * Description:       ChatGPT, Content Writer, Auto Content Writer, ChatBot, Image Generator, AutoGPT, ChatPDF, Twitter bot, Audio Converter, WooCommerce Product Writer, SEO optimizer, AI Training, Embeddings, Title Suggestions and hundreds of ready to use prompts and forms.
- * Version:           1.7.28
+ * Version:           1.7.35
  * Author:            Senol Sahin
  * Author URI:        https://aipower.org
  * License:           GPL-2.0+
@@ -26,7 +26,7 @@
 if ( !defined( 'WPINC' ) ) {
     die;
 }
-define( 'WP_AI_CONTENT_GENERATOR_VERSION', '1.7.28' );
+define( 'WP_AI_CONTENT_GENERATOR_VERSION', '1.7.35' );
 if ( !class_exists( '\\WPAICG\\WPAICG_OpenAI' ) ) {
     require_once __DIR__ . '/includes/class-wp-ai-openai.php';
 }
@@ -59,8 +59,9 @@ if ( function_exists( 'wpaicg_gacg_fs' ) ) {
                     'has_addons'     => false,
                     'has_paid_plans' => true,
                     'menu'           => array(
-                    'slug'    => 'wpaicg',
-                    'support' => false,
+                    'slug'       => 'wpaicg',
+                    'first-path' => 'admin.php?page=wpaicg_help',
+                    'support'    => false,
                 ),
                     'is_live'        => true,
                 ) );

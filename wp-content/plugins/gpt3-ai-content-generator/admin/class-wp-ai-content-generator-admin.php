@@ -137,20 +137,6 @@ class Wp_Ai_Content_Generator_Admin
 
     public function wpaicg_help_menu()
     {
-        add_submenu_page(
-            'wpaicg',
-            esc_html__('Help','gpt3-ai-content-generator'),
-            esc_html__('Help','gpt3-ai-content-generator'),
-            'manage_options',
-            'wpaicg_help',
-            array( $this, 'wpaicg_help_page' ),
-            99
-        );
-    }
-
-    public function wpaicg_help_page()
-    {
-        include WPAICG_PLUGIN_DIR.'admin/views/help/index.php';
     }
 
     public function wpaicg_api_settings()

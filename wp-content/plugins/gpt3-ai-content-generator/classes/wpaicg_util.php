@@ -14,6 +14,16 @@ if(!class_exists('\\WPAICG\\WPAICG_Util')) {
             }
             return self::$instance;
         }
+
+        public function __construct()
+        {
+            add_filter('sanitize_text_field',[$this,'modify_sanitize_text_field'],10,2);
+        }
+
+        public function modify_sanitize_text_field($filtered, $str)
+        {
+            return str_replace("\\",'',$filtered);
+        }
         public function seo_plugin_activated()
         {
             $activated = false;
@@ -43,7 +53,7 @@ if(!class_exists('\\WPAICG\\WPAICG_Util')) {
                     if (is_array($value)) {
                         $value = $this->sanitize_text_or_array_field($value);
                     } else {
-                        $value = sanitize_text_field(str_replace('%20','+',$value));
+                        $value = sanitize_text_field(str_replace("\\",'',str_replace('%20','+',$value)));
                     }
                 }
             }

@@ -431,6 +431,7 @@ $allowed_tags = array_merge( $kses_defaults, $svg_args );
                     <strong class="wpaicg-d-block mb-5"><?php echo esc_html__('Engine','gpt3-ai-content-generator')?></strong>
                     <select name="engine" class="wpaicg-w-100 wpaicg-create-template-engine" required>
                         <option value="gpt-3.5-turbo">gpt-3.5-turbo</option>
+                        <option value="gpt-3.5-turbo-16k">gpt-3.5-turbo-16k</option>
                         <?php
                         foreach($wpaicg_models as $wpaicg_model){
                             echo '<option value="' . esc_html($wpaicg_model) . '">' . esc_html($wpaicg_model) . '</option>';
@@ -794,6 +795,7 @@ endif;
                         <strong><?php echo esc_html__('Engine','gpt3-ai-content-generator')?>: </strong>
                         <select name="engine">
                             <option value="gpt-3.5-turbo">gpt-3.5-turbo</option>
+                            <option value="gpt-3.5-turbo-16k">gpt-3.5-turbo-16k</option>
                             <?php
                             foreach($wpaicg_models as $wpaicg_model){
                                 echo '<option value="' . esc_html($wpaicg_model) . '">' . esc_html($wpaicg_model) . '</option>';

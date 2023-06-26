@@ -58,7 +58,7 @@ $wpaicg_single_logs = new WP_Query($args);
             $post_categories = wp_get_post_categories( $wpaicg_post_id ,array('fields' => 'names'));
             $wpaicg_estimated = 0;
             if(!empty($wpaicg_usage_token)){
-                if($wpaicg_ai_model === 'gpt-3.5-turbo') {
+                if($wpaicg_ai_model === 'gpt-3.5-turbo' || $wpaicg_ai_model === 'gpt-3.5-turbo-16k') {
                     $wpaicg_estimated = 0.002 * $wpaicg_usage_token / 1000;
                 }
                 if($wpaicg_ai_model === 'gpt-4') {

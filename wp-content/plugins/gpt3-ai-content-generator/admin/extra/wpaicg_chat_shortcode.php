@@ -166,7 +166,7 @@ if($wpaicg_save_setting_success):
 endif;
 ?>
 <div class="wpaicg-alert mb-5">
-    <p><?php echo sprintf(esc_html__('Include the shortcode %s in the desired location on your site.','gpt3-ai-content-generator'),'<code>[wpaicg_chatgpt]</code>')?><?php echo sprintf(esc_html__('Learn how you can train the chat bot with your content','gpt3-ai-content-generator'),'<b>Widget</b>')?> <u><b><a href="https://docs.aipower.org/docs/ChatGPT/chatgpt-wordpress" target="_blank"><?php echo esc_html__('here','gpt3-ai-content-generator')?></a></u></b>.</p>
+    <p><?php echo sprintf(esc_html__('Include the shortcode %s in the desired location on your site. ','gpt3-ai-content-generator'),'<code>[wpaicg_chatgpt]</code>')?><?php echo sprintf(esc_html__('Learn how you can train the chat bot with your content','gpt3-ai-content-generator'),'<b>Widget</b>')?> <u><b><a href="https://docs.aipower.org/docs/ChatGPT/chatgpt-wordpress" target="_blank"><?php echo esc_html__('here','gpt3-ai-content-generator')?></a></u></b>.</p>
 </div>
 <div class="wpaicg-grid-three">
     <div class="wpaicg-grid-2 wpaicg-chat-shortcode-preview">
@@ -525,6 +525,9 @@ endif;
                             <?php
                             if(!in_array('gpt-3.5-turbo',$wpaicg_custom_models)) {
                                 array_unshift($wpaicg_custom_models, 'gpt-3.5-turbo');
+                            }
+                            if(!in_array('gpt-3.5-turbo-16k',$wpaicg_custom_models)) {
+                                array_unshift($wpaicg_custom_models, 'gpt-3.5-turbo-16k');
                             }
                             if(!in_array('gpt-4',$wpaicg_custom_models)) {
                                 $wpaicg_custom_models[] = 'gpt-4';

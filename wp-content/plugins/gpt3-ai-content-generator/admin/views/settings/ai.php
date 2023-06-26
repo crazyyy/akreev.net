@@ -13,6 +13,7 @@ if ( ! defined( 'ABSPATH' ) ) exit;
                 echo '<option'.($wpaicg_ai_model == $wpaicg_custom_model ? ' selected':'').' value="'.esc_html($wpaicg_custom_model).'">'.esc_html($wpaicg_custom_model).'</option>';
                 if($wpaicg_custom_model == 'text-davinci-003'){
                     echo '<option'.($wpaicg_ai_model == 'gpt-3.5-turbo' ? ' selected':'').' value="gpt-3.5-turbo">gpt-3.5-turbo</option>';
+                    echo '<option'.($wpaicg_ai_model == 'gpt-3.5-turbo-16k' ? ' selected':'').' value="gpt-3.5-turbo-16k">gpt-3.5-turbo-16k</option>';
                 }
             }
             echo '<option'.($wpaicg_ai_model == 'gpt-4' ? ' selected':'').' value="gpt-4">gpt-4 ('.esc_html__('Limited Beta','gpt3-ai-content-generator').')</option>';
@@ -28,7 +29,7 @@ if ( ! defined( 'ABSPATH' ) ) exit;
     <div class="wpcgai_form_row wpaicg_beta_notice" style="<?php echo $wpaicg_ai_model == 'gpt-4-32k' || $wpaicg_ai_model == 'gpt-4' ? '' : 'display:none'?>">
         <p><?php echo sprintf(esc_html__('Please note that GPT-4 is currently in limited beta, which means that access to the GPT-4 API from OpenAI is available only through a waiting list and is not open to everyone yet. You can sign up for the waiting list at %shere%s.','gpt3-ai-content-generator'),'<a href="https://openai.com/waitlist/gpt-4-api" target="_blank">','</a>')?></p>
     </div>
-    <div class="wpcgai_form_row wpaicg_sleep_time" style="<?php echo $wpaicg_ai_model == 'gpt-3.5-turbo' || $wpaicg_ai_model == 'gpt-4-32k' || $wpaicg_ai_model == 'gpt-4' ? '' : 'display:none'?>">
+    <div class="wpcgai_form_row wpaicg_sleep_time" style="<?php echo $wpaicg_ai_model == 'gpt-3.5-turbo' || $wpaicg_ai_model == 'gpt-3.5-turbo-16k' || $wpaicg_ai_model == 'gpt-4-32k' || $wpaicg_ai_model == 'gpt-4' ? '' : 'display:none'?>">
         <label class="wpcgai_label"><?php echo esc_html__('Rate Limit Buffer (in Seconds)','gpt3-ai-content-generator')?>:</label>
         <select class="regular-text"  name="wpaicg_sleep_time" >
             <?php
@@ -110,7 +111,7 @@ if ( ! defined( 'ABSPATH' ) ) exit;
                 }
             })
         $('#wpaicg_ai_model').on('change', function (){
-            if($(this).val() === 'gpt-3.5-turbo' || $(this).val() === 'gpt-4' || $(this).val() === 'gpt-4-32k'){
+            if($(this).val() === 'gpt-3.5-turbo' || $(this).val() === 'gpt-3.5-turbo-16k' || $(this).val() === 'gpt-4' || $(this).val() === 'gpt-4-32k'){
                 $('.wpaicg_sleep_time').show();
             }
             else{
