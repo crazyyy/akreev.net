@@ -691,6 +691,9 @@ if ( !empty($errors)) {
                             if(!in_array('gpt-3.5-turbo',$wpaicg_custom_models)) {
                                 array_unshift($wpaicg_custom_models, 'gpt-3.5-turbo');
                             }
+                            if(!in_array('gpt-3.5-turbo-16k',$wpaicg_custom_models)) {
+                                array_unshift($wpaicg_custom_models, 'gpt-3.5-turbo-16k');
+                            }
                             if(!in_array('gpt-4',$wpaicg_custom_models)) {
                                 $wpaicg_custom_models[] = 'gpt-4';
                             }

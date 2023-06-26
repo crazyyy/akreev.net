@@ -525,6 +525,7 @@ if(isset($atts) && is_array($atts) && isset($atts['id']) && !empty($atts['id']))
                                     <strong><?php echo esc_html__('Engine','gpt3-ai-content-generator')?>: </strong>
                                     <select name="engine">
                                         <option<?php echo $wpaicg_engine == 'gpt-3.5-turbo' ? ' selected':''?> value="gpt-3.5-turbo">gpt-3.5-turbo</option>
+                                        <option<?php echo $wpaicg_engine == 'gpt-3.5-turbo-16k' ? ' selected':''?> value="gpt-3.5-turbo-16k">gpt-3.5-turbo-16k</option>
                                         <?php
                                         foreach($wpaicg_models as $wpaicg_model){
                                             echo '<option'.($wpaicg_model == $wpaicg_engine ? ' selected':'').' value="' . esc_html($wpaicg_model) . '">' . esc_html($wpaicg_model) . '</option>';

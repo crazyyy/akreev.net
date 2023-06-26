@@ -460,7 +460,7 @@ if ( !class_exists( '\\WPAICG\\WPAICG_Content' ) ) {
                         $wpaicg_cost = 0;
                         $wpaicg_ai_model = get_post_meta($wpaicg_bulk->ID,'wpaicg_ai_model',true);
                         if(!empty($wpaicg_generator_token)) {
-                            if ($wpaicg_ai_model == 'gpt-3.5-turbo') {
+                            if ($wpaicg_ai_model == 'gpt-3.5-turbo' || $wpaicg_ai_model == 'gpt-3.5-turbo-16k') {
                                 $wpaicg_cost = '$' . esc_html(number_format($wpaicg_generator_token * 0.002 / 1000, 5));
                             }
                             elseif ($wpaicg_ai_model == 'gpt-4') {
@@ -624,7 +624,8 @@ if ( !class_exists( '\\WPAICG\\WPAICG_Content' ) ) {
                                 }
                                 // Fix empty image
                                 $wpaicg_content = str_replace("__WPAICG_IMAGE__", '', $wpaicg_content);
-
+                                // change heading id
+                                $wpaicg_content = str_replace('wpaicgheading',wpaicg_util_core()->wpaicg_random(),$wpaicg_content);
                                 $wpaicg_post_data = array(
                                     'post_title'   => $wpaicg_single->post_title,
                                     'post_author'  => $wpaicg_single->post_author,

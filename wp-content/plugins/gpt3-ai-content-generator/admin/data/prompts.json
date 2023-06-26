@@ -152,9 +152,6 @@
     "title": "Networking",
     "description": "Generates a personalized message for connecting with a potential professional contact",
     "category": "generation,conversation,linkedin,social-media",
-    "stop": [
-      "\n"
-    ],
     "prompt": "Hello, my name is John Smith and I am a software engineer. I came across your profile and was impressed by your experience in the tech industry. I would love to connect and learn more about your work. Can you please tell me more about your experience and current projects?\n\n",
     "response": "Hi John, thanks for reaching out. I am currently a Senior Engineer at XYZ Company, where I lead the development of our flagship product. I have over 8 years of experience in software engineering and am particularly interested in exploring new technologies and techniques to deliver better products. I would be happy to connect and discuss more about our work in the industry."
   },
@@ -165,9 +162,6 @@
     "title": "Career Development",
     "description": "Provides advice for advancing your career",
     "category": "coaching,generation,linkedin",
-    "stop": [
-      "\n"
-    ],
     "prompt": "I have been working as a software developer for 5 years now and I am looking to advance my career. Can you please provide me with some advice on how to do this?\n\n",
     "response": "There are many ways to advance your career as a software developer. Some things you can do include:\n-Continuing to learn and improve your skills through online resources, attending conferences and networking with other professionals in your field.\n-Developing a strong portfolio of your work to showcase your abilities.\n-Taking on leadership roles or mentoring others in your team.\n-Exploring new opportunities and industries that align with your interests and goals."
   },
@@ -464,9 +458,6 @@
     "title": "Question & Answer",
     "description": "Answer questions based on existing knowledge.",
     "category": "answers,generation,conversation",
-    "stop": [
-      "\n"
-    ],
     "prompt": "I am a highly intelligent question answering bot. If you ask me a question that is rooted in truth, I will give you the answer. If you ask me a question that is nonsense, trickery, or has no clear answer, I will respond with \"Unknown\".\n\nQ: What is human life expectancy in the United States?\nA:",
     "response": "Human life expectancy in the United States is 78 years."
   },
@@ -534,9 +525,6 @@
     "category": "transformation,generation",
     "max_tokens": 60,
     "temperature": 0.8,
-    "stop": [
-      "\n"
-    ],
     "prompt": "Convert movie titles into emoji.\n\nBack to the Future: 👨👴🚗🕒 \nBatman: 🤵🦇 \nTransformers: 🚗🤖 \nStar Wars:",
     "response": "⭐️⚔"
   },
@@ -634,9 +622,6 @@
     "temperature": 0.5,
     "frequency_penalty": 0.52,
     "presence_penalty": 0.5,
-    "stop": [
-      "11."
-    ],
     "prompt": "List 10 science fiction books:",
     "response": "1. 1984 by George Orwell\n2. The War of the Worlds by H.G. Wells\n3. Dune by Frank Herbert\n4. Frankenstein by Mary Shelley\n5. Ender's Game by Orson Scott Card\n6. The Hitchhiker's Guide to the Galaxy by Douglas Adams\n7. The Martian Chronicles by Ray Bradbury\n8. Brave New World by Aldous Huxley\n9. Do Androids Dream of Electric Sheep? By Philip K Dick\n10. I, Robot by Isaac Asimov"
   },
@@ -660,9 +645,6 @@
     "description": "A simple prompt for extracting airport codes from text.",
     "category": "transformation,generation",
     "max_tokens": 60,
-    "stop": [
-      "\n"
-    ],
     "prompt": "Extract the airport codes from this text:\n\nText: \"I want to fly from Los Angeles to Miami.\"\nAirport codes: LAX, MIA\n\nText: \"I want to fly from Orlando to Boston\"\nAirport codes:",
     "response": "MCO, BOS"
   },

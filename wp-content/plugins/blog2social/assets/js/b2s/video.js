@@ -870,7 +870,7 @@ jQuery(document).on('drop', '.b2s-video-upload-file-area', function (e) {
     jQuery('.b2s-video-upload-success').hide();
     var fd = new FormData();
     jQuery('.b2s-video-upload-file-name').html(file[0].name);
-    jQuery('.b2s-video-upload-drag-drop').hide();
+    jQuery('.b2s-video-upload-file-area').hide();
     jQuery('.b2s-video-upload-progress-area').show();
     fd.append('file', file[0]);
     fd.append('b2s_security_nonce', jQuery('#b2s_security_nonce').val());
@@ -891,7 +891,7 @@ jQuery(document).on('change', '#b2s-video-upload-file', function () {
     fd.append('file', file);
     fd.append('b2s_security_nonce', jQuery('#b2s_security_nonce').val());
     jQuery('.b2s-video-upload-file-name').html(file.name);
-    jQuery('.b2s-video-upload-drag-drop').hide();
+    jQuery('.b2s-video-upload-file-area').hide();
     jQuery('.b2s-video-upload-progress-area').show();
     uploadVideo(fd);
 });
@@ -917,7 +917,7 @@ function uploadVideo(formdata) {
             return xhr;
         },
         success: function (response) {
-            jQuery('.b2s-video-upload-drag-drop').show();
+            jQuery('.b2s-video-upload-file-area').show();
             jQuery('.b2s-video-upload-progress-area').hide();
             if (response.result == false) {
                 if (response.error == 'nonce') {

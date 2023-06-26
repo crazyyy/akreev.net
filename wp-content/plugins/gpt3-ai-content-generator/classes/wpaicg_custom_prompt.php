@@ -77,7 +77,7 @@ if ( !class_exists( '\\WPAICG\\WPAICG_Custom_Prompt' ) ) {
                             }
                             $heading_id = sanitize_title($match);
                             $wpaicg_toc_lists[] = $match;
-                            $generated_content = str_replace('>'.$match.'<',' id="wpaicg-'.$heading_id.'">'.$match.'<', $generated_content);
+                            $generated_content = str_replace('>'.$match.'<',' id="'.$heading_id.'-wpaicgheading">'.$match.'<', $generated_content);
                         }
                     }
                     $wpaicg_result['wpaicg_heading_tag_modify'] = $first_heading_tag;
@@ -153,6 +153,7 @@ if ( !class_exists( '\\WPAICG\\WPAICG_Custom_Prompt' ) ) {
                             $result = $wpaicg_generator->wpaicg_request($wpaicg_generator->wpaicg_opts);
                         }
                         if($result['status'] == 'success'){
+                            $wpaicg_random_id = wpaicg_util_core()->wpaicg_random();
                             $generated_content = $result['data'];
                             $wpaicg_generator_tokens += $result['tokens'];
                             $wpaicg_generator_text_length += $result['length'];
@@ -164,9 +165,9 @@ if ( !class_exists( '\\WPAICG\\WPAICG_Custom_Prompt' ) ) {
                                     if($key == 0){
                                         $first_heading_tag = str_replace(array('<','>'),'',substr($matches[0][0],0,3));
                                     }
-                                    $heading_id = sanitize_title($match);
+                                    $heading_id = sanitize_title($match).'-'.$wpaicg_random_id;
                                     $wpaicg_toc_lists[] = $match;
-                                    $generated_content = str_replace('>'.$match.'<',' id="wpaicg-'.$heading_id.'">'.$match.'<', $generated_content);
+                                    $generated_content = str_replace('>'.$match.'<',' id="'.$heading_id.'">'.$match.'<', $generated_content);
                                 }
                             }
                             $wpaicg_generator->wpaicg_result['content'] = $generated_content;
@@ -261,15 +262,16 @@ if ( !class_exists( '\\WPAICG\\WPAICG_Custom_Prompt' ) ) {
                                 }
                                 // Fix empty image
                                 $wpaicg_content = str_replace("__WPAICG_IMAGE__", '', $wpaicg_content);
+                                $wpaicg_content = str_replace("wpaicgheading", $wpaicg_random_id, $wpaicg_content);
                                 /*Add TOC*/
                                 if($wpaicg_generator->wpaicg_toc && count($wpaicg_toc_lists)){
-                                    $wpaicg_table_content = '<ul class="wpaicg_toc"><li>';
+                                    $wpaicg_table_content = '<ul class="toc_post_list"><li>';
                                     if($wpaicg_generator->wpaicg_toc_title !== ''){
                                         $wpaicg_table_content .= '<'.$wpaicg_generator->wpaicg_toc_title_tag.'>'.$wpaicg_generator->wpaicg_toc_title.'</'.$wpaicg_generator->wpaicg_toc_title_tag.'>';
                                     }
                                     $wpaicg_table_content .= '<ul>';
                                     foreach($wpaicg_toc_lists as $wpaicg_toc_item){
-                                        $wpaicg_toc_item_id = 'wpaicg-'.sanitize_title($wpaicg_toc_item);
+                                        $wpaicg_toc_item_id = sanitize_title($wpaicg_toc_item).'-'.$wpaicg_random_id;
                                         $wpaicg_table_content .= '<li><a href="#'.$wpaicg_toc_item_id.'">'.$wpaicg_toc_item.'</a></li>';
                                     }
                                     $wpaicg_table_content .= '</ul>';

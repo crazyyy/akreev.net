@@ -106,7 +106,7 @@ if ( !class_exists( '\\WPAICG\\WPAICG_WooCommerce' ) ) {
                 if($step === 'tags'){
                     $prompt = sprintf($wpaicg_woo_custom_prompt_keywords,$title);
                 }
-                if($wpaicg_ai_model == 'gpt-3.5-turbo' || $wpaicg_ai_model == 'gpt-4' || $wpaicg_ai_model == 'gpt-4-32k'){
+                if($wpaicg_ai_model == 'gpt-3.5-turbo' || $wpaicg_ai_model == 'gpt-3.5-turbo-16k' || $wpaicg_ai_model == 'gpt-4' || $wpaicg_ai_model == 'gpt-4-32k'){
                     $prompt = $wpaicg_languages['fixed_prompt_turbo'].' '.$prompt;
                 }
                 $opts = array(
@@ -667,7 +667,7 @@ if ( !class_exists( '\\WPAICG\\WPAICG_WooCommerce' ) ) {
                 $myprompt = isset($wpaicg_languages[$wpaicg_language_key]) && !empty($wpaicg_languages[$wpaicg_language_key]) ? sprintf($wpaicg_languages[$wpaicg_language_key], $wpaicg_title) : $wpaicg_title;
                 $wpaicg_result['prompt'] = $myprompt;
                 $wpaicg_ai_model = get_option('wpaicg_ai_model','gpt-3.5-turbo');
-                if($wpaicg_ai_model == 'gpt-3.5-turbo' || $wpaicg_ai_model == 'gpt-4' || $wpaicg_ai_model == 'gpt-4-32k'){
+                if($wpaicg_ai_model == 'gpt-3.5-turbo' || $wpaicg_ai_model == 'gpt-3.5-turbo-16k' || $wpaicg_ai_model == 'gpt-4' || $wpaicg_ai_model == 'gpt-4-32k'){
                     $myprompt = $wpaicg_languages['fixed_prompt_turbo'].' '.$myprompt;
                 }
                 $wpaicg_generator = WPAICG_Generator::get_instance();

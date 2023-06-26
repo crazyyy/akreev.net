@@ -402,7 +402,8 @@ if(!class_exists('\\WPAICG\\WPAICG_Embeddings')) {
                 $id = sanitize_text_field($_POST['id']);
                 $wpaicg_pinecone_api = get_option('wpaicg_pinecone_api','');
                 $wpaicg_pinecone_environment = get_option('wpaicg_pinecone_environment','');
-                if(empty($wpaicg_pinecone_api) || empty($wpaicg_pinecone_environment)){
+                $wpaicg_pinecone_sv = get_option('wpaicg_pinecone_sv','');
+                if(empty($wpaicg_pinecone_api) || empty($wpaicg_pinecone_environment) || empty($wpaicg_pinecone_sv) ){
                     $wpaicg_result['msg'] = esc_html__('Missing Pinecone API Settings','gpt3-ai-content-generator');
                 }
                 else {
@@ -410,7 +411,7 @@ if(!class_exists('\\WPAICG\\WPAICG_Embeddings')) {
                         'Content-Type' => 'application/json',
                         'Api-Key' => $wpaicg_pinecone_api
                     );
-                    $response = wp_remote_get('https://'.$wpaicg_pinecone_environment.'/databases',array(
+                    $response = wp_remote_get('https://controller.'.$wpaicg_pinecone_sv.'.pinecone.io/databases',array(
                         'headers' => $headers
                     ));
                     if(is_wp_error($response)){
@@ -844,7 +845,8 @@ if(!class_exists('\\WPAICG\\WPAICG_Embeddings')) {
             if($openai){
                 $wpaicg_pinecone_api = get_option('wpaicg_pinecone_api','');
                 $wpaicg_pinecone_environment = get_option('wpaicg_pinecone_environment','');
-                if(empty($wpaicg_pinecone_api) || empty($wpaicg_pinecone_environment)){
+                $wpaicg_pinecone_sv = get_option('wpaicg_pinecone_sv','');
+                if(empty($wpaicg_pinecone_api) || empty($wpaicg_pinecone_environment) || empty($wpaicg_pinecone_sv)){
                     $wpaicg_result['msg'] = esc_html__('Missing Pinecone API Settings','gpt3-ai-content-generator');
                 }
                 else{
@@ -853,7 +855,7 @@ if(!class_exists('\\WPAICG\\WPAICG_Embeddings')) {
                         'Api-Key' => $wpaicg_pinecone_api
                     );
                     /*Check Pinecone API*/
-                    $response = wp_remote_get('https://'.$wpaicg_pinecone_environment.'/databases',array(
+                    $response = wp_remote_get('https://controller.'.$wpaicg_pinecone_sv.'.pinecone.io/databases',array(
                         'headers' => $headers
                     ));
                     if(is_wp_error($response)){
@@ -931,7 +933,7 @@ if(!class_exists('\\WPAICG\\WPAICG_Embeddings')) {
                                     ));
                                 }
                                 else{
-                                    $body = json_decode($response['body'],true);
+                                    $body = json_decode($response['body'],true); 
                                     if($body){
                                         if(isset($body['code']) && isset($body['message'])){
                                             $wpaicg_result['msg'] = strip_tags($body['message']);

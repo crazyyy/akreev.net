@@ -238,7 +238,7 @@ function wpaicgChatInit() {
                     var messagesDownload = messages.join("\n");
                     var element = document.createElement('a');
                     element.setAttribute('href', 'data:text/plain;charset=utf-8,' + encodeURIComponent(messagesDownload));
-                    element.setAttribute('download', 'gpt-ai-power-chat.txt');
+                    element.setAttribute('download', 'chat.txt');
 
                     element.style.display = 'none';
                     document.body.appendChild(element);

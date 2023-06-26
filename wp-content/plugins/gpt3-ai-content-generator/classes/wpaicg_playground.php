@@ -67,7 +67,7 @@ if(!class_exists('\\WPAICG\\WPAICG_Playground')) {
                 $wpaicg_result['text'] = str_replace("\\",'',$wpaicg_result['text']);
                 $wpaicg_result['tokens'] = $complete['tokens'];
                 $wpaicg_result['words'] = $complete['length'];
-                if($model === 'gpt-3.5-turbo') {
+                if($model === 'gpt-3.5-turbo' || $model === 'gpt-3.5-turbo-16k') {
                     $wpaicg_estimated = 0.002 * $wpaicg_result['tokens'] / 1000;
                 }
                 if($model === 'gpt-4') {
@@ -259,7 +259,7 @@ if(!class_exists('\\WPAICG\\WPAICG_Playground')) {
                             }
 
                             if (!$has_limited) {
-                                if ($wpaicg_args['model'] == 'gpt-3.5-turbo' || $wpaicg_args['model'] == 'gpt-4' || $wpaicg_args['model'] == 'gpt-4-32k') {
+                                if ($wpaicg_args['model'] == 'gpt-3.5-turbo' || $wpaicg_args['model'] == 'gpt-3.5-turbo-16k' || $wpaicg_args['model'] == 'gpt-4' || $wpaicg_args['model'] == 'gpt-4-32k') {
                                     unset($wpaicg_args['best_of']);
                                     $wpaicg_args['messages'] = array(
                                         array('role' => 'user', 'content' => $wpaicg_args['prompt'])
@@ -267,10 +267,36 @@ if(!class_exists('\\WPAICG\\WPAICG_Playground')) {
                                     unset($wpaicg_args['prompt']);
                                     try {
                                         $openai->chat($wpaicg_args, function ($curl_info, $data) {
-                                            echo $data;
-                                            ob_flush();
-                                            flush();
-                                            return strlen($data);
+                                            $response = json_decode($data,true);
+                                            if(isset($response['error']) && !empty($response['error'])){
+                                                $message = isset($response['error']['message']) && !empty($response['error']['message']) ? $response['error']['message'] : '';
+                                                if(empty($message) && isset($response['error']['code']) && $response['error']['code'] == 'invalid_api_key'){
+                                                    $message = "Incorrect API key provided. You can find your API key at https://platform.openai.com/account/api-keys.";
+                                                }
+                                                $words = explode(' ', $message);
+                                                $words[count($words) + 1] = '[DONE]';
+                                                foreach ($words as $key => $word) {
+                                                    echo "event: message\n";
+                                                    if ($key == 0) {
+                                                        echo 'data: {"choices":[{"delta":{"content":"' . $word . '"}}]}';
+                                                    } else {
+                                                        if ($word == '[DONE]') {
+                                                            echo 'data: [DONE]';
+                                                        } else {
+                                                            echo 'data: {"choices":[{"delta":{"content":" ' . $word . '"}}]}';
+                                                        }
+                                                    }
+                                                    echo "\n\n";
+                                                    ob_end_flush();
+                                                    flush();
+                                                }
+                                            }
+                                            else {
+                                                echo $data;
+                                                ob_flush();
+                                                flush();
+                                                return strlen($data);
+                                            }
                                         });
                                     }
                                     catch (\Exception $exception){
@@ -280,10 +306,36 @@ if(!class_exists('\\WPAICG\\WPAICG_Playground')) {
                                 } else {
                                     try {
                                         $openai->completion($wpaicg_args, function ($curl_info, $data) {
-                                            echo _wp_specialchars($data, ENT_NOQUOTES, 'UTF-8', true);
-                                            ob_flush();
-                                            flush();
-                                            return strlen($data);
+                                            $response = json_decode($data,true);
+                                            if(isset($response['error']) && !empty($response['error'])){
+                                                $message = isset($response['error']['message']) && !empty($response['error']['message']) ? $response['error']['message'] : '';
+                                                if(empty($message) && isset($response['error']['code']) && $response['error']['code'] == 'invalid_api_key'){
+                                                    $message = "Incorrect API key provided. You can find your API key at https://platform.openai.com/account/api-keys.";
+                                                }
+                                                $words = explode(' ', $message);
+                                                $words[count($words) + 1] = '[DONE]';
+                                                foreach ($words as $key => $word) {
+                                                    echo "event: message\n";
+                                                    if ($key == 0) {
+                                                        echo 'data: {"choices":[{"delta":{"content":"' . $word . '"}}]}';
+                                                    } else {
+                                                        if ($word == '[DONE]') {
+                                                            echo 'data: [DONE]';
+                                                        } else {
+                                                            echo 'data: {"choices":[{"delta":{"content":" ' . $word . '"}}]}';
+                                                        }
+                                                    }
+                                                    echo "\n\n";
+                                                    ob_end_flush();
+                                                    flush();
+                                                }
+                                            }
+                                            else {
+                                                echo _wp_specialchars($data, ENT_NOQUOTES, 'UTF-8', true);
+                                                ob_flush();
+                                                flush();
+                                                return strlen($data);
+                                            }
                                         });
                                     }
                                     catch (\Exception $exception){

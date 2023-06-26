@@ -1,13 +1,11 @@
-#tinymce .wpaicg_toc h2{
+#tinymce .toc_post_list h2{
     margin-bottom: 20px;
 }
-#tinymce .wpaicg_toc{
+#tinymce .toc_post_list{
     list-style: none;
     margin: 0 0 30px 0!important;
     padding: 0;
 }
-#tinymce .wpaicg_toc li{}
-#tinymce .wpaicg_toc li ul{
+#tinymce .toc_post_list li ul{
     list-style: decimal;
 }
-#tinymce .wpaicg_toc a{}

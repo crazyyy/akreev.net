@@ -110,6 +110,7 @@ class UpdraftPlus {
 			'UpdraftPlus_Storage_Methods_Interface' => 'includes/class-storage-methods-interface.php',
 			'UpdraftPlus_Job_Scheduler' => 'includes/class-job-scheduler.php',
 			'UpdraftPlus_HTTP_Error_Descriptions' => 'includes/class-http-error-descriptions.php',
+			'UpdraftPlus_Database_Utility' => 'includes/class-database-utility.php'
 		);
 		
 		foreach ($load_classes as $class => $relative_path) {

@@ -95,7 +95,7 @@ if(!class_exists('\\WPAICG\\WPAICG_Regenerate_Title')) {
                     $wpaicg_ai_model = get_option('wpaicg_ai_model','gpt-3.5-turbo');
                     $wpaicg_generator = WPAICG_Generator::get_instance();
                     $wpaicg_generator->openai($open_ai);
-                    if($wpaicg_ai_model == 'gpt-3.5-turbo' || $wpaicg_ai_model == 'gpt-4' || $wpaicg_ai_model == 'gpt-4-32k'){
+                    if($wpaicg_ai_model == 'gpt-3.5-turbo' || $wpaicg_ai_model == 'gpt-3.5-turbo-16k' || $wpaicg_ai_model == 'gpt-4' || $wpaicg_ai_model == 'gpt-4-32k'){
                         $prompt = $wpaicg_languages['fixed_prompt_turbo'].' '.$prompt;
                     }
                     $complete = $wpaicg_generator->wpaicg_request( [

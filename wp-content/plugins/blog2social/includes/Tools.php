@@ -155,6 +155,10 @@ class B2S_Tools {
         if ($type == 'network_tos_faq_032018') {
             return (($lang == 'en') ? 'https://www.blog2social.com/en/faq/content/3/127/en/twitter-terms-of-service-update-february-2018-common-questions.html' : 'https://www.blog2social.com/de/faq/content/3/127/de/twitter-aenderung-der-allgemeinen-geschaeftsbedingungen-update-februar-2018-haeufig-gestellte-fragen.html');
         }
+		//Twitter own app since V7.2.0
+        if($type == 'deprecated_auth_network_2'){
+            return 'https://www.blog2social.com/en/faq/index.php?solution_id=1209';
+        }
         //BTN: Learn more about this Twitter
         if ($type == 'network_tos_blog_032018') {
             return (($lang == 'en') ? 'https://www.blog2social.com/en/blog/how-new-twitter-rules-impact-your-social-media-marketing' : 'https://www.blog2social.com/de/blog/neue-twitter-regeln-social-media-marketing');

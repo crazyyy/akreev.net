@@ -1490,7 +1490,7 @@ if ( \WPAICG\wpaicg_util_core()->wpaicg_is_pro() ) {
 echo  esc_html__( 'You can add your language to the prompt. Just replace "in English" with your language.', 'gpt3-ai-content-generator' ) ;
 ?></li>
                         <li><?php 
-echo  sprintf( esc_html__( 'This works best with gpt-4 and gpt-3.5-turbo. Please note that GPT-4 is currently in limited beta, which means that access to the GPT-4 API from OpenAI is available only through a waiting list and is not open to everyone yet. You can sign up for the waiting list at %shere%s.', 'gpt3-ai-content-generator' ), '<a href="https://openai.com/waitlist/gpt-4-api" target="_blank">', '</a>' ) ;
+echo  sprintf( esc_html__( 'This works best with gpt-4 and gpt-3.5-turbo and gpt-3.5-turbo-16k. Please note that GPT-4 is currently in limited beta, which means that access to the GPT-4 API from OpenAI is available only through a waiting list and is not open to everyone yet. You can sign up for the waiting list at %shere%s.', 'gpt3-ai-content-generator' ), '<a href="https://openai.com/waitlist/gpt-4-api" target="_blank">', '</a>' ) ;
 ?></li>
                         <li><?php 
 echo  esc_html__( 'Please note that if custom prompt is enabled the plugin will bypass language, style, tone etc settings. You need to specify them in your prompt.', 'gpt3-ai-content-generator' ) ;

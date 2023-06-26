@@ -14,6 +14,16 @@ if(!class_exists('\\WPAICG\\WPAICG_Util')) {
             }
             return self::$instance;
         }
+
+        public function __construct()
+        {
+            add_filter('sanitize_text_field',[$this,'modify_sanitize_text_field'],10,2);
+        }
+
+        public function modify_sanitize_text_field($filtered, $str)
+        {
+            return str_replace("\\",'',$filtered);
+        }
         public function seo_plugin_activated()
         {
             $activated = false;
@@ -27,6 +37,16 @@ if(!class_exists('\\WPAICG\\WPAICG_Util')) {
                 $activated = 'rank_math_description';
             }
             return $activated;
+        }
+
+        public function wpaicg_random($length = 10) {
+            $characters = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
+            $charactersLength = strlen($characters);
+            $randomString = '';
+            for ($i = 0; $i < $length; $i++) {
+                $randomString .= $characters[rand(0, $charactersLength - 1)];
+            }
+            return $randomString;
         }
 
         public function wpaicg_is_pro()
@@ -43,7 +63,7 @@ if(!class_exists('\\WPAICG\\WPAICG_Util')) {
                     if (is_array($value)) {
                         $value = $this->sanitize_text_or_array_field($value);
                     } else {
-                        $value = sanitize_text_field(str_replace('%20','+',$value));
+                        $value = sanitize_text_field(str_replace("\\",'',str_replace('%20','+',$value)));
                     }
                 }
             }

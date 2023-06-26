@@ -6,6 +6,12 @@ CacheLookup on
 RewriteRule .* - [E=Cache-Control:no-autoflush]
 RewriteRule \.litespeed_conf\.dat - [F,L]
 
+### marker CRAWLER start ###
+RewriteCond %{REQUEST_URI} /wp-admin/admin-ajax\.php
+RewriteCond %{QUERY_STRING} action=async_litespeed
+RewriteRule .* - [E=noabort:1]
+### marker CRAWLER end ###
+
 ### marker MOBILE start ###
 RewriteCond %{HTTP_USER_AGENT} Mobile|Android|Silk|Kindle|BlackBerry|Opera\ Mini|Opera\ Mobi [NC]
 RewriteRule .* - [E=Cache-Control:vary=%{ENV:LSCACHE_VARY_VALUE}+ismobile]

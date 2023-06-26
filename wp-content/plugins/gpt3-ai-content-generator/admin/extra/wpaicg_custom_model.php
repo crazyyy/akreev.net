@@ -624,6 +624,9 @@ if ( ! defined( 'ABSPATH' ) ) exit;
             if(!has_error && model === 'gpt-4' && (max_tokens > 8192 || max_tokens < 0)){
                 has_error = '<?php echo sprintf(esc_html__('Please enter a valid max token value between %d and %d.','gpt3-ai-content-generator'),0,8192)?>';
             }
+            if(!has_error && model === 'gpt-3.5-turbo-16k' && (max_tokens > 16384 || max_tokens < 0)){
+                has_error = '<?php echo sprintf(esc_html__('Please enter a valid max token value between %d and %d.','gpt3-ai-content-generator'),0,16384)?>';
+            }
             if(!has_error && model === 'gpt-4-32k' && (max_tokens > 32768 || max_tokens < 0)){
                 has_error = '<?php echo sprintf(esc_html__('Please enter a valid max token value between %d and %d.','gpt3-ai-content-generator'),0,32768)?>'
             }

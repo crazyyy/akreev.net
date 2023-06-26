@@ -74,6 +74,7 @@ $wpaicg_pinecone_environments = array(
     'eu-west8-gcp-free' => 'GCP EU-West-8 Free (Italy)',
     'eu-west9-gcp' => 'GCP EU-West-9 (France)',
     'eu-west9-gcp-free' => 'GCP EU-West-9 Free (France)',
+    'gcp-starter' => 'GCP Starter',
     'northamerica-northeast1-gcp' => 'GCP Northamerica-Northeast1',
     'northamerica-northeast1-gcp-free' => 'GCP Northamerica-Northeast1 Free',
     'southamerica-northeast2-gcp' => 'GCP Southamerica-Northeast2 (Toronto)',

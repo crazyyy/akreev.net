@@ -109,6 +109,21 @@ if(!class_exists('\\WPAICG\\WPAICG_Roles')) {
                     'logs' => array('name' => 'Logs')
                 )
             ),
+            'help' => array(
+                'hide' => 'help',
+                'name' => 'Wizard',
+                'roles' => array(
+                    'chatgpt' => array('name' => 'Add ChatGPT to My Website'),
+                    'article' => array('name' => 'Create a Blog Post'),
+                    'woocommerce' => array('name' => 'Optimize WooCommerce Product'),
+                    'autogpt' => array('name' => 'Automate Content Creation'),
+                    'image' => array('name' => 'Generate Images'),
+                    'aiform' => array('name' => 'Create AI Form'),
+                    'assistant' => array('name' => 'AI Assistant Setup'),
+                    'audio' => array('name' => 'Convert an Audio'),
+                    'compare' => array('name' => 'Compare AI Models')
+                )
+            ),
             'comment_reply' => array('name' => 'Comment Replier'),
             'ai_assistant' => array('name' => 'AI Assistant'),
             'instant_embedding' => array('name' => 'Instant Embedding'),

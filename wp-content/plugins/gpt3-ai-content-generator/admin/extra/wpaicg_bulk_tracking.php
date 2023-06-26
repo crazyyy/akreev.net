@@ -109,7 +109,7 @@ $wpaicg_nonce = wp_create_nonce('wpaicg_nonce_action');
                 <td class="wpaicg-bulk-item-cost">
                     <?php
                     if(!empty($wpaicg_generator_token)) {
-                        if ($wpaicg_ai_model == 'gpt-3.5-turbo') {
+                        if ($wpaicg_ai_model == 'gpt-3.5-turbo' || $wpaicg_ai_model == 'gpt-3.5-turbo-16k') {
                             echo '$'.esc_html(number_format($wpaicg_generator_token*0.002/1000,5));
                         }
                         elseif ($wpaicg_ai_model == 'gpt-4') {

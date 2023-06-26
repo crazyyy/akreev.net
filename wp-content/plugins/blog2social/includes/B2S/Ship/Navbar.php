@@ -32,7 +32,7 @@ class B2S_Ship_Navbar {
     public function getData() {
         $result = json_decode(B2S_Api_Post::post(B2S_PLUGIN_API_ENDPOINT, array('action' => 'getUserAuth', 'token' => B2S_PLUGIN_TOKEN, 'version' => B2S_PLUGIN_VERSION)));
         return array('mandanten' => isset($result->mandanten) ? $result->mandanten : '',
-            'auth' => isset($result->auth) ? $result->auth : '',
+            'auth' => isset($result->auth) ? $result->auth : array(),
             'portale' => isset($result->portale) ? $result->portale : '');
     }
 

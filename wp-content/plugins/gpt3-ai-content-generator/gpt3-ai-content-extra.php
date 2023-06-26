@@ -27,6 +27,7 @@ require_once __DIR__.'/classes/wpaicg_search.php';
 require_once __DIR__.'/classes/wpaicg_template.php';
 require_once __DIR__.'/classes/wpaicg_editor.php';
 require_once __DIR__.'/classes/wpaicg_elevenlabs.php';
+require_once __DIR__.'/classes/wpaicg_help.php';
 require_once __DIR__.'/classes/wpaicg_google_speech.php';
 require_once __DIR__.'/classes/wpaicg_troubleshoot.php';
 if(\WPAICG\wpaicg_util_core()->wpaicg_is_pro()){

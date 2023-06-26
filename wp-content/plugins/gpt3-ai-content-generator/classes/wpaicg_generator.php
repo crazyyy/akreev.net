@@ -417,7 +417,7 @@ if(!class_exists('\\WPAICG\\WPAICG_Generator')) {
 
         public function sleep_request()
         {
-            if($this->wpaicg_engine == 'gpt-3.5-turbo' || $this->wpaicg_engine == 'gpt-4' || $this->wpaicg_engine == 'gpt-4-32k'){
+            if($this->wpaicg_engine == 'gpt-3.5-turbo' || $this->wpaicg_engine == 'gpt-3.5-turbo-16k' || $this->wpaicg_engine == 'gpt-4' || $this->wpaicg_engine == 'gpt-4-32k'){
                 sleep($this->wpaicg_sleep);
             }
         }
@@ -436,7 +436,7 @@ if(!class_exists('\\WPAICG\\WPAICG_Generator')) {
                     $this->wpaicg_result['status'] = 'success';
                 }
                 else{
-                    if($this->wpaicg_engine == 'gpt-3.5-turbo' || $this->wpaicg_engine == 'gpt-4' || $this->wpaicg_engine == 'gpt-4-32k'){
+                    if($this->wpaicg_engine == 'gpt-3.5-turbo' || $this->wpaicg_engine == 'gpt-3.5-turbo-16k' || $this->wpaicg_engine == 'gpt-4' || $this->wpaicg_engine == 'gpt-4-32k'){
                         $this->wpaicg_opts['prompt'] = $this->wpaicg_languages['heading_prompt_turbo'].' '.$this->wpaicg_prompt;
                     }
                     else{
@@ -479,7 +479,7 @@ if(!class_exists('\\WPAICG\\WPAICG_Generator')) {
                     if ( !empty(${$this->wpaicg_words_to_avoid}) ) {
                         $withstyle = $value . '. ' . $this->style_text . ', ' . $this->tone_text . ', ' . $this->avoid_text . '.';
                     }
-                    if($this->wpaicg_engine == 'gpt-3.5-turbo' || $this->wpaicg_engine == 'gpt-4' || $this->wpaicg_engine == 'gpt-4-32k') {
+                    if($this->wpaicg_engine == 'gpt-3.5-turbo' || $this->wpaicg_engine == 'gpt-3.5-turbo-16k' || $this->wpaicg_engine == 'gpt-4' || $this->wpaicg_engine == 'gpt-4-32k') {
                         $this->wpaicg_opts['prompt'] = sprintf($this->wpaicg_languages['content_prompt_turbo'],$this->wpaicg_preview_title).' '.$withstyle;
                     }
                     else{
@@ -497,7 +497,7 @@ if(!class_exists('\\WPAICG\\WPAICG_Generator')) {
                         $value = str_replace( '\\', '', $value );
                         $value = trim( $value );
                         // we will add h tag if the user wants to
-                        $wpaicg_heading_id = 'wpaicg-'.sanitize_title($value);
+                        $wpaicg_heading_id = sanitize_title($value).'-wpaicgheading';
                         $this->wpaicg_toc_list[] = $value;
                         if ( $this->wpaicg_heading_tag == "h1" ) {
                             $result = "<h1 id=\"$wpaicg_heading_id\">" . $value . "</h1>" . $wpaicg_response;
@@ -526,7 +526,7 @@ if(!class_exists('\\WPAICG\\WPAICG_Generator')) {
             if($step == 'intro'){
                 if($this->wpaicg_add_intro){
                     $this->sleep_request();
-                    if($this->wpaicg_engine == 'gpt-3.5-turbo' || $this->wpaicg_engine == 'gpt-4' || $this->wpaicg_engine == 'gpt-4-32k') {
+                    if($this->wpaicg_engine == 'gpt-3.5-turbo' || $this->wpaicg_engine == 'gpt-3.5-turbo-16k' || $this->wpaicg_engine == 'gpt-4' || $this->wpaicg_engine == 'gpt-4-32k') {
                         $this->wpaicg_opts['prompt'] = $this->wpaicg_languages['fixed_prompt_turbo'].' '.$this->wpaicg_intro;
                     }
                     else{
@@ -546,7 +546,7 @@ if(!class_exists('\\WPAICG\\WPAICG_Generator')) {
                                 $wpaicg_toc_list_new[] = $wpaicg_toc_item;
                             }
                             $this->wpaicg_toc_list = $wpaicg_toc_list_new;
-                            $wpaicg_introduction_id = 'wpaicg-' . sanitize_title($this->introduction);
+                            $wpaicg_introduction_id = sanitize_title($this->introduction).'-wpaicgheading';
                             $wpaicg_response = '<' . $this->wpaicg_intro_title_tag . ' id="' . $wpaicg_introduction_id . '">' . $this->introduction . '</' . $this->wpaicg_intro_title_tag . '>' . $wpaicg_response;
                         }
                         $this->wpaicg_result['content'] = $wpaicg_response . $this->wpaicg_result['content'];
@@ -565,7 +565,7 @@ if(!class_exists('\\WPAICG\\WPAICG_Generator')) {
             if($step == 'faq'){
                 if($this->wpaicg_add_faq){
                     $this->sleep_request();
-                    if($this->wpaicg_engine == 'gpt-3.5-turbo' || $this->wpaicg_engine == 'gpt-4' || $this->wpaicg_engine == 'gpt-4-32k') {
+                    if($this->wpaicg_engine == 'gpt-3.5-turbo' || $this->wpaicg_engine == 'gpt-3.5-turbo-16k' || $this->wpaicg_engine == 'gpt-4' || $this->wpaicg_engine == 'gpt-4-32k') {
                         $this->wpaicg_opts['prompt'] = $this->wpaicg_languages['fixed_prompt_turbo'].' '.$this->faq_text;
                     }
                     else{
@@ -580,7 +580,7 @@ if(!class_exists('\\WPAICG\\WPAICG_Generator')) {
                     else{
                         $wpaicg_response = $wpaicg_request['data'];
                         $this->wpaicg_toc_list[] = $this->faq_heading;
-                        $wpaicg_faq_id = 'wpaicg-'.sanitize_title($this->faq_heading);
+                        $wpaicg_faq_id = sanitize_title($this->faq_heading).'-wpaicgheading';
                         $wpaicg_response = "<h2 id=\"$wpaicg_faq_id\">" . $this->faq_heading . "</h2>" . $wpaicg_response;
                         $this->wpaicg_result['content'] = $this->wpaicg_result['content'].$wpaicg_response;
                         $this->wpaicg_result['status'] = 'success';
@@ -598,7 +598,7 @@ if(!class_exists('\\WPAICG\\WPAICG_Generator')) {
             if($step == 'conclusion'){
                 if($this->wpaicg_add_conclusion){
                     $this->sleep_request();
-                    if($this->wpaicg_engine == 'gpt-3.5-turbo' || $this->wpaicg_engine == 'gpt-4' || $this->wpaicg_engine == 'gpt-4-32k') {
+                    if($this->wpaicg_engine == 'gpt-3.5-turbo' || $this->wpaicg_engine == 'gpt-3.5-turbo-16k' || $this->wpaicg_engine == 'gpt-4' || $this->wpaicg_engine == 'gpt-4-32k') {
                         $this->wpaicg_opts['prompt'] = $this->wpaicg_languages['fixed_prompt_turbo'].' '.$this->wpaicg_conclusion;
                     }
                     else{
@@ -614,7 +614,7 @@ if(!class_exists('\\WPAICG\\WPAICG_Generator')) {
                         $wpaicg_response = $wpaicg_request['data'];
                         if(!$this->hide_conclusion) {
                             $this->wpaicg_toc_list[] = $this->conclusion;
-                            $wpaicg_conclusion_id = 'wpaicg-' . sanitize_title($this->conclusion);
+                            $wpaicg_conclusion_id = sanitize_title($this->conclusion).'-wpaicgheading';
                             $wpaicg_response = '<' . $this->wpaicg_conclusion_title_tag . ' id="' . $wpaicg_conclusion_id . '">' . $this->conclusion . '</' . $this->wpaicg_conclusion_title_tag . '>' . $wpaicg_response;
                         }
                         $this->wpaicg_result['content'] = $this->wpaicg_result['content'].$wpaicg_response;
@@ -633,7 +633,7 @@ if(!class_exists('\\WPAICG\\WPAICG_Generator')) {
             if($step == 'tagline'){
                 if($this->wpaicg_add_tagline){
                     $this->sleep_request();
-                    if($this->wpaicg_engine == 'gpt-3.5-turbo' || $this->wpaicg_engine == 'gpt-4' || $this->wpaicg_engine == 'gpt-4-32k') {
+                    if($this->wpaicg_engine == 'gpt-3.5-turbo' || $this->wpaicg_engine == 'gpt-3.5-turbo-16k' || $this->wpaicg_engine == 'gpt-4' || $this->wpaicg_engine == 'gpt-4-32k') {
                         $this->wpaicg_opts['prompt'] = $this->wpaicg_languages['fixed_prompt_turbo'].' '.$this->wpaicg_tagline;
                     }
                     else{
@@ -670,7 +670,7 @@ if(!class_exists('\\WPAICG\\WPAICG_Generator')) {
                 if($this->wpaicg_seo_meta_desc){
                     $this->sleep_request();
                     $meta_desc_prompt = ( isset( $this->wpaicg_languages['meta_desc_prompt'] ) && !empty($this->wpaicg_languages['meta_desc_prompt']) ? sprintf( $this->wpaicg_languages['meta_desc_prompt'], $this->wpaicg_preview_title ) : 'Write a meta description about: ' . $this->wpaicg_preview_title .'. Max: 155 characters');
-                    if($this->wpaicg_engine == 'gpt-3.5-turbo' || $this->wpaicg_engine == 'gpt-4' || $this->wpaicg_engine == 'gpt-4-32k') {
+                    if($this->wpaicg_engine == 'gpt-3.5-turbo' || $this->wpaicg_engine == 'gpt-3.5-turbo-16k' || $this->wpaicg_engine == 'gpt-4' || $this->wpaicg_engine == 'gpt-4-32k') {
                         $this->wpaicg_opts['prompt'] = $this->wpaicg_languages['fixed_prompt_turbo'].' '.$meta_desc_prompt;
                     }
                     else{
@@ -728,7 +728,7 @@ if(!class_exists('\\WPAICG\\WPAICG_Generator')) {
                 $this->wpaicg_result['status'] = 'success';
                 if($this->wpaicg_target_url_cta !== ''){
                     $this->sleep_request();
-                    if($this->wpaicg_engine == 'gpt-3.5-turbo' || $this->wpaicg_engine == 'gpt-4' || $this->wpaicg_engine == 'gpt-4-32k') {
+                    if($this->wpaicg_engine == 'gpt-3.5-turbo' || $this->wpaicg_engine == 'gpt-3.5-turbo-16k' || $this->wpaicg_engine == 'gpt-4' || $this->wpaicg_engine == 'gpt-4-32k') {
                         $this->wpaicg_opts['prompt'] = $this->wpaicg_languages['fixed_prompt_turbo'].' '.$this->wpaicg_cta;
                     }
                     else{
@@ -758,13 +758,13 @@ if(!class_exists('\\WPAICG\\WPAICG_Generator')) {
                     }
                 }
                 if($this->wpaicg_toc && is_array($this->wpaicg_toc_list) && count($this->wpaicg_toc_list)){
-                    $wpaicg_table_content = '<ul class="wpaicg_toc"><li>';
+                    $wpaicg_table_content = '<ul class="toc_post_list"><li>';
                     if($this->wpaicg_toc_title !== ''){
                         $wpaicg_table_content .= '<'.$this->wpaicg_toc_title_tag.'>'.$this->wpaicg_toc_title.'</'.$this->wpaicg_toc_title_tag.'>';
                     }
                     $wpaicg_table_content .= '<ul>';
                     foreach($this->wpaicg_toc_list as $wpaicg_toc_item){
-                        $wpaicg_toc_item_id = 'wpaicg-'.sanitize_title($wpaicg_toc_item);
+                        $wpaicg_toc_item_id = sanitize_title($wpaicg_toc_item).'-wpaicgheading';
                         $wpaicg_table_content .= '<li><a href="#'.$wpaicg_toc_item_id.'">'.$wpaicg_toc_item.'</a></li>';
                     }
                     $wpaicg_table_content .= '</ul>';
@@ -1089,7 +1089,7 @@ if(!class_exists('\\WPAICG\\WPAICG_Generator')) {
                 $opts['model'] = $this->wpaicg_engine;
             }
             $chat_model = false;
-            if($opts['model'] == 'gpt-3.5-turbo' || $opts['model'] == 'gpt-4' || $opts['model'] == 'gpt-4-32k'){
+            if($opts['model'] == 'gpt-3.5-turbo' || $opts['model'] == 'gpt-3.5-turbo-16k' || $opts['model'] == 'gpt-4' || $opts['model'] == 'gpt-4-32k'){
                 $chat_model = true;
                 unset($opts['best_of']);
                 $opts['messages'] = array(
