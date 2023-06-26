@@ -35,7 +35,6 @@ function freepik_scraper_initialize() {
 
     // Register REST API for Collections CPT
     // include_once plugin_dir_path( __FILE__ ) . 'includes/rest_api.php';
-
 }
 
 /**
@@ -51,8 +50,6 @@ add_action( 'init', 'freepik_scraper_initialize' );
 
 // Enqueue plugin scripts and styles
 add_action( 'wp_enqueue_scripts', 'freepik_scraper_enqueue_scripts' );
-
-
 
 add_action( 'rest_api_init', function () {
     register_rest_route( 'wp/v3', '/postmeta', array(

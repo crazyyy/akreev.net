@@ -84,6 +84,13 @@ while next_page_button:
         collection_url = block.get_attribute("data-share-url")
         collection_data["collection_url"] = collection_url
 
+        # Click on the "onetrust-accept-btn-handler" button if it exists
+        try:
+            accept_button = driver.find_element(By.ID, "onetrust-accept-btn-handler")
+            accept_button.click()
+        except:
+            pass
+
         # Save screenshot and update preview link
         driver.execute_script("""var links = document.querySelectorAll('.collection__link, .image-wrapper');
                                   for (i = 0; i < links.length; i++) {
