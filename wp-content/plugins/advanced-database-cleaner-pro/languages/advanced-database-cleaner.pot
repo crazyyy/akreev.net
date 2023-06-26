@@ -1235,7 +1235,7 @@ msgid ""
 msgstr ""
 
 #: includes/functions.php:572
-msgid "Uncategorised!"
+msgid "Uncategorized!"
 msgstr ""
 
 #: includes/functions.php:577

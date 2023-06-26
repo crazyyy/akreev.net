@@ -1,5 +1,7 @@
 <?php
-/** Used to view comment meta and post meta */
+
+/** View comment meta and post meta */
+
 class ADBC_Clean_Meta_Comment_Post_User_Term extends WP_List_Table {
 
 	private $aDBc_message = "";
@@ -7,9 +9,9 @@ class ADBC_Clean_Meta_Comment_Post_User_Term extends WP_List_Table {
 	private $aDBc_elements_to_display = array();
 	private $aDBc_type_to_clean = "";
 	private $aDBc_plural_title = "";
-	private $aDBc_column_meta_name = "";	
+	private $aDBc_column_meta_name = "";
 	private $aDBc_sql_get_elements = "";
-	private $aDBc_custom_sql_args = "";	
+	private $aDBc_custom_sql_args = "";
 	private $aDBc_search_sql_arg = "";
 	private $aDBc_order_by_sql_arg = "";
 	private $aDBc_limit_offset_sql_arg = "";
@@ -59,14 +61,20 @@ class ADBC_Clean_Meta_Comment_Post_User_Term extends WP_List_Table {
 		}
 
 		// Prepare additional sql args if any: per page, LIMIT, OFFSET, etc.
-		$this->aDBc_search_sql_arg 				= aDBc_get_search_sql_arg("meta_key", "meta_value");
-		$this->aDBc_order_by_sql_arg 			= aDBc_get_order_by_sql_arg($this->aDBc_metaid_or_umetaid);
+
+		if ( ADBC_PLUGIN_PLAN == "pro" ) {
+
+			$this->aDBc_search_sql_arg 			= aDBc_get_search_sql_arg( "meta_key", "meta_value" );
+
+		}
+
+		$this->aDBc_order_by_sql_arg 			= aDBc_get_order_by_sql_arg( $this->aDBc_metaid_or_umetaid );
 		$this->aDBc_limit_offset_sql_arg 		= aDBc_get_limit_offset_sql_args();
 
         parent::__construct(array(
-            'singular'  => $aDBc_singular,		//singular name of the listed records
-            'plural'    => $this->aDBc_plural_title,	//plural name of the listed records
-            'ajax'      => false	//does this table support ajax?
+            'singular'  => $aDBc_singular,
+            'plural'    => $this->aDBc_plural_title,
+            'ajax'      => false
 		));
 
 		$this->aDBc_prepare_elements_to_clean();
@@ -78,7 +86,7 @@ class ADBC_Clean_Meta_Comment_Post_User_Term extends WP_List_Table {
 
 		global $wpdb;
 
-		// Process bulk action if any before preparing meta to clean
+		// Process bulk action if any before preparing elements to clean
 		$this->process_bulk_action();
 
 		// Get all elements (for the table usermeta, only one table exists for MU, do not switch over blogs for it)
@@ -160,7 +168,7 @@ class ADBC_Clean_Meta_Comment_Post_User_Term extends WP_List_Table {
 		switch($column_name){
 			case 'meta_id':
 			case 'meta_key':
-			case 'meta_value':			
+			case 'meta_value':
 			case 'site_id':
 				return $item[$column_name];
 			default:

@@ -2,17 +2,17 @@
 
 class ADBC_Clean_Relationship extends WP_List_Table {
 
-	private $aDBc_message = "";
-	private $aDBc_class_message = "updated";
-	private $aDBc_elements_to_display = array();
-	private $aDBc_type_to_clean = "";
-	private $aDBc_plural_title = "";
-	private $aDBc_column_meta_name = "";	
-	private $aDBc_sql_get_elements = "";
-	private $aDBc_search_sql_arg = "";
-	private $aDBc_order_by_sql_arg = "";
-	private $aDBc_limit_offset_sql_arg = "";
-	private $aDBc_delete_from_table = "";
+	private $aDBc_message 				= "";
+	private $aDBc_class_message 		= "updated";
+	private $aDBc_elements_to_display 	= array();
+	private $aDBc_type_to_clean 		= "";
+	private $aDBc_plural_title 			= "";
+	private $aDBc_column_meta_name 		= "";	
+	private $aDBc_sql_get_elements 		= "";
+	private $aDBc_search_sql_arg 		= "";
+	private $aDBc_order_by_sql_arg 		= "";
+	private $aDBc_limit_offset_sql_arg 	= "";
+	private $aDBc_delete_from_table 	= "";
 
     /**
      * Constructor
@@ -22,29 +22,35 @@ class ADBC_Clean_Relationship extends WP_List_Table {
 		$this->aDBc_plural_title = __('Orphaned Relationships', 'advanced-database-cleaner');
 
 		// Prepare additional sql args if any: per page, LIMIT, OFFSET, etc.
-		$this->aDBc_search_sql_arg 				= aDBc_get_search_sql_arg("term_taxonomy_id", "term_order");
-		$this->aDBc_order_by_sql_arg 			= aDBc_get_order_by_sql_arg("object_id");
+		
+		if ( ADBC_PLUGIN_PLAN == "pro" ) {
+			
+			$this->aDBc_search_sql_arg 			= aDBc_get_search_sql_arg( "term_taxonomy_id", "term_order" );
+			
+		}
+		
+		$this->aDBc_order_by_sql_arg 			= aDBc_get_order_by_sql_arg( "object_id" );
 		$this->aDBc_limit_offset_sql_arg 		= aDBc_get_limit_offset_sql_args();
 
         parent::__construct(array(
-            'singular'  => __('Orphaned Relationship', 'advanced-database-cleaner'),		//singular name of the listed records
-            'plural'    => $this->aDBc_plural_title,	//plural name of the listed records
-            'ajax'      => false	//does this table support ajax?
+            'singular'  => __( 'Orphaned Relationship', 'advanced-database-cleaner' ),
+            'plural'    => $this->aDBc_plural_title,
+            'ajax'      => false
 		));
 
 		$this->aDBc_prepare_elements_to_clean();
 		$this->aDBc_print_page_content();
     }
 
-	/** Prepare elements to display */
+    /** Prepare elements to display */
 	function aDBc_prepare_elements_to_clean(){
 
 		global $wpdb;
 
-		// Process bulk action if any before preparing relationships to clean
+		// Process bulk action if any before preparing elements to clean
 		$this->process_bulk_action();
 
-		// Get all relationships
+		// Get all elements to clean
 		if(function_exists('is_multisite') && is_multisite()){
 			$blogs_ids = $wpdb->get_col("SELECT blog_id FROM $wpdb->blogs");
 			foreach($blogs_ids as $blog_id){

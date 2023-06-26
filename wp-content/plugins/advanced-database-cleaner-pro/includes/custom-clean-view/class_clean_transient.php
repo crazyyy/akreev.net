@@ -8,7 +8,7 @@ class ADBC_Clean_Transient extends WP_List_Table {
 	private $aDBc_type_to_clean = "";
 	private $aDBc_plural_title = "";
 	private $aDBc_sql_get_transients = "";
-	private $aDBc_custom_sql_args = "";	
+	private $aDBc_custom_sql_args = "";
 	private $aDBc_search_sql_arg = "";
 	private $aDBc_order_by_sql_arg = "";
 	private $aDBc_limit_offset_sql_arg = "";
@@ -17,35 +17,30 @@ class ADBC_Clean_Transient extends WP_List_Table {
      */
     function __construct($element_type){
 
-		$aDBc_singular 				= __('Transient', 'advanced-database-cleaner');
-		$this->aDBc_plural_title 	= __('Transients', 'advanced-database-cleaner');
-
 		if($element_type == "expired-transients"){
 
-			$this->aDBc_type_to_clean 		= "expired-transients";
-			$this->aDBc_custom_sql_args 	= " AND b.option_value < UNIX_TIMESTAMP()";
-
-		}else if($element_type == "transients-with-expiration"){
-
-			$this->aDBc_type_to_clean 		= "transients-with-expiration";
-			$this->aDBc_custom_sql_args 	= " AND b.option_value > UNIX_TIMESTAMP()";
-
-		}else if($element_type == "transients-with-no-expiration"){
-
-			$this->aDBc_type_to_clean 		= "transients-with-no-expiration";
-			$this->aDBc_custom_sql_args 	= " AND b.option_value is NULL";
+			$this->aDBc_type_to_clean 	= "expired-transients";
+			$aDBc_singular 				= __('Expired transient', 'advanced-database-cleaner');
+			$this->aDBc_plural_title 	= __('Expired transients', 'advanced-database-cleaner');
+			$this->aDBc_custom_sql_args = " AND b.option_value < UNIX_TIMESTAMP()";
 
 		}
 
 		// Prepare additional sql args if any: per page, LIMIT, OFFSET, etc.
-		$this->aDBc_search_sql_arg 			= aDBc_get_search_sql_arg("a.option_name", "a.option_value");
-		$this->aDBc_order_by_sql_arg 		= aDBc_get_order_by_sql_arg("a.option_id");
-		$this->aDBc_limit_offset_sql_arg 	= aDBc_get_limit_offset_sql_args();
+
+		if ( ADBC_PLUGIN_PLAN == "pro" ) {
+
+			$this->aDBc_search_sql_arg 			= aDBc_get_search_sql_arg( "a.option_name", "a.option_value" );
+
+		}
+
+		$this->aDBc_order_by_sql_arg 			= aDBc_get_order_by_sql_arg( "a.option_id" );
+		$this->aDBc_limit_offset_sql_arg 		= aDBc_get_limit_offset_sql_args();
 
         parent::__construct(array(
-            'singular'  => $aDBc_singular,		//singular name of the listed records
-            'plural'    => $this->aDBc_plural_title,	//plural name of the listed records
-            'ajax'      => true	//does this table support ajax?
+            'singular'  => $aDBc_singular,
+            'plural'    => $this->aDBc_plural_title,
+            'ajax'      => false
 		));
 
 		$this->aDBc_prepare_elements_to_clean();
@@ -57,9 +52,10 @@ class ADBC_Clean_Transient extends WP_List_Table {
 
 		global $wpdb;
 
-		// Process bulk action if any before preparing feeds to clean
+		// Process bulk action if any before preparing elements to clean
 		$this->process_bulk_action();
 
+		// Get all elements to clean
 		if(function_exists('is_multisite') && is_multisite()){
 			$blogs_ids = $wpdb->get_col("SELECT blog_id FROM $wpdb->blogs");
 			foreach($blogs_ids as $blog_id){
@@ -84,7 +80,7 @@ class ADBC_Clean_Transient extends WP_List_Table {
 		global $wpdb;
 
 		// Get all dashboard transients
-		$this->aDBc_sql_get_transients = "SELECT a.option_id, a.option_name, a.option_value as option_content, a.autoload, b.option_value as option_timeout FROM $wpdb->options a LEFT JOIN $wpdb->options b ON b.option_name = 
+		$this->aDBc_sql_get_transients = "SELECT a.option_id, a.option_name, a.option_value as option_content, a.autoload, b.option_value as option_timeout FROM $wpdb->options a LEFT JOIN $wpdb->options b ON b.option_name =
 		CONCAT(
 			CASE WHEN a.option_name LIKE '_site_transient_%'
 				THEN '_site_transient_timeout_'
@@ -98,7 +94,7 @@ class ADBC_Clean_Transient extends WP_List_Table {
 				END
 			) + 1)
 		)
-		WHERE (a.option_name LIKE '_transient_%' OR a.option_name LIKE '_site_transient_%') AND a.option_name NOT LIKE '%_transient_timeout_%'" 
+		WHERE (a.option_name LIKE '_transient_%' OR a.option_name LIKE '_site_transient_%') AND a.option_name NOT LIKE '%_transient_timeout_%'"
 		. $this->aDBc_custom_sql_args
 		. $this->aDBc_search_sql_arg
 		. $this->aDBc_order_by_sql_arg
@@ -112,16 +108,12 @@ class ADBC_Clean_Transient extends WP_List_Table {
 		foreach($aDBc_all_transient_feed as $aDBc_transient){
 
 			// Get timeout of transient
-			switch($this->aDBc_type_to_clean){
-				case "expired-transients" : 
-					$transient_timeout = __('Expired','advanced-database-cleaner');
+			switch ( $this->aDBc_type_to_clean ) {
+
+				case "expired-transients" :
+					$transient_timeout = __( 'Expired', 'advanced-database-cleaner' );
 					break;
-				case "transients-with-expiration" : 
-					$transient_timeout = human_time_diff($time_now, $aDBc_transient->option_timeout);
-					break;					
-				case "transients-with-no-expiration" : 
-					$transient_timeout = __('Does not expire','advanced-database-cleaner');
-					break;
+
 			}
 
 			// Get transient content

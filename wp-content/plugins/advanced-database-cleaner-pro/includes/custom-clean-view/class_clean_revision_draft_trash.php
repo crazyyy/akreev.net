@@ -50,14 +50,20 @@ class ADBC_Clean_Revision_Trash_Draft extends WP_List_Table {
 		}
 
 		// Prepare additional sql args if any: per page, LIMIT, OFFSET, etc.
-		$this->aDBc_search_sql_arg 				= aDBc_get_search_sql_arg("post_title", "post_content");
-		$this->aDBc_order_by_sql_arg 			= aDBc_get_order_by_sql_arg("ID");
+
+		if ( ADBC_PLUGIN_PLAN == "pro" ) {
+
+			$this->aDBc_search_sql_arg 			= aDBc_get_search_sql_arg( "post_title", "post_content" );
+
+		}
+
+		$this->aDBc_order_by_sql_arg 			= aDBc_get_order_by_sql_arg( "ID" );
 		$this->aDBc_limit_offset_sql_arg 		= aDBc_get_limit_offset_sql_args();
 
         parent::__construct(array(
-            'singular'  => $aDBc_singular,		//singular name of the listed records
-            'plural'    => $this->aDBc_plural_title,	//plural name of the listed records
-            'ajax'      => false	//does this table support ajax?
+            'singular'  => $aDBc_singular,
+            'plural'    => $this->aDBc_plural_title,
+            'ajax'      => false
 		));
 
 		$this->aDBc_prepare_elements_to_clean();
@@ -69,10 +75,10 @@ class ADBC_Clean_Revision_Trash_Draft extends WP_List_Table {
 
 		global $wpdb;
 
-		// Process bulk action if any before preparing posts to clean
+		// Process bulk action if any before preparing elements to clean
 		$this->process_bulk_action();
 
-		// Get all concerned posts
+		// Get all elements to clean
 		if(function_exists('is_multisite') && is_multisite()){
 			$blogs_ids = $wpdb->get_col("SELECT blog_id FROM $wpdb->blogs");
 			foreach($blogs_ids as $blog_id){
@@ -118,7 +124,7 @@ class ADBC_Clean_Revision_Trash_Draft extends WP_List_Table {
 			array_push($this->aDBc_elements_to_display, array(
 				'post_id' 		=> $aDBc_element->ID,
 				'post_title' 	=> $post_title,
-				'post_content' 	=> $post_content,
+				'post_content' 	=> $post_content, //xxx add if empty, replace by 'Empty' to prevent responsive issues in WP table
 				'post_date'		=> $aDBc_element->post_date,
 				'site_id'		=> $blog_id
 				)
@@ -136,7 +142,7 @@ class ADBC_Clean_Revision_Trash_Draft extends WP_List_Table {
 		}
 		return "";
 	}
-	
+
 	/** WP: Get columns */
 	function get_columns(){
 		$columns = array(
